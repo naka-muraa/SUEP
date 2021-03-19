@@ -15,13 +15,17 @@ export default {
     "**/*"
   ],
   ios: {
-    "supportsTablet": true
+    "supportsTablet": true,
+    "supportsTablet": true,
+    "bundleIdentifier": "com.T_Pot.SUEP"
   },
   android: {
     "adaptiveIcon": {
       "foregroundImage": "./assets/adaptive-icon.png",
       "backgroundColor": "#FFFFFF"
-    }
+    },
+    "package": "com.T_Pot.SUEP",
+    "versionCode": 1,
   },
   web: {
     "favicon": "./assets/favicon.png"
