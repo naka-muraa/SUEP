@@ -16,15 +16,15 @@ export default {
   ],
   ios: {
     "supportsTablet": true,
-    "supportsTablet": true,
-    "bundleIdentifier": "com.T_Pot.SUEP"
+    "bundleIdentifier": "com.tpot.suepapp",
+    "buildNumber": "1.0.0"
   },
   android: {
     "adaptiveIcon": {
       "foregroundImage": "./assets/adaptive-icon.png",
       "backgroundColor": "#FFFFFF"
     },
-    "package": "com.T_Pot.SUEP",
+    "package": "com.tpot.suepapp",
     "versionCode": 1,
   },
   web: {
