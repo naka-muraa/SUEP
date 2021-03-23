@@ -20,7 +20,6 @@ export default function PrivacyPolicy() {
     <SafeAreaView>
       <ScrollView style={styles.scrollView}>
         <Text style={styles.text}>{`
-プライバシーポリシー\n
 　このプライバシーポリシーは，開発者がこのアプリケーション上で提供するサービス（以下，「本サービス」といいます。）を運用する際に得られた個人情報を私がどのように扱うか示しています。利用者の皆さま（以下，「ユーザー」といいます。）が本サービスをご利用いただく場合、以下のプライバシーポリシーに同意したものとみなします。\n
 
 1.  個人情報の利用目的\n
@@ -35,7 +34,7 @@ export default function PrivacyPolicy() {
         />
         <Text style={styles.text}>{`
 3.  Googleが提供するサービスを利用する際のプライバシーポリシー\n
-また，本アプリケーションについての問い合わせにはGoogleフォームを用いる場合があります．Googleのサービスを利用する場合にはGoogle独自のプライバシーポリシーが適用されます．詳しくは下に示したリンク先でご確認いただけます．
+　本アプリケーションについての問い合わせにはGoogleフォームを用いる場合があります．Googleのサービスを利用する場合にはGoogle独自のプライバシーポリシーが適用されます．詳しくは下に示したリンク先でご確認いただけます．
 `}</Text>
         <Button
           title="「Googleのプライバシーポリシーと利用規約」はこちらから"

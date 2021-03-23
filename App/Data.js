@@ -107,9 +107,6 @@ export default function Data(props) {
 }
 
 const styles = StyleSheet.create({
-  TitleIdContainer: {
-
-  },
   Icon: {
     flex: 1,
     height: 50,
