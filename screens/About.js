@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Text, Button, View, ScrollView, TouchableOpacity, StyleSheet, Linking } from "react-native";
 import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 async function openUrl(url) {
   const supported = await Linking.canOpenURL(url);
@@ -33,9 +34,9 @@ function aboutPage({ navigation }) {
       <View style={styles.rowContainer}>
         <Text style={styles.description}>SUEP（お問い合わせはこちら）</Text>
         <TouchableOpacity
-          onPress={() => openUrl("https://twitter.com/SU_EventsPortal")}
+          onPress={() => openUrl("https://suep.netlify.app/")}
         >
-          <FontAwesome5 name="twitter-square" size={24} color="black" />
+          <MaterialCommunityIcons name="web" size={24} color="black" />
         </TouchableOpacity>
       </View>
       <View style={styles.rowContainer}>

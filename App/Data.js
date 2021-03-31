@@ -1,11 +1,15 @@
+import SearchData from "./SearchData";
 import FetchData from "./FetchData";
+import StoreData from "./storeData";
+import GetStoredData from "./GetStoredData";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, ActivityIndicator, Alert, Linking, FlatList, TouchableHighlight, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, ActivityIndicator, Alert, Linking, FlatList, View, Image, TouchableOpacity, TextInput } from "react-native";
 import HTMLView from 'react-native-htmlview';
 import reply from '../assets/reply.png';
 import retweet from "../assets/retweet.png";
 import like from "../assets/like.png";
 import TwitterLogo from "../assets/2021Twitterlogo-blue.png";
+import { Ionicons } from '@expo/vector-icons';
 
 async function openUrl(url) {
   const supported = await Linking.canOpenURL(url);
@@ -21,18 +25,42 @@ async function openUrl(url) {
   }
 }
 
+const fetchStorage = async () => {
+  const storagedData = await GetStoredData();
+  return storagedData;
+}
+
 export default function Data(props) {
+  const [InputtedText, onChangeText] = useState();
+  const [searching, setSearching] = useState(false);
   const [value, setValue] = useState();
   const [refreshing, setRefreshing] = useState(true);
+  const [storageData, setStorage] = useState();
+
+  {/* 画面引き下げ時のデータ読み込み処理 */ }
   useEffect(() => {
     if (refreshing) {
       let data = async () => {
-        setValue(await FetchData(props.sheetName));
+        const fetchedData = await FetchData(props.sheetName);
+        setValue(fetchedData);
+        return fetchedData;
       };
-      data();
+      data().then((fData) => StoreData(fData).then(() => setStorage(fetchStorage())));
     }
     setRefreshing(false);
   }, [refreshing]);
+
+  {/* 検索語の読み込み処理 */ }
+  useEffect(() => {
+    if (searching) {
+      let data = async () => {
+        setValue(await SearchData(storageData, InputtedText));
+      };
+      data();
+    }
+    setSearching(false);
+  }, [searching]);
+
   if (!value) {
     return (
       <ActivityIndicator
@@ -45,6 +73,43 @@ export default function Data(props) {
 
   return (
     <>
+      <View
+        style={{
+          paddingVertical: 9,
+          paddingHorizontal: 12,
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'row',
+          backgroundColor: 'white',
+          borderColor: '#ddd',
+          borderBottomWidth: 0,
+          shadowColor: '#000000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.9,
+          shadowRadius: 3,
+          elevation: 8,
+        }}>
+        <TextInput
+          onChangeText={text => { onChangeText(text) }}
+          onEndEditing={() => { setSearching(true) }}
+          value={InputtedText}
+          placeholder='Search'
+          autoCapitalize='none'
+          style={{
+            flex: 1,
+            borderBottomWidth: 0.5,
+            borderColor: '#333333',
+            backgroundColor: 'white',
+          }}
+          textStyle={{ color: 'black' }}
+          editable
+          maxLength={40}
+        />
+        <TouchableOpacity
+          onPress={() => { onChangeText(''), setValue(storageData._W) }}>
+          <Ionicons name="close-circle-sharp" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={value}
         refreshing={refreshing}

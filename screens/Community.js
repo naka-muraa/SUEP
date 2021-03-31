@@ -4,7 +4,7 @@ import React from 'react';
 const Clubs = () => {
   return (
     <>
-      <Data sheetName="Clubs" />
+      <Data sheetName="Community" />
     </>
   );
 }
