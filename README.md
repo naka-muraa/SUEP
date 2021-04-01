@@ -1,16 +1,16 @@
-# SUEP
-## 島根大学の学生団体ならびに地域コミュニティのイベント情報などを表示するAndroidアプリ
-## Webサイト
+## SUEP
+## 島根大学生に関わるイベント情報などを表示するAndroidアプリ
+### Webサイト
 <a href="https://suep.netlify.app/" target="_blank">SUEP</a>
-## 主な機能
+### 主な機能
 - 学内情報
 各サークル・部活動が予定しているイベントの情報をTwitterから自動で取得・表示します。
 - 学外情報
 地域コミュニティが主催する、島根大学の学生もターゲットにしたイベントをTwitterから自動で取得・表示します。
-## 仕様
+### 仕様
 - インストール要件
 推奨バージョン Android 5.0 (Lollipop) 以上
-## 開発環境・使用ライブラリ
+### 開発環境・使用ライブラリ
 - 開発言語/フレームワーク React Native/Expo
 - 開発環境 PowerShell
 - 使用ライブラリ
@@ -35,15 +35,15 @@
 <a href="https://github.com/kmagiera/react-native-screens.git" target="_blank">software-mansion/react-native-screens: Native navigation primitives for your React Native app.</a>
 <a href="https://github.com/necolas/react-native-web#readme" target="_blank">necolas/react-native-web: React Native Components and APIs for the Web</a>
 
-## バグ（訂正済み）
+### バグ（訂正済み）
 - 各アカウントが定めたキーワードに対して、重複したツイートの情報を取得・表示していた。
 - 2021/4/1 アプリのデータベース側で日数調整を行うプログラムがあったが、閏年の年度とそれ以外の年度で上手くデータの処理が出来なかった
 
-## 未実装（実装予定）
+### 未実装（実装予定）
 - 島根大学の公式アカウントから発信されるツイートの情報を反映
 - 各団体の年度ごとの実績をイベント情報のツイートから抜粋・表示
 
-## ライセンス
+### ライセンス
 © 2021 Hiroshi TANABE
 特定のライセンスには基づきませんが、以下の事項に従って下さい。
 - 意図的/偶発的に関わらず、APIキーを悪用しサーバーへ負荷をかける行為
