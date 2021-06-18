@@ -2,7 +2,7 @@
   "expo": {
     "name": "suep",
     "slug": "suep",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/suep_icon.png",
     "splash": {
@@ -16,17 +16,11 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/suep_icon.png",
         "backgroundColor": "#FFFFFF"
       }
-    },
-    "web": {
-      "favicon": "./assets/suep_icon.png"
     }
   }
 }

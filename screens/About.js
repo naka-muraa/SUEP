@@ -40,14 +40,6 @@ function aboutPage({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={styles.rowContainer}>
-        <Text style={styles.description}>TAKENOKO_NO_KO （開発者） </Text>
-        <TouchableOpacity
-          onPress={() => openUrl("https://twitter.com/YabeO")}
-        >
-          <FontAwesome5 name="twitter-square" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.rowContainer}>
         <Text style={styles.description}>Nabe-cyan（開発者） </Text>
         <TouchableOpacity
           onPress={() => openUrl("https://twitter.com/n_a_b_e_t_a_s_o")}

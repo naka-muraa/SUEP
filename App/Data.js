@@ -41,7 +41,7 @@ export default function Data(props) {
   useEffect(() => {
     if (refreshing) {
       let data = async () => {
-        const fetchedData = await FetchData(props.sheetName);
+        const fetchedData = await FetchData(props.sheetName, props.key);
         setValue(fetchedData);
         return fetchedData;
       };
@@ -97,8 +97,6 @@ export default function Data(props) {
           autoCapitalize='none'
           style={{
             flex: 1,
-            borderBottomWidth: 0.5,
-            borderColor: '#333333',
             backgroundColor: 'white',
           }}
           textStyle={{ color: 'black' }}
