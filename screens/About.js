@@ -98,11 +98,11 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   description: {
-    fontSize: 18
+    fontSize: 16
   },
   separator: {
     marginVertical: 8,
