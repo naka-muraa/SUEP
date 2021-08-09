@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, SafeAreaView, ScrollView, Button, Linking } from "react-native";
+import { StyleSheet, Text, SafeAreaView, ScrollView, TouchableOpacity, Linking } from "react-native";
 
 async function openUrl(url) {
   const supported = await Linking.canOpenURL(url);
@@ -90,23 +90,29 @@ export default function termsOfService() {
 第13条（Twitter APIの利用）\n
 　本サービスではTwitter, Inc.が提供するTwitter APIを利用し，Twitter上のコンテンツを再配布しています。本アプリケーションを利用するユーザーはTwitterの利用規約およびプライバシーポリシーに同意しているものとみなします。
         `}</Text>
-        <Button
-          title="「Twitterの利用規約」はこちらから"
-          onPress={() => openUrl("https://twitter.com/ja/tos")}
-        />
+        <TouchableOpacity
+        style={styles.button}
+        onPress={() => openUrl("https://cdn.cms-twdigitalassets.com/content/dam/legal-twitter/site-assets/privacy-policy-new/pp-tos-ja.pdf")}
+      >
+        <Text>「Twitterの利用規約」はこちらから</Text>
+      </TouchableOpacity>
         <Text>{"\n"}</Text>
-        <Button
-          title="「Twitterのプライバシーポリシー」はこちらから"
-          onPress={() => openUrl("https://twitter.com/ja/privacy")}
-        />
+        <TouchableOpacity
+        style={styles.button}
+        onPress={() => openUrl("https://cdn.cms-twdigitalassets.com/content/dam/legal-twitter/site-assets/privacy-june-18th-2020/Twitter_Privacy_Policy_JA.pdf")}
+      >
+        <Text>「Twitterのプライバシーポリシー」はこちらから</Text>
+      </TouchableOpacity>
         <Text style={styles.text}>{`
 第13条（Googleフォームの利用）\n
 　本サービスではお問い合わせの際にGoogleフォームを用いる場合があります．Googleが提供するサービスを用いる場合にはGoogleの利用規約が適用されるます．詳しくは下に記載したリンクからご確認ください．
 `}</Text>
-        <Button
-          title="「Googleのプライバシーポリシーと利用規約」はこちらから"
-          onPress={() => openUrl("https://policies.google.com/terms?hl=ja")}
-        />
+        <TouchableOpacity
+        style={styles.button}
+        onPress={() => openUrl("https://policies.google.com/terms?hl=ja")}
+      >
+        <Text>「Googleのプライバシーポリシーと利用規約」はこちらから</Text>
+      </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -114,10 +120,12 @@ export default function termsOfService() {
 
 const styles = StyleSheet.create({
   scrollView: {
-    marginHorizontal: 20,
-    marginVertical: 20,
+    marginHorizontal: 10,
+    marginVertical: 10,
+    backgroundColor: 'white',
   },
   text: {
+    marginHorizontal: 10,
     fontSize: 16,
   },
   twitterText: {
@@ -127,5 +135,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
     backgroundColor: '#1e90ff',
+  },
+  button: {
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
+    padding: 10
   },
 });
