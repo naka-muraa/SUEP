@@ -1,29 +1,38 @@
-import About from './screens/About';
-import PrivacyPolicy from './screens/PrivacyPolicy';
-import Terms from './screens/termsOfService';
-import Clubs from './screens/Clubs';
-import Univ from './screens/University';
-import Community from "./screens/Community";
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StyleSheet, SafeAreaView } from 'react-native';
-import { Ionicons, FontAwesome5, FontAwesome } from '@expo/vector-icons';
-import { StatusBar } from "expo-status-bar";
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+
+// スクリーンのインポート
+import About from './screens/eventScreens/About';
+import PrivacyPolicy from './screens/eventScreens/PrivacyPolicy';
+import Terms from './screens/eventScreens/termsOfService';
+import Clubs from './screens/eventScreens/Clubs';
+import Univ from './screens/eventScreens/University';
+import Community from "./screens/eventScreens/Community";
+import lectureApp from './screens/lectureScreens/lectureApp';
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({ navigation }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        headerStyle: {
+          backgroundColor: 'tomato',
+        },
+        headerTitleStyle: {
+          color: 'white'
+        },
+        headerLeft: () => (
+          <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "white"}} />
+        ),
         "tabBarActiveTintColor": "tomato",
         "tabBarInactiveTintColor": "gray",
         "tabBarStyle": [{ "display": "flex" }, null],
-        headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           if (route.name === 'コミュニティ') {
@@ -31,10 +40,8 @@ const BottomTabNavigator = () => {
             return <Ionicons name={iconName} size={size} color={color} />;
           } else if (route.name === 'サークル') {
             iconName = focused ? 'school' : 'school-outline';
-            // You can return any component that you like here!
             return <Ionicons name={iconName} size={size} color={color} />;
           } else if (route.name === '大学オフィシャル') {
-            // You can return any component that you like here!
             return <FontAwesome5 name="university" size={size} color={color} />;
           }
         },
@@ -50,26 +57,19 @@ const BottomTabNavigator = () => {
 export default function App() {
   return (
     < NavigationContainer >
-      <Drawer.Navigator
-      screenOptions={{
-        headerStyle: {
-            backgroundColor: 'tomato',
-          },
-      }}
-      >
-        <Drawer.Screen name="ホーム" component={BottomTabNavigator} />
+      <Drawer.Navigator >
+        <Drawer.Screen name="時間割ホーム" component={lectureApp}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Drawer.Screen name="イベント情報" component={BottomTabNavigator} options={{
+          headerShown: false,
+        }}/>
         <Drawer.Screen name="利用規約" component={Terms} />
-        <Drawer.Screen name="プライバシーポリシー" component={PrivacyPolicy } />
+        <Drawer.Screen name="プライバシーポリシー" component={PrivacyPolicy} />
         <Drawer.Screen name="このアプリについて" component={About} />
       </Drawer.Navigator>
     </NavigationContainer >
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  rowContainer: {
-    flexDirection: 'row',
-  },
-});

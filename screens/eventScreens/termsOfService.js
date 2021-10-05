@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, SafeAreaView, ScrollView, TouchableOpacity, Linking } from "react-native";
+import { StyleSheet, Text, SafeAreaView, ScrollView, TouchableOpacity, Linking, Alert } from "react-native";
 
 async function openUrl(url) {
   const supported = await Linking.canOpenURL(url);

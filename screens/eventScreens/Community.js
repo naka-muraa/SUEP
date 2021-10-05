@@ -1,10 +1,10 @@
-import Data from "../App/Data";
+import Data from "../../App/Data";
 import React from 'react';
 
 const Clubs = () => {
   return (
     <>
-      <Data sheetName="Clubs" />
+      <Data sheetName="Community" />
     </>
   );
 }
