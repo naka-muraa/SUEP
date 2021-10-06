@@ -48,7 +48,7 @@ function storeFacultyData(facultyName) {
     // 初回起動フラグの記録
     saveData(['firstLaunch', 'alreadyLaunched']);
   } catch (error) {
-    console.log('ファイル名：homeScreenPopup.js\n' + 'エラー：' + er + '\n');
+    console.log('ファイル名：homeScreenPopup.js\n' + 'エラー：' + error + '\n');
   }
 };
 

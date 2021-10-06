@@ -5,10 +5,27 @@ import { CheckBox } from 'react-native-elements';
 // 外部関数のインポート
 import { saveData } from '../../appFunction/saveData';
 import { readTableData } from '../../appFunction/ReadTableData';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 export default function editLectureScreen({ navigation }) {
   const [registeredData, setRegisteredData] = useState();
   const [isChecked, setisChecked] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+  const [facultyNames, setFacultyNames] = useState(
+    [{ label: '生物資源科学部', value: '生物資源科学部' },
+    { label: '総合理工学部', value: '総合理工学部' },
+    { label: '人間科学部', value: '人間科学部' },
+    { label: '教育学部', value: '教育学部' },
+    { label: '法文学部', value: '法文学部' },
+    { label: '人文社会学研究科', value: '人文社会学研究科' },
+    { label: '人間社会科学研究科', value: '人間社会科学研究科' },
+    { label: '教育学研究科', value: '教育学研究科' },
+    { label: '総合理工学研究科', value: '総合理工学研究科' },
+    { label: '自然科学研究科', value: '自然科学研究科' },
+    ]
+  );
+
 
   // 初回描画時に実行
   useEffect(() => {
@@ -51,10 +68,54 @@ export default function editLectureScreen({ navigation }) {
     </View>
   );
 
+  // 学部名の保存＋初回起動フラグの設定
+  function storeFacultyData(facultyName) {
+    try {
+      switch (facultyName) {
+        case '生物資源科学部':
+          // キー, '学部名, 参照するファイル名'
+          saveData(['facultyName', '生物資源科学部, 生物資源, 教養教育']);
+          break;
+        case '総合理工学部':
+          saveData(['facultyName', '総合理工学部, 総合理工, 教養教育'])
+          break;
+        case '人間科学部':
+          saveData(['facultyName', '人間科学部, 教養教育, 人間科学, 人間社会科学'])
+          break;
+        case '教育学部':
+          saveData(['facultyName', '教育学部, 教育, 教育学, 教養教育'])
+          break;
+        case '法文学部':
+          saveData(['facultyName', '法文学部, 法文, 教養教育'])
+          break;
+        case '人文社会学研究科':
+          saveData(['facultyName', '人文社会学研究科, 人文社会学研究科'])
+          break;
+        // 訂正要
+        case '人間社会科学研究科':
+          saveData(['facultyName', '人文社会学研究科, 人文社会学研究科'])
+          break;
+        case '教育学研究科':
+          saveData(['facultyName', '教育学研究科, 教育学, 教育学_教職'])
+          break;
+        case '総合理工学研究科':
+          saveData(['facultyName', '総合理工研究科, 総合理工_博士後期'])
+          break;
+        case '自然科学研究科':
+          saveData(['facultyName', '自然科学研究科, 自然科学'])
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.log('ファイル名：editLectureScreen.js\n' + 'エラー：' + error + '\n');
+    }
+  };
+
   const headerComponent = () => (
     <>
       <View style={styles.descriptionContainer}>
-        <Text style={styles.description}>登録済みの講義データを削除できます。</Text>
+        <Text style={styles.description}>登録済みの情報を編集・削除できます。</Text>
       </View>
       <View style={styles.headerContainer}>
         <View style={styles.h2}>
@@ -71,6 +132,7 @@ export default function editLectureScreen({ navigation }) {
   )
 
   const deleteResisteredData = async () => {
+    storeFacultyData(selectedFaculty);
     if (registeredData != null && registeredData != undefined) {
       let selectedLectures = registeredData.filter((lecture) => !lecture.checked);
       selectedLectures = JSON.stringify(selectedLectures);
@@ -88,9 +150,17 @@ export default function editLectureScreen({ navigation }) {
         keyExtractor={item => item.時間割コード}
         ListEmptyComponent={<Text>該当データがありません</Text>}
       />
+      <DropDownPicker
+        open={open}
+        value={selectedFaculty}
+        items={facultyNames}
+        placeholder="正しい所属先に変更できます"
+        setValue={setSelectedFaculty}
+        setOpen={setOpen}
+      />
       <View style={styles.searchTuikacontainer}>
         <TouchableOpacity style={styles.searchTuikaBtn} onPress={() => { deleteResisteredData(); }}>
-          <Text style={styles.searchTuikaBtnText}>時間割から削除</Text>
+          <Text style={styles.searchTuikaBtnText}>登録情報を変更</Text>
         </TouchableOpacity>
       </View>
     </>
