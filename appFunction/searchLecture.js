@@ -1,56 +1,88 @@
 import ReadData from './readData.js';
 
-// JSONファイルのインポート
-function importJsonFiles(lectureFileName) {
+// 通年講義のみ抽出
+async function filterYearData(firstData, secondData) {
+  const allYearLecture = await firstData.filter(item => item.開講 == "通年");
+  console.log("\nallYearDataの要素数 = " + allYearLecture.length + "\n");
+  return secondData.concat(allYearLecture);
+}
+
+
+// 通年講義と後期のJSONファイルのインポート
+async function importJsonFiles(lectureFileName) {
   lectureFileName = lectureFileName.replace(/"/g, '');
   lectureFileName = lectureFileName.trim();
   let data;
+  let yearAroundData;
 
   try {
 
     // 文字列を動的に変化させてrequireすることは不可能なので仕方なくswitch文
     switch (lectureFileName) {
       case '総合理工':
-        data = require('../assets/firstSemisterLecs/総合理工.json');
+        yearAroundData = require('../assets/firstSemisterLecs/総合理工.json');
+        data = require("../assets/secondSemisterLecs/総合理工 .json");
+        console.log("dataの要素数\n" + data.length + "\n");
+        data = await filterYearData(yearAroundData, data);
         break;
       case '教養教育':
-        data = require('../assets/firstSemisterLecs/教養教育.json');
+        yearAroundData = require('../assets/firstSemisterLecs/教養教育.json');
+        data = require("../assets/secondSemisterLecs/教養教育 .json");
+        data = await filterYearData(yearAroundData, data);
         break;
       case '生物資源':
-        data = require('../assets/firstSemisterLecs/生物資源.json');
+        yearAroundData = require('../assets/firstSemisterLecs/生物資源.json');
+        data = require("../assets/secondSemisterLecs/生物資源 .json");
+        data = await filterYearData(yearAroundData, data);
         break;
       case '人間科学':
-        data = require('../assets/firstSemisterLecs/人間科学.json');
+        yearAroundData = require('../assets/firstSemisterLecs/人間科学.json');
+        data = require("../assets/secondSemisterLecs/人間科学 .json");
+        data = await filterYearData(yearAroundData, data);
         break;
       case '人間社会科学':
-        data = require('../assets/firstSemisterLecs/人間社会科学.json');
+        yearAroundData = require('../assets/firstSemisterLecs/人間社会科学.json');
+        data = require("../assets/secondSemisterLecs/人間社会科学  .json");
+        data = await filterYearData(yearAroundData, data);
         break;
       case '教育':
-        data = require('../assets/firstSemisterLecs/教育.json');
+        yearAroundData = require('../assets/firstSemisterLecs/教育.json');
+        data = require("../assets/secondSemisterLecs/教育 .json");
+        data = await filterYearData(yearAroundData, data);
         break;
       case '教育学':
-        data = require('../assets/firstSemisterLecs/教育学.json');
+        yearAroundData = require('../assets/firstSemisterLecs/教育学.json');
+        data = require("../assets/secondSemisterLecs/教育学.json");
+        data = await filterYearData(yearAroundData, data);
         break;
       case '法文':
-        data = require('../assets/firstSemisterLecs/法文.json');
+        yearAroundData = require('../assets/firstSemisterLecs/法文.json');
+        data = require("../assets/secondSemisterLecs/法文 .json");
+        data = await filterYearData(yearAroundData, data);
         break;
       case '人文社会学研究科':
-        // ここは訂正が必要かも
-        data = require('../assets/firstSemisterLecs/人間社会科学.json');
+        yearAroundData = require('../assets/firstSemisterLecs/人文科学.json');
+        data = require("../assets/secondSemisterLecs/人文科学 .json");
+        data = await filterYearData(yearAroundData, data);
         break;
       case '教育学_教職':
-        data = require('../assets/firstSemisterLecs/教育学（教職）.json');
+        yearAroundData = require('../assets/firstSemisterLecs/教育学（教職）.json');
+        data = require("../assets/secondSemisterLecs/教育学（教職）.json");
+        data = await filterYearData(yearAroundData, data);
         break;
       case '自然科学':
-        data = require('../assets/firstSemisterLecs/自然科学.json');
+        yearAroundData = require('../assets/firstSemisterLecs/自然科学.json');
+        data = require("../assets/secondSemisterLecs/自然科学 .json");
+        data = await filterYearData(yearAroundData, data);
         break;
       case '総合理工_博士後期':
-        data = require('../assets/firstSemisterLecs/総合理工（博士後期）.json');
+        yearAroundData = require('../assets/firstSemisterLecs/総合理工（博士後期）.json');
+        data = require("../assets/secondSemisterLecs/総合理工（博士後期） .json");
+        data = await filterYearData(yearAroundData, data);
         break;
       default:
         break;
     }
-    console.log('ファイル名： seachLecture.js\n' + lectureFileName + 'のjsonファイルを読み込み\n');
     return data;
   } catch (error) {
     console.log('エラー箇所： seachLecture.js / importJsonFiles\n' + 'エラー内容：' + error + '\n');
@@ -88,7 +120,7 @@ const searchLecture = async (inputedKeyWord) => {
 
     // for.. of 内ではawait処理を行える
     for (const fileName of readFileName) {
-      lectureFile = importJsonFiles(fileName);
+      lectureFile = await importJsonFiles(fileName);
       for (const word of keyWords) {
         lectureFile = await lectureFile.filter(function (item) {
           return item.科目.match(word) || item.担当.match(word);

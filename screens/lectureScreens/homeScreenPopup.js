@@ -25,12 +25,11 @@ function storeFacultyData(facultyName) {
       case '法文学部':
         saveData(['facultyName', '法文学部, 法文, 教養教育'])
         break;
-      case '人文社会学研究科':
-        saveData(['facultyName', '人文社会学研究科, 人文社会学研究科'])
+      case '人文社会科学研究科':
+        saveData(['facultyName', '人文社会科学研究科, 人文社会科学研究科'])
         break;
-      // 訂正要
       case '人間社会科学研究科':
-        saveData(['facultyName', '人文社会学研究科, 人文社会学研究科'])
+        saveData(['facultyName', '人間社会科学研究科, 人間社会科学'])
         break;
       case '教育学研究科':
         saveData(['facultyName', '教育学研究科, 教育学, 教育学_教職'])
@@ -56,7 +55,7 @@ function storeFacultyData(facultyName) {
 export default function homeScreenProp() {
   const [modalVisible, setModalVisible] = useState(true);
   const [facultyTableData, setfacultyTableData] = useState([]);
-  const facultyNameArray = ['生物資源科学部', '総合理工学部', '人間科学部', '教育学部', '法文学部', '人文社会学研究科',
+  const facultyNameArray = ['生物資源科学部', '総合理工学部', '人間科学部', '教育学部', '法文学部', '人文社会科学研究科',
     '人間社会科学研究科', '教育学研究科', '総合理工学研究科', '自然科学研究科'];
 
   const facultyButton = (passedName) => {
