@@ -36,13 +36,7 @@
 <a href="https://github.com/kmagiera/react-native-screens.git" target="_blank">software-mansion/react-native-screens: Native navigation primitives for your React Native app.</a><br>
 <a href="https://github.com/necolas/react-native-web#readme" target="_blank">necolas/react-native-web: React Native Components and APIs for the Web</a><br>
 
-### バグ（訂正済み）
-- 各アカウントが定めたキーワードに対して、重複したツイートの情報を取得・表示していた。
-- 2021/4/1 データベース側で日数調整を行うプログラムのバグ（閏年の年度とそれ以外の年度で上手くデータの処理が出来なかった）。
-
 ### 未実装（実装予定）
-- 島根大学の時間割と教室配当表を参照してユーザーごとの時間割を表示
-- 初回起動時のユーザー情報の登録画面/機能
 - 検索したいときにだけ現れる検索バー
 - お気に入り設定機能
 - 島大生向け求人・インターンシップ情報掲載機能
