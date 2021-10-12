@@ -72,9 +72,13 @@ export default function Data(props) {
   }
 
   return (
-    <>
+    <View style={{
+      marginHorizontal: 5,
+      marginVertical: 5,
+    }}>
       <View
         style={{
+          marginBottom: 8,
           paddingVertical: 9,
           paddingHorizontal: 12,
           alignItems: 'center',
@@ -85,7 +89,7 @@ export default function Data(props) {
           borderBottomWidth: 0,
           shadowColor: '#000000',
           shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.9,
+          shadowOpacity: 0.7,
           shadowRadius: 3,
           elevation: 8,
         }}>
@@ -119,7 +123,7 @@ export default function Data(props) {
           < View >
             <Text style={{ fontSize: 16, padding: 32 }}>
               該当するアイテムがありません
-          </Text>
+            </Text>
           </View >
         }
         renderItem={({ item }) => (
@@ -165,7 +169,7 @@ export default function Data(props) {
         }
         keyExtractor={item => item[2]}
       />
-    </>
+    </View>
   );
 }
 

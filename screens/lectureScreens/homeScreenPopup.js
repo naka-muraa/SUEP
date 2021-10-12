@@ -75,9 +75,9 @@ export default function homeScreenProp() {
   }, [])
 
   return (
-    <View>
+    <>
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
@@ -85,7 +85,8 @@ export default function homeScreenProp() {
           setModalVisible(true);
         }}
       >
-        <View style={styles.centeredView}>
+        <View style={[styles.centeredView, modalVisible ? {backgroundColor: 'rgba(0,0,0,0.5)'} : '']}>
+    
           <View style={styles.modalView}>
             <Text style={styles.modalText}>はじめまして</Text>
             <Text style={styles.modalText}>所属先を選んでください</Text>
@@ -99,7 +100,7 @@ export default function homeScreenProp() {
           </View>
         </View>
       </Modal>
-    </View>
+    </>
   )
 };
 
@@ -107,11 +108,10 @@ const styles = StyleSheet.create({
   centeredView: {
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: '5%',
-    marginVertical: '10%',
   },
   modalView: {
-    margin: 20,
+    width: "75%",
+    marginVertical: "45%",
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,

@@ -144,13 +144,15 @@ export default function editLectureScreen({ navigation }) {
   return (
     <>
       <FlatList
+      style={styles.flatlistContainer}
         ListHeaderComponent={headerComponent}
         data={registeredData}
         renderItem={renderItem}
         keyExtractor={item => item.時間割コード}
-        ListEmptyComponent={<Text>該当データがありません</Text>}
+        ListEmptyComponent={<View style={styles.emptyItemCentered}><Text style={styles.emptyText}>該当データがありません</Text></View>}
       />
       <DropDownPicker
+        style={styles.dropDown}
         open={open}
         value={selectedFaculty}
         items={facultyNames}
@@ -169,6 +171,10 @@ export default function editLectureScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   // 検索結果一覧のデザイン
+  flatlistContainer:{
+    marginHorizontal: 5,
+    marginVertical: 5,
+  },
   itemSearch: {
     backgroundColor: '#167F92',
     flexDirection: 'row'
@@ -191,6 +197,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     width: '50%',
   },
+  emptyItemCentered: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 20,
+  },
+  emptyText: {
+    fontSize: 16,
+  },
   // 画面下の追加ボタンデザイン
   searchTuikaBtn: {
     width: '50%',
@@ -203,7 +217,9 @@ const styles = StyleSheet.create({
   searchTuikacontainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 4,
+    marginHorizontal: 10,
+    marginBottom: 20,
+    marginTop: 8,
   },
   searchTuikaBtnText: {
     fontSize: 20,
@@ -213,6 +229,8 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   // 検索画面ヘッダー関連
+  dropDown: {
+  },
   containerSearch: {
     flex: 1,
   },
@@ -225,8 +243,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   descriptionContainer: {
-    marginVertical: 2,
-    marginHorizontal: 1,
+    marginVertical: 10,
+    marginHorizontal: 5,
   },
   description: {
     fontSize: 20,

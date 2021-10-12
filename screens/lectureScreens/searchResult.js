@@ -178,6 +178,8 @@ const styles = StyleSheet.create({
   },
   // 検索画面ヘッダー関連
   containerSearch: {
+    marginHorizontal: 5,
+    marginVertical: 10,
     flex: 1,
   },
   headerContainer: {

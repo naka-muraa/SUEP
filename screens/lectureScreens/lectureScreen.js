@@ -52,6 +52,8 @@ export default function lectureScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    marginVertical: 5,
+    marginHorizontal: 5,
     flex: 1,
     backgroundColor: '#fff',
     flexDirection: 'column',

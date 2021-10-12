@@ -47,10 +47,10 @@ export default function lectureApp() {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: "tomato",
+          backgroundColor: "white",
         },
         headerTitleStyle: {
-          color: "white"
+          color: "black"
         },
       }}
       initialRouteName="時間割表">
@@ -58,7 +58,7 @@ export default function lectureApp() {
         name="時間割表"
         options={({ navigation }) => ({
           headerLeft: () => (
-            <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "white" }} />
+            <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "#1DA1F2" }} />
           ),
         })}
         component={lectureHome} />

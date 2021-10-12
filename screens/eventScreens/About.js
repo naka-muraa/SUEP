@@ -92,8 +92,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   scrollView: {
-    marginHorizontal: 15,
-    marginVertical: 15,
+    marginHorizontal: 10,
+    marginVertical: 10,
     backgroundColor: 'white',
     padding: 5,
   },

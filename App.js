@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 
@@ -22,13 +21,13 @@ const BottomTabNavigator = ({ navigation }) => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerStyle: {
-          backgroundColor: 'tomato',
+          backgroundColor: "white",
         },
         headerTitleStyle: {
-          color: 'white'
+          color: 'black'
         },
         headerLeft: () => (
-          <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "white"}} />
+          <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "#1DA1F2"}} />
         ),
         "tabBarActiveTintColor": "tomato",
         "tabBarInactiveTintColor": "gray",
