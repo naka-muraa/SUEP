@@ -3,7 +3,6 @@ import ReadData from './readData.js';
 // 通年講義のみ抽出
 async function filterYearData(firstData, secondData) {
   const allYearLecture = await firstData.filter(item => item.開講 == "通年");
-  console.log("\nallYearDataの要素数 = " + allYearLecture.length + "\n");
   return secondData.concat(allYearLecture);
 }
 
@@ -85,7 +84,6 @@ async function importJsonFiles(lectureFileName) {
     }
     return data;
   } catch (error) {
-    console.log('エラー箇所： seachLecture.js / importJsonFiles\n' + 'エラー内容：' + error + '\n');
   }
 }
 
@@ -132,7 +130,6 @@ const searchLecture = async (inputedKeyWord) => {
     }
     return lectureData;
   } catch (error) {
-    console.log('ファイル名：seachLecture.js\n' + 'エラー：' + error + '\n');
   }
 }
 

@@ -98,6 +98,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    marginHorizontal: 5,
+    marginVertical: 10,
   },
   // 各情報について
   classTapframe: {
