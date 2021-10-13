@@ -16,7 +16,7 @@ import lectureApp from './screens/lectureScreens/lectureApp';
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator = ({ navigation }) => {
+const bottomTabNavigator = ({ navigation }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -27,7 +27,7 @@ const BottomTabNavigator = ({ navigation }) => {
           color: 'black'
         },
         headerLeft: () => (
-          <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "#1DA1F2"}} />
+          <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "#1DA1F2" }} />
         ),
         "tabBarActiveTintColor": "tomato",
         "tabBarInactiveTintColor": "gray",
@@ -62,9 +62,10 @@ export default function App() {
             headerShown: false,
           }}
         />
-        <Drawer.Screen name="イベント情報" component={BottomTabNavigator} options={{
-          headerShown: false,
-        }}/>
+        <Drawer.Screen name="イベント情報" component={bottomTabNavigator}
+          options={{
+            headerShown: false,
+          }} />
         <Drawer.Screen name="利用規約" component={Terms} />
         <Drawer.Screen name="プライバシーポリシー" component={PrivacyPolicy} />
         <Drawer.Screen name="このアプリについて" component={About} />

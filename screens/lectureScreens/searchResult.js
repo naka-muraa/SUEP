@@ -1,17 +1,16 @@
-// Flatlistのパフォーマンス改善が必須
+//TODO:  Flatlistのパフォーマンス改善
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, FlatList, TouchableHighlight, ActivityIndicator, Alert } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
-// 外部汎用関数のインポート
+// 外部関数のインポート
 import SearchLecture from '../../appFunction/searchLecture';
 import { saveData } from '../../appFunction/saveData';
 import DeleteDuplicateLecture from '../../appFunction/deleteDuplicateLecture';
 
 export default function searchScreen() {
-
-  // searchResultsData: 検索結果が入る
   const [searchResultsData, setsearchResultsData] = useState();
   const [isChecked, setisChecked] = useState(true);
   const [isLoading, setisLoading] = useState(true);
@@ -19,17 +18,20 @@ export default function searchScreen() {
   const navigation = useNavigation();
 
   getListData = async () => {
+
     // 検索実行
     const searchedLecture = await SearchLecture(route.params.keyWord);
-    // "check" = falseの項を追加
     searchedLecture.forEach(value => value.checked = false);
     setsearchResultsData(searchedLecture);
   }
 
   // マウント時のみ実行される
   useEffect(() => {
-    route.params.keyWord && getListData();
-    setisLoading(false);
+    const getAsyncData = async () => {
+      route.params.keyWord && await getListData();
+      setisLoading(false);
+    }
+    getAsyncData();
   }, []);
 
   // チェックマークを付けたデータで "check" = true or falseを設定
@@ -40,40 +42,18 @@ export default function searchScreen() {
     setsearchResultsData(newData);
   }
 
-  const Item = ({ 科目, 担当 }) => (
-    <View style={styles.itemSearch}>
-      <View style={{ flexDirection: 'row' }}>
-        <Text style={styles.title}>{科目}</Text>
-        <Text style={styles.teacher}>{担当}</Text>
-      </View>
-    </View>
-  );
-
-  const renderItem = ({ item }) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-      <TouchableHighlight style={{ width: '80%' }} onPress={() => navigation.navigate("講義の詳細", item)}>
-        <Item 科目={item.科目} 担当={item.担当} />
-      </TouchableHighlight>
-      <View style={{ borderWidth: 1, borderColor: '#dcdcdc', width: '100%', height: '100%' }}>
-        <CheckBox
-          checked={item.checked}
-          onPress={() => { checkMark(item.時間割コード); setisChecked(!isChecked); }}
-        />
-      </View>
-    </View>
-  );
-
   // 重複するデータを削除し、ストレージへ必要なデータを保存する
   const storeFilteredData = async () => {
     if (searchResultsData != null && searchResultsData != undefined) {
       let selectedLectures = searchResultsData.filter((lecture) => lecture.checked);
+
       // 曜日・時限が重複するデータがある場合にアラート表示
       let duplicateFlag = false;
       selectedLectures.filter(lecture1 => {
         selectedLectures.filter(lecture2 => {
           if ((lecture1 != lecture2) && (lecture1.曜日時限.slice(0, 1) != '他') && (lecture1.曜日時限.slice(0, 2) == lecture2.曜日時限.slice(0, 2))) {
             duplicateFlag = true;
-        }
+          }
         })
       });
       if (duplicateFlag) {
@@ -81,7 +61,7 @@ export default function searchScreen() {
           '同じ曜日・時限の科目が複数選択されています。',
           '選択する科目を訂正してください。',
           [
-            { text: '戻る', onPress: () => console.log("戻る Pressed")},
+            { text: '戻る', onPress: () => console.log("戻る Pressed") },
           ],
           { cancelable: false });
       }
@@ -93,30 +73,75 @@ export default function searchScreen() {
     }
   }
 
-  if (!searchResultsData) {
+  if (isLoading) {
     return (
       <ActivityIndicator
         size="large"
         animating={true}
         color="rgba(137,232,207,100)"
-        />
+      />
     );
   }
 
+  const renderItem = ({ item }) => (
+    <View style={styles.resultItemContainer}>
+      <TouchableOpacity onPress={() => navigation.navigate("講義の詳細", item)}>
+        <View style={styles.kindsMarkWrapper}>
+          <View style={styles.kindFlex}>
+            <Text style={styles.kindsText}>{item.時間割所属}</Text>
+          </View>
+          <View style={styles.codeWrapper}>
+            <Text style={styles.codeText}>コード： {item.時間割コード}</Text>
+          </View>
+        </View>
+        <View style={styles.nameWrapper}>
+          <Text style={styles.nameText}>{item.科目}</Text>
+        </View>
+        <View style={styles.iconTextWrapper}>
+          <View style={styles.iconWrapper}>
+            <Ionicons name="person" size={16} color="dimgray"/>
+          </View>
+          <View style={styles.textWrapper}>
+            <Text style={styles.descriptionText}>{item.担当}</Text>
+          </View>
+        </View>
+        <View style={styles.iconTextWrapper}>
+          <View style={styles.iconWrapper}>
+            <Ionicons name="ios-calendar-sharp" size={16} color="dimgray"/>
+          </View>
+          <View style={styles.textWrapper}>
+            <Text style={styles.descriptionText}>{item.曜日時限}</Text>
+          </View>
+        </View>
+        <View style={styles.iconTextWrapper}>
+          <View style={styles.iconWrapper}>
+            <MaterialIcons name="meeting-room" size={16} color="dimgray" />
+          </View>
+          <View style={styles.textWrapper}>
+            {item.棟名 != "" ? <Text style={styles.descriptionText}>{item.棟名 + ' ' + item.教室名}</Text> : <Text style={styles.descriptionText}>未定またはオンライン講義です</Text>}
+          </View>
+        </View>
+        <View style={styles.checkBoxWrapper}>
+          <Text style={styles.descriptionText}>追加：</Text>
+          <CheckBox
+            checked={item.checked}
+            onPress={() => { checkMark(item.時間割コード); setisChecked(!isChecked); }}
+          />
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const flatListHeader = () => (
+    <View style={styles.headerContainer}>
+      <Text style={styles.headerText}>「{route.params.keyWord}」での検索結果</Text>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.containerSearch}>
-      <View style={styles.headerContainer}>
-        <View style={styles.h2}>
-          <Text style={styles.headerText}>科目</Text>
-        </View>
-        <View style={styles.h3}>
-          <Text style={styles.headerText}>担当</Text>
-        </View>
-        <View style={styles.h4}>
-          <Text style={styles.headerText}>追加</Text>
-        </View>
-      </View>
       <FlatList
+        ListHeaderComponent={flatListHeader}
         data={searchResultsData}
         renderItem={renderItem}
         keyExtractor={item => item.時間割コード}
@@ -132,29 +157,88 @@ export default function searchScreen() {
 }
 
 const styles = StyleSheet.create({
-  // 検索結果一覧のデザイン
-  itemSearch: {
-    backgroundColor: '#167F92',
-    flexDirection: 'row'
+  containerSearch: {
+    marginHorizontal: 5,
+    marginVertical: 10,
+    flex: 1,
   },
-  title: {
-    borderWidth: 1,
-    borderColor: '#dcdcdc',
-    padding: 18,
-    color: '#ffffff',
-    textAlign: 'center',
+
+  // 検索画面ヘッダー関連
+  headerContainer: {
+    marginHorizontal: 5,
+    marginVertical: 5,
+  },
+  headerText: {
     fontSize: 16,
-    width: '50%',
   },
-  teacher: {
-    borderWidth: 1,
-    borderColor: '#dcdcdc',
-    padding: 18,
-    color: '#ffffff',
-    textAlign: 'center',
+
+  // flatList内アイテムのデザイン
+  resultItemContainer: {
+    marginVertical: 5,
+    flexDirection: "column",
+    backgroundColor: "white",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+
+  //時間割所属
+  kindsMarkWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignContent: "space-between",
+  },
+  kindFlex: {
+    flex: 1,
+    marginRight: 10,
+  },
+  kindsText: {
+    backgroundColor: "#d3d3d3",
+    fontSize: 14,
+  },
+  codeWrapper: {
+    paddingVertical: 5,
+    alignItems: "flex-end",
+  },
+  codeText: {
+    fontSize: 14,
+    color: "dimgray",
+  },
+
+  // 科目名
+  nameWrapper: {
+    marginVertical: 10,
+  },
+  nameText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+
+// チェックマーク
+  checkBoxWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-end",
+  },
+
+  //共通
+  iconTextWrapper: {
+    flex: 1,
+    marginBottom: 4,
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  iconWrapper: {
+    flex: 1,
+    paddingHorizontal: 10,
+  },
+  textWrapper: {
+    flex: 8,
+  },
+  descriptionText: {
     fontSize: 16,
-    width: '50%',
+    color: "dimgray",
   },
+
   // 画面下の追加ボタンデザイン
   searchTuikaBtn: {
     width: '50%',
@@ -175,40 +259,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     color: 'white',
-  },
-  // 検索画面ヘッダー関連
-  containerSearch: {
-    marginHorizontal: 5,
-    marginVertical: 10,
-    flex: 1,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-  },
-  headerText: {
-    marginVertical: 15,
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  h2: {
-    width: '40%',
-    borderWidth: 1,
-    borderColor: '#dcdcdc',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  h3: {
-    width: '40%',
-    borderWidth: 1,
-    borderColor: '#dcdcdc',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  h4: {
-    width: '20%',
-    borderWidth: 1,
-    borderColor: '#dcdcdc',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 })

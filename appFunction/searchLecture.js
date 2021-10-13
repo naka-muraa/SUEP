@@ -21,7 +21,6 @@ async function importJsonFiles(lectureFileName) {
       case '総合理工':
         yearAroundData = require('../assets/firstSemisterLecs/総合理工.json');
         data = require("../assets/secondSemisterLecs/総合理工 .json");
-        console.log("dataの要素数\n" + data.length + "\n");
         data = await filterYearData(yearAroundData, data);
         break;
       case '教養教育':
