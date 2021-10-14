@@ -55,10 +55,6 @@ export default function lectureDetail() {
           <Text style={styles.classTapText}>{teacher}</Text>
         </View>
         <View style={styles.classTapframe}>
-          <Text style={styles.classTapHeader}>曜日・時限</Text>
-          <Text style={styles.classTapText}>{showDaytime}</Text>
-        </View>
-        <View style={styles.classTapframe}>
           <Text style={styles.classTapHeader}>棟名・教室名</Text>
           <View style={styles.buildingRoom}>
           <Text style={styles.classTapText}>{displayedRoomName}</Text>

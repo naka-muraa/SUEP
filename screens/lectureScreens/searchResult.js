@@ -85,7 +85,6 @@ export default function searchScreen() {
 
   const renderItem = ({ item }) => (
     <View style={styles.resultItemContainer}>
-      <TouchableOpacity onPress={() => navigation.navigate("講義の詳細", item)}>
         <View style={styles.kindsMarkWrapper}>
           <View style={styles.kindFlex}>
             <Text style={styles.kindsText}>{item.時間割所属}</Text>
@@ -99,7 +98,7 @@ export default function searchScreen() {
         </View>
         <View style={styles.iconTextWrapper}>
           <View style={styles.iconWrapper}>
-            <Ionicons name="person" size={16} color="dimgray"/>
+            <Ionicons name="person" size={18}color="dimgray"/>
           </View>
           <View style={styles.textWrapper}>
             <Text style={styles.descriptionText}>{item.担当}</Text>
@@ -107,15 +106,23 @@ export default function searchScreen() {
         </View>
         <View style={styles.iconTextWrapper}>
           <View style={styles.iconWrapper}>
-            <Ionicons name="ios-calendar-sharp" size={16} color="dimgray"/>
+            <Ionicons name="ios-calendar-sharp" size={18}color="dimgray"/>
           </View>
           <View style={styles.textWrapper}>
             <Text style={styles.descriptionText}>{item.曜日時限}</Text>
           </View>
+      </View>
+      <View style={styles.iconTextWrapper}>
+        <View style={styles.iconWrapper}>
+          <MaterialIcons name="people-alt" size={18}color="dimgray" />
         </View>
+        <View style={styles.textWrapper}>
+          <Text style={styles.descriptionText}>{item.学年 + '年生対象'}</Text>
+        </View>
+      </View>
         <View style={styles.iconTextWrapper}>
           <View style={styles.iconWrapper}>
-            <MaterialIcons name="meeting-room" size={16} color="dimgray" />
+            <MaterialIcons name="meeting-room" size={18}color="dimgray" />
           </View>
           <View style={styles.textWrapper}>
             {item.棟名 != "" ? <Text style={styles.descriptionText}>{item.棟名 + ' ' + item.教室名}</Text> : <Text style={styles.descriptionText}>未定またはオンライン講義です</Text>}
@@ -128,7 +135,6 @@ export default function searchScreen() {
             onPress={() => { checkMark(item.時間割コード); setisChecked(!isChecked); }}
           />
         </View>
-      </TouchableOpacity>
     </View>
   );
 
@@ -139,27 +145,29 @@ export default function searchScreen() {
   );
 
   return (
+    <>
     <SafeAreaView style={styles.containerSearch}>
       <FlatList
         ListHeaderComponent={flatListHeader}
         data={searchResultsData}
         renderItem={renderItem}
         keyExtractor={item => item.時間割コード}
-        ListEmptyComponent={<Text>該当データがありません</Text>}
+        ListEmptyComponent={<View style={styles.emptyTextWrapper}><Text style={styles.emptyText}>該当データがありません</Text></View>}
       />
-      <View style={styles.searchTuikacontainer}>
-        <TouchableOpacity style={styles.searchTuikaBtn} onPress={() => { storeFilteredData(); }}>
-          <Text style={styles.searchTuikaBtnText}>時間割に追加</Text>
+      </SafeAreaView>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.addButtonWrapper} onPress={() => { storeFilteredData(); }}>
+          <Text style={styles.addButtonText}>時間割に追加</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+      </>
   );
 }
 
 const styles = StyleSheet.create({
   containerSearch: {
     marginHorizontal: 5,
-    marginVertical: 10,
+    marginTop: 10,
     flex: 1,
   },
 
@@ -179,6 +187,13 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingHorizontal: 10,
     paddingVertical: 5,
+  },
+  emptyTextWrapper: {
+    marginVertical: "10%",
+    marginHorizontal: "10%",
+  },
+  emptyText: {
+    fontSize: 18,
   },
 
   //時間割所属
@@ -240,7 +255,20 @@ const styles = StyleSheet.create({
   },
 
   // 画面下の追加ボタンデザイン
-  searchTuikaBtn: {
+  buttonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "white",
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: -8 },
+    shadowOpacity: 0.5,
+    shadowRadius: 9,
+    elevation: 25,
+  },
+  addButtonWrapper: {
+    marginHorizontal: 4,
+    marginTop: 4,
+    marginBottom: 8,
     width: '50%',
     borderColor: '#dcdcdc',
     borderWidth: 1,
@@ -248,12 +276,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#78bbc7'
   },
-  searchTuikacontainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 4,
-  },
-  searchTuikaBtnText: {
+  addButtonText: {
     fontSize: 20,
     padding: 10,
     justifyContent: 'center',

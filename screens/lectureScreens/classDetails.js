@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 // 教室名と棟名が空白の場合の処理
 function changeName(roomeName, buildingName,) {
@@ -26,6 +27,9 @@ export default function classDetails({ navigation, lectureInfo }) {
   const { 棟名 } = lectureInfo.params;
   const { 棟 } = lectureInfo.params;
   const { 曜日時限 } = lectureInfo.params;
+  const { 時間割コード } = lectureInfo.params;
+  const { 時間割所属 } = lectureInfo.params;
+  const { 学年 } = lectureInfo.params;
   let displayedRoomName = '';
 
   if (棟名 == undefined && 棟 != undefined) {
@@ -65,28 +69,79 @@ export default function classDetails({ navigation, lectureInfo }) {
 
   return (
     <ScrollView>
-      <View style={styles.containerClass}>
-        <View style={styles.classTapframe}>
-          <Text style={styles.classTapHeader}>講義名</Text>
-          <Text style={styles.classTapText}>{科目}</Text>
+    <View style={styles.containerClass}>
+      <View style={styles.kindsCodeContainer}>
+        <View style={styles.kindsFlex}>
+          <Text style={styles.kindsText}>{時間割所属}</Text>
         </View>
-        <View style={styles.classTapframe}>
-          <Text style={styles.classTapHeader}>担当者</Text>
-          <Text style={styles.classTapText}>{担当}</Text>
+        <View style={styles.codeFlex}>
+          <Text style={styles.codeText}>コード： {時間割コード}</Text>
         </View>
-        <View style={styles.classTapframe}>
-          <Text style={styles.classTapHeader}>曜日・時限</Text>
-          <Text style={styles.classTapText}>{showDayTime}</Text>
+      </View>
+      <View style={styles.nameContainer}>
+        <Text style={styles.nameText}>{科目}</Text>
+      </View>
+      <View style={styles.itemContainer}>
+        <View style={styles.itemWrapper}>
+          <View style={styles.iconFlex}><MaterialIcons name="people-alt" size={24} color="dimgray" /></View>
+          <View style={ styles.descriptionFlex}>
+            <Text style={styles.descriptionText}>対象学年</Text>
+          </View>
         </View>
-        <View style={styles.classTapframe}>
-          <Text style={styles.classTapHeader}>教室名</Text>
-          <Text style={styles.classTapText}>{displayedRoomName}</Text>
+        <View style={styles.secondItemWrapper}>
+          <View style={styles.iconFlex}></View>
+          <View style={styles.descriptionFlex}>
+              <Text style={styles.itemText}>{ 学年 + ' 生'}</Text>
+          </View>
         </View>
-        <View style={styles.ctTuikaContainer}>
-          <TouchableOpacity style={styles.ctTuikaBtn} onPress={() => navigation.goBack()}>
-            <Text style={styles.ctTuikaBtnText}>戻る</Text>
-          </TouchableOpacity>
+      </View>
+      <View style={styles.itemContainer}>
+        <View style={styles.itemWrapper}>
+          <View style={styles.iconFlex}><Ionicons name="person" size={24} color="dimgray" /></View>
+          <View style={styles.descriptionFlex}>
+            <Text style={styles.descriptionText}>担当者</Text>
+          </View>
         </View>
+          <View style={styles.secondItemWrapper}>
+          <View style={styles.iconFlex}></View>
+          <View style={styles.descriptionFlex}>
+            <Text style={styles.itemText}>{担当}</Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.itemContainer}>
+        <View style={styles.itemWrapper}>
+          <View style={styles.iconFlex}><Ionicons name="ios-calendar-sharp" size={24} color="dimgray" /></View>
+          <View style={styles.descriptionFlex}>
+            <Text style={styles.descriptionText}>曜日・時限</Text>
+          </View>
+        </View>
+          <View style={styles.secondItemWrapper}>
+          <View style={styles.iconFlex}></View>
+          <View style={styles.descriptionFlex}>
+            <Text style={styles.itemText}>{showDayTime}</Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.itemContainer}>
+        <View style={styles.itemWrapper}>
+          <View style={styles.iconFlex}><MaterialIcons name="meeting-room" size={24} color="dimgray" /></View>
+          <View style={styles.descriptionFlex}>
+            <Text style={styles.descriptionText}>講義棟・教室</Text>
+          </View>
+        </View>
+          <View style={styles.secondItemWrapper}>
+          <View style={styles.iconFlex}></View>
+          <View style={styles.descriptionFlex}>
+            <Text style={styles.itemText}>{displayedRoomName}</Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.backContainer}>
+        <TouchableOpacity style={styles.backButtonWrapper} onPress={() => navigation.goBack()}>
+          <Text style={styles.backButtonText}>戻る</Text>
+        </TouchableOpacity>
+      </View>
       </View>
     </ScrollView>
   );
@@ -96,50 +151,96 @@ const styles = StyleSheet.create({
   // 全体のコンテナ
   containerClass: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'column',
     marginHorizontal: 5,
     marginVertical: 10,
+    backgroundColor: 'white',
   },
-  // 各情報について
-  classTapframe: {
-    width: '100%',
-    backgroundColor: '#78bbc7',
+
+  // 講義情報
+  kindsCodeContainer: {
+    flex: 1,
+    flexDirection: 'row',
   },
-  classTapHeader: {
-    width: '100%',
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    fontSize: 24,
-    color: 'white',
-    fontWeight: '600',
+  kindsFlex: {
+    flex: 1,
   },
-  classTapText: {
-    padding: 5,
-    textAlign: 'center',
-    width: '100%',
-    fontSize: 22,
-    backgroundColor: '#e6f2f5',
-    color: 'black',
+  kindsText: {
+    fontSize: 20,
   },
-  // 追加ボタン関連
-  ctTuikaContainer: {
-    width: '30%',
+  codeFlex: {
+    flex: 1,
+  },
+  codeText: {
+    fontSize: 20,
+  },
+  nameContainer: {
+    flex: 1,
+    marginHorizontal: 8,
+    marginVertical: 10,
+  },
+  nameText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  itemContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    marginVertical: 10,
+  },
+  itemWrapper: {
+    flexDirection: 'row',
+    flex: 1,
     alignItems: 'center',
-    marginTop: 30,
+    marginVertical: 2,
+    marginHorizontal: 2,
+    backgroundColor: 'lightgray',
   },
-  ctTuikaBtn: {
+  secondItemWrapper: {
+    flexDirection: 'row',
+    flex: 1,
+    alignItems: 'center',
+    marginVertical: 2,
+    marginHorizontal: 2,
+  },
+  descriptionFlex: {
+    flex: 7,
+  },
+  descriptionText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  iconFlex: {
+    paddingHorizontal: 9,
+    flex: 1,
+  },
+  itemTextFlex: {
+    alignSelf: 'center',
+    flex: 1,
+  },
+  itemText: {
+    fontSize: 24,
+  },
+
+  //ボタン
+  backContainer: {
+    flex: 1,
+    alignSelf: 'center',
+    width: '40%',
+  },
+  backButtonWrapper: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginHorizontal: 10,
+    marginVertical: 20,
+    alignItems: 'center',
     borderWidth: 1,
     borderRadius: 10,
     borderColor: '#dcdcdc',
-    backgroundColor: '#78bbc7'
+    backgroundColor: '#78bbc7',
   },
-  ctTuikaBtnText: {
-    paddingRight: 30,
-    paddingLeft: 30,
-    paddingVertical: 5,
+  backButtonText: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
+    color :'white',
   }
 });
