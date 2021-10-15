@@ -112,14 +112,6 @@ export default function searchScreen() {
             <Text style={styles.descriptionText}>{item.曜日時限}</Text>
           </View>
       </View>
-      <View style={styles.iconTextWrapper}>
-        <View style={styles.iconWrapper}>
-          <MaterialIcons name="people-alt" size={18}color="dimgray" />
-        </View>
-        <View style={styles.textWrapper}>
-          <Text style={styles.descriptionText}>{item.学年 + '年生対象'}</Text>
-        </View>
-      </View>
         <View style={styles.iconTextWrapper}>
           <View style={styles.iconWrapper}>
             <MaterialIcons name="meeting-room" size={18}color="dimgray" />
