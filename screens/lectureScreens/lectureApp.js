@@ -5,7 +5,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 // スクリーンの読み込み
 import SearchResult from './searchResult';
-import ClassDetails from './classDetails';
 import LectureScreen from './lectureScreen'
 import HomeLectureDetail from './homeLectureDetail';
 import EditLectureScreen from './editLectureScreen';
@@ -29,12 +28,6 @@ function lectureHomeDetail() {
 function searchResultScreen() {
   const navigation = useNavigation();
   return <SearchResult navigation={navigation} />
-};
-
-//  授業詳細画面, routeについてはhttps://reactnavigation.org/docs/use-route/を参照
-function classDetailScreen({ route }) {
-  const navigation = useNavigation();
-  return <ClassDetails navigation={navigation} lectureInfo={ route }/>
 };
 
 function editScreen() {
@@ -65,7 +58,6 @@ export default function lectureApp() {
         <Stack.Screen name="講義詳細" component={lectureHomeDetail} />
         <Stack.Screen name="編集画面" component={editScreen} />
         <Stack.Screen name="検索結果" component={searchResultScreen} />
-        <Stack.Screen name="講義の詳細" component={classDetailScreen} />
       </Stack.Navigator>
   );
 }
