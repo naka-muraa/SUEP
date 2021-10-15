@@ -3,7 +3,6 @@ import ReadData from './readData.js';
 // 通年講義のみ抽出
 async function filterYearData(firstData, secondData) {
   const allYearLecture = await firstData.filter(item => item.開講 == "通年");
-  console.log("\nallYearDataの要素数 = " + allYearLecture.length + "\n");
   return secondData.concat(allYearLecture);
 }
 
@@ -22,7 +21,6 @@ async function importJsonFiles(lectureFileName) {
       case '総合理工':
         yearAroundData = require('../assets/firstSemisterLecs/総合理工.json');
         data = require("../assets/secondSemisterLecs/総合理工 .json");
-        console.log("dataの要素数\n" + data.length + "\n");
         data = await filterYearData(yearAroundData, data);
         break;
       case '教養教育':
@@ -85,7 +83,6 @@ async function importJsonFiles(lectureFileName) {
     }
     return data;
   } catch (error) {
-    console.log('エラー箇所： seachLecture.js / importJsonFiles\n' + 'エラー内容：' + error + '\n');
   }
 }
 
@@ -132,7 +129,6 @@ const searchLecture = async (inputedKeyWord) => {
     }
     return lectureData;
   } catch (error) {
-    console.log('ファイル名：seachLecture.js\n' + 'エラー：' + error + '\n');
   }
 }
 
