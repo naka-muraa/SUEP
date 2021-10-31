@@ -9,14 +9,14 @@ import { readTableData } from '../../appFunction/ReadTableData';
 //時間割管理ホーム画面
 export default function lectureScreen({ navigation }) {
   const [inputedKeyWord, setinputedLectureInfo] = useState();
-  const [initialBoot, setinitialBoot] = useState(true);
+  const [initialBoot, setinitialBoot] = useState(false);
 
   useEffect(() => {
     // 初回起動かどうか確認
     const checkFirstLaunch = async () => {
       const firstLaunchFlag = await readTableData('firstLaunch');
-      if (firstLaunchFlag == 'alreadyLaunched') {
-        setinitialBoot(false);
+      if (firstLaunchFlag != 'alreadyLaunched') {
+        setinitialBoot(true);
       }
     };
     checkFirstLaunch();
@@ -26,23 +26,23 @@ export default function lectureScreen({ navigation }) {
     <View style={styles.container}>
       {initialBoot && <HomeScreenPopup />}
       <View style={styles.upper}>
-          <TextInput
-            style={styles.input}
-            placeholder="授業科目検索"
-            onChangeText={text => { setinputedLectureInfo(text) }}
-            value={inputedKeyWord}
-          >
-          </TextInput>
+        <TextInput
+          style={styles.input}
+          placeholder="授業科目検索"
+          onChangeText={text => { setinputedLectureInfo(text) }}
+          value={inputedKeyWord}
+        >
+        </TextInput>
         <TouchableOpacity
           style={styles.buttoncontainer}
           onPress={() => {
-            navigation.navigate('検索結果', { keyWord: inputedKeyWord});
+            navigation.navigate('検索結果', { keyWord: inputedKeyWord });
           }}
         >
           <Text style={styles.kensakutext}>検索</Text>
         </TouchableOpacity>
       </View>
-        {/* テーブル部分をインポート */}
+      {/* テーブル部分をインポート */}
       <View style={styles.bottom}>
         <HomeScreenTable />
       </View>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: 'black',
     fontSize: 20,
-    borderColor:  '#cccccc',
+    borderColor: '#cccccc',
     borderRadius: 10,
     padding: 12,
   },
