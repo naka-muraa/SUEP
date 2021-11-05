@@ -85,8 +85,8 @@ export default function homeScreenProp() {
           setModalVisible(true);
         }}
       >
-        <View style={[styles.centeredView, modalVisible ? {backgroundColor: 'rgba(0,0,0,0.5)'} : '']}>
-    
+        <View style={[styles.centeredView, modalVisible ? { backgroundColor: 'rgba(0,0,0,0.5)' } : '']}>
+
           <View style={styles.modalView}>
             <Text style={styles.modalText}>はじめまして</Text>
             <Text style={styles.modalText}>所属先を選んでください</Text>
