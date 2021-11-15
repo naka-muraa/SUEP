@@ -5,10 +5,10 @@ import GetStoredData from "./GetStoredData";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, ActivityIndicator, Alert, Linking, FlatList, View, Image, TouchableOpacity, TextInput } from "react-native";
 import HTMLView from 'react-native-htmlview';
-import reply from '../assets/reply.png';
-import retweet from "../assets/retweet.png";
-import like from "../assets/like.png";
-import TwitterLogo from "../assets/2021Twitterlogo-blue.png";
+import reply from '../Assets/reply.png';
+import retweet from "../Assets/retweet.png";
+import like from "../Assets/like.png";
+import TwitterLogo from "../Assets/2021Twitterlogo-blue.png";
 import { Ionicons } from '@expo/vector-icons';
 
 async function openUrl(url) {

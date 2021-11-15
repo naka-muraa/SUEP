@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-nativ
 // 表示パーツと汎用関数のインポート
 import HomeScreenPopup from './homeScreenPopup';
 import HomeScreenTable from './classTable';
-import { readTableData } from '../../appFunction/ReadTableData';
+import { readTableData } from '../../AppFunction/ReadTableData';
 
 //時間割管理ホーム画面
 export default function lectureScreen({ navigation }) {
