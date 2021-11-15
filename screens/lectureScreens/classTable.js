@@ -5,7 +5,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
 // 外部関数のインポート
-import { readTableData } from '../../appFunction/ReadTableData';
+import { readTableData } from '../../AppFunction/ReadTableData';
 
 export default function homeScreenProp() {
   const navigation = useNavigation();

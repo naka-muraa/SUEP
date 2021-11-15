@@ -1,64 +1,42 @@
 import ReadData from './readData.js';
 
 //全角(英数字)→半角に変換
-function wordFormatFullTohalf(word) {
-  let ret_halfWord = word.replace(/[！-～]/g,
+function wordFormatFullTohalfSize(word) {
+  let halfWord = word.replace(/[！-～]/g,
     function (word) {
       //UTF-16のコード値を0xFEE0分シフト
       return String.fromCharCode(word.charCodeAt(0) - 0xFEE0);
     }
   );
-  return ret_halfWord;
+  return halfWord;
 }
 
 //Ⅰ,Ⅱ,Ⅲ など→1,2,3に変換
 function changeSymbolToNumber(word) {
-  let searchResult_1 = word.search('Ⅰ');
-  let searchResult_1_1 = word.search('I');
-  let searchResult_1_2 = word.search('Ｉ');
-  let searchResult_2 = word.search('Ⅱ');
-  let searchResult_2_1 = word.search('II');
-  let searchResult_3 = word.search('Ⅲ');
-  let searchResult_3_1 = word.search('III');
-  let searchResult_4 = word.search('IV');
-  let searchResult_4_1 = word.search('Ⅳ');
-  let searchResult_5 = word.search('Ⅴ');
-  let tmp = '';
+  let is_search_Ⅰ = word.search('Ⅰ');
+  let is_search_I = word.search('I');
+  let is_search_Ｉ = word.search('Ｉ');
+  let is_search_Ⅱ = word.search('Ⅱ');
+  let is_search_II = word.search('II');
+  let is_search_Ⅲ = word.search('Ⅲ');
+  let is_search_III = word.search('III');
+  let is_search_IV = word.search('IV');
+  let is_search_Ⅳ = word.search('Ⅳ');
+  let is_search_Ⅴ = word.search('Ⅴ');
 
-  if (searchResult_5 != -1) {
-    tmp = word.replace('Ⅴ', '5');
-    return tmp
-  } else if (searchResult_4 != -1) {
-    tmp = word.replace('IV', '4');
-    return tmp
-  } else if (searchResult_4_1 != -1) {
-    tmp = word.replace('Ⅳ', '4');
-    return tmp
-  } else if (searchResult_3 != -1) {
-    tmp = word.replace('Ⅲ', '3');
-    return tmp
-  } else if (searchResult_3_1 != -1) {
-    tmp = word.replace('III', '3');
-    return tmp
-  } else if (searchResult_2 != -1) {
-    tmp = word.replace('Ⅱ', '2');
-    return tmp
-  } else if (searchResult_2_1 != -1) {
-    tmp = word.replace('II', '2');
-    return tmp
-  } else if (searchResult_1 != -1) {
-    tmp = word.replace('Ⅰ', '1');
-    return tmp
-  } else if (searchResult_1_1 != -1) {
-    tmp = word.replace('I', '1');
-    return tmp
-  } else if (searchResult_1_2 != -1) {
-    tmp = word.replace('Ｉ', '1');
-    return tmp
-  } else {
-    tmp = word;
-    return tmp
-  }
+  //上から条件の厳しい順　例:IIIがIでヒットするのを防ぐため
+  if (is_search_Ⅴ != -1) { return (word.replace('Ⅴ', '5')) };
+  if (is_search_IV != -1) { return (word.replace('IV', '4')) };
+  if (is_search_Ⅳ != -1) { return (word.replace('Ⅳ', '4')) };
+  if (is_search_Ⅲ != -1) { return (word.replace('Ⅲ', '3')) };
+  if (is_search_III != -1) { return (word.replace('III', '3')) };
+  if (is_search_Ⅱ != -1) { return (word.replace('Ⅱ', '2')) };
+  if (is_search_II != -1) { return (word.replace('II', '2')) };
+  if (is_search_Ⅰ != -1) { return (word.replace('Ⅰ', '1')) };
+  if (is_search_I != -1) { return (word.replace('I', '1')) };
+  if (is_search_Ｉ != -1) { return (word.replace('Ｉ', '1')) };
+  //どの条件にも該当しない場合
+  return word;
 }
 
 // 通年講義のみ抽出
@@ -81,64 +59,64 @@ async function importJsonFiles(lectureFileName) {
     // 文字列を動的に変化させてrequireすることは不可能なので仕方なくswitch文
     switch (lectureFileName) {
       case '総合理工':
-        yearAroundData = require('../assets/firstSemisterLecs/総合理工.json');
-        data = require("../assets/secondSemisterLecs/総合理工.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/総合理工.json');
+        data = require("../Assets/SecondSemisterLecs/総合理工.json");
         console.log("dataの要素数\n" + data.length + "\n");
-        data = await filterYearData(yearAroundData, data);
+        data = await filterYearData(lecsData[0], lecsData[1]);
         break;
       case '教養教育':
-        yearAroundData = require('../assets/firstSemisterLecs/教養教育.json');
-        data = require("../assets/secondSemisterLecs/教養教育.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/教養教育.json');
+        data = require("../Assets/SecondSemisterLecs/教養教育.json");
         data = await filterYearData(yearAroundData, data);
         break;
       case '生物資源':
-        yearAroundData = require('../assets/firstSemisterLecs/生物資源.json');
-        data = require("../assets/secondSemisterLecs/生物資源.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/生物資源.json');
+        data = require("../Assets/SecondSemisterLecs/生物資源.json");
         data = await filterYearData(yearAroundData, data);
         break;
       case '人間科学':
-        yearAroundData = require('../assets/firstSemisterLecs/人間科学.json');
-        data = require("../assets/secondSemisterLecs/人間科学.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/人間科学.json');
+        data = require("../Assets/SecondSemisterLecs/人間科学.json");
         data = await filterYearData(yearAroundData, data);
         break;
       case '人間社会科学':
-        yearAroundData = require('../assets/firstSemisterLecs/人間社会科学.json');
-        data = require("../assets/secondSemisterLecs/人間社会科学.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/人間社会科学.json');
+        data = require("../Assets/SecondSemisterLecs/人間社会科学.json");
         data = await filterYearData(yearAroundData, data);
         break;
       case '教育':
-        yearAroundData = require('../assets/firstSemisterLecs/教育.json');
-        data = require("../assets/secondSemisterLecs/教育.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/教育.json');
+        data = require("../Assets/SecondSemisterLecs/教育.json");
         data = await filterYearData(yearAroundData, data);
         break;
       case '教育学':
-        yearAroundData = require('../assets/firstSemisterLecs/教育学.json');
-        data = require("../assets/secondSemisterLecs/教育学.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/教育学.json');
+        data = require("../Assets/SecondSemisterLecs/教育学.json");
         data = await filterYearData(yearAroundData, data);
         break;
       case '法文':
-        yearAroundData = require('../assets/firstSemisterLecs/法文.json');
-        data = require("../assets/secondSemisterLecs/法文.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/法文.json');
+        data = require("../Assets/SecondSemisterLecs/法文.json");
         data = await filterYearData(yearAroundData, data);
         break;
       case '人文社会学研究科':
-        yearAroundData = require('../assets/firstSemisterLecs/人文科学.json');
-        data = require("../assets/secondSemisterLecs/人文科学.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/人文科学.json');
+        data = require("../Assets/SecondSemisterLecs/人文科学.json");
         data = await filterYearData(yearAroundData, data);
         break;
       case '教育学_教職':
-        yearAroundData = require('../assets/firstSemisterLecs/教育学（教職）.json');
-        data = require("../assets/secondSemisterLecs/教育学（教職）.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/教育学（教職）.json');
+        data = require("../Assets/SecondSemisterLecs/教育学（教職）.json");
         data = await filterYearData(yearAroundData, data);
         break;
       case '自然科学':
-        yearAroundData = require('../assets/firstSemisterLecs/自然科学.json');
-        data = require("../assets/secondSemisterLecs/自然科学.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/自然科学.json');
+        data = require("../Assets/SecondSemisterLecs/自然科学.json");
         data = await filterYearData(yearAroundData, data);
         break;
       case '総合理工_博士後期':
-        yearAroundData = require('../assets/firstSemisterLecs/総合理工（博士後期）.json');
-        data = require("../assets/secondSemisterLecs/総合理工（博士後期）.json");
+        yearAroundData = require('../Assets/FirstSemisterLecs/総合理工（博士後期）.json');
+        data = require("../Assets/SecondSemisterLecs/総合理工（博士後期）.json");
         data = await filterYearData(yearAroundData, data);
         break;
       default:
@@ -155,7 +133,7 @@ const searchLecture = async (inputedKeyWord) => {
   let removalBlankWords = inputedKeyWord.split(' ');
 
   //全角(英数字)→半角 
-  let halfFormatWords = wordFormatFullTohalf(removalBlankWords[0]);
+  let halfFormatWords = wordFormatFullTohalfSize(removalBlankWords[0]);
   //Ⅰ,Ⅱ,Ⅲなど→1,2,3
   let keyWords = changeSymbolToNumber(halfFormatWords);
 
@@ -198,7 +176,7 @@ const searchLecture = async (inputedKeyWord) => {
     }
     return lectureData;
   } catch (error) {
-    console.log('ファイル名：seachLecture.js\n' + 'エラー：' + error + '\n');
+    console.log('ファイル名：SearchLecture.js\n' + 'エラー：' + error + '\n');
   }
 }
 
