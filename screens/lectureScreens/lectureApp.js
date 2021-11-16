@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 // スクリーンの読み込み
-import SearchResult from './searchResult';
+import SearchResult from './SearchResult';
 import LectureScreen from './lectureScreen'
 import HomeLectureDetail from './homeLectureDetail';
 import EditLectureScreen from './editLectureScreen';
@@ -55,9 +55,9 @@ export default function lectureApp() {
           ),
         })}
         component={lectureHome} />
-        <Stack.Screen name="講義詳細" component={lectureHomeDetail} />
-        <Stack.Screen name="編集画面" component={editScreen} />
-        <Stack.Screen name="検索結果" component={searchResultScreen} />
-      </Stack.Navigator>
+      <Stack.Screen name="講義詳細" component={lectureHomeDetail} />
+      <Stack.Screen name="編集画面" component={editScreen} />
+      <Stack.Screen name="検索結果" component={searchResultScreen} />
+    </Stack.Navigator>
   );
 }

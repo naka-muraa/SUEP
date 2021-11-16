@@ -11,7 +11,7 @@ import Terms from './screens/eventScreens/termsOfService';
 import Clubs from './screens/eventScreens/Clubs';
 import Univ from './screens/eventScreens/University';
 import Community from "./screens/eventScreens/Community";
-import lectureApp from './screens/lectureScreens/lectureApp';
+import lectureApp from './screens/LectureScreens/lectureApp';
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();

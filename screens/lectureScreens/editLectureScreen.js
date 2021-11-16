@@ -3,8 +3,8 @@ import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native
 import { CheckBox } from 'react-native-elements';
 
 // 外部関数のインポート
-import { saveData } from '../../appFunction/saveData';
-import { readTableData } from '../../appFunction/ReadTableData';
+import { saveData } from '../../AppFunction/saveData';
+import { readTableData } from '../../AppFunction/ReadTableData';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 export default function editLectureScreen({ navigation }) {
@@ -144,7 +144,7 @@ export default function editLectureScreen({ navigation }) {
   return (
     <>
       <FlatList
-      style={styles.flatlistContainer}
+        style={styles.flatlistContainer}
         ListHeaderComponent={headerComponent}
         data={registeredData}
         renderItem={renderItem}
@@ -171,7 +171,7 @@ export default function editLectureScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   // 検索結果一覧のデザイン
-  flatlistContainer:{
+  flatlistContainer: {
     marginHorizontal: 5,
     marginVertical: 5,
   },
