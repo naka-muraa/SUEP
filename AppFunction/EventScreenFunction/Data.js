@@ -5,11 +5,13 @@ import GetStoredData from "./GetStoredData";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, ActivityIndicator, Alert, Linking, FlatList, View, Image, TouchableOpacity, TextInput } from "react-native";
 import HTMLView from 'react-native-htmlview';
-import reply from '../Assets/reply.png';
-import retweet from "../Assets/retweet.png";
-import like from "../Assets/like.png";
-import TwitterLogo from "../Assets/2021Twitterlogo-blue.png";
 import { Ionicons } from '@expo/vector-icons';
+
+// 画像素材のインポート
+import reply from '../../Assets/reply.png';
+import retweet from "../../Assets/retweet.png";
+import like from "../../Assets/like.png";
+import TwitterLogo from "../../Assets/2021Twitterlogo-blue.png";
 
 async function openUrl(url) {
   const supported = await Linking.canOpenURL(url);

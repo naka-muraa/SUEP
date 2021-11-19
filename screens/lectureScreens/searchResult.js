@@ -6,9 +6,9 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 // 外部関数のインポート
-import SearchLecture from '../../AppFunction/SearchLecture';
-import { saveData } from '../../AppFunction/saveData';
-import DeleteDuplicateLecture from '../../AppFunction/deleteDuplicateLecture';
+import SearchLecture from '../../AppFunction/LectureScreenFunction/searchLecture';
+import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
+import DeleteDuplicateLecture from '../../AppFunction/LectureScreenFunction/deleteDuplicateLecture';
 
 export default function searchScreen() {
   const [searchResultsData, setsearchResultsData] = useState();

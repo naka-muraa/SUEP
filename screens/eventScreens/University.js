@@ -1,4 +1,4 @@
-import Data from "../../App/Data";
+import Data from "../../AppFunction/EventScreenFunction/Data";
 import React from 'react';
 
 const Univ = () => {

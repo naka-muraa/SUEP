@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { CheckBox } from 'react-native-elements';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 // 外部関数のインポート
-import { saveData } from '../../AppFunction/saveData';
-import { readTableData } from '../../AppFunction/ReadTableData';
-import DropDownPicker from 'react-native-dropdown-picker';
+import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
+import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
 
 export default function editLectureScreen({ navigation }) {
   const [registeredData, setRegisteredData] = useState();
