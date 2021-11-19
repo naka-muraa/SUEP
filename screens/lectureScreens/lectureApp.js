@@ -55,9 +55,9 @@ export default function lectureApp() {
           ),
         })}
         component={lectureHome} />
-        <Stack.Screen name="講義詳細" component={lectureHomeDetail} />
-        <Stack.Screen name="編集画面" component={editScreen} />
-        <Stack.Screen name="検索結果" component={searchResultScreen} />
-      </Stack.Navigator>
+      <Stack.Screen name="講義詳細" component={lectureHomeDetail} />
+      <Stack.Screen name="編集画面" component={editScreen} />
+      <Stack.Screen name="検索結果" component={searchResultScreen} />
+    </Stack.Navigator>
   );
 }

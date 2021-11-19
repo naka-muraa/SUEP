@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text, FlatList, View, StyleSheet, SafeAreaView, Linking, TouchableOpacity } from "react-native";
-import LICENSE_FILE from "../../App/license.json";
+import LICENSE_FILE from "../../AppFunction/EventScreenFunction/license.json";
 
 async function openUrl(url) {
   const supported = await Linking.canOpenURL(url);

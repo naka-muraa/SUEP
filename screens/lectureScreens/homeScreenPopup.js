@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Alert, Modal, Pressable, ScrollView } from 'rea
 import { Table, TableWrapper, Col } from 'react-native-table-component';
 
 // 外部関数のインポート
-import { saveData } from '../../appFunction/saveData';
+import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
 
 // 学部名の保存＋初回起動フラグの設定
 function storeFacultyData(facultyName) {
