@@ -57,7 +57,6 @@ export default async function deleteDuplicateLecture(selectedLectures) {
       });
       selectedLectures.filter(selectedLec => registeredValue.push(selectedLec));
     }
-    console.log('registeredValueの中身：' + JSON.stringify(registeredValue) + '\n');
     return JSON.stringify(registeredValue);
   } catch (error) {
     console.log('ファイル名：releteDuplicateLecture.js\n' + 'エラー内容' + error + '\n');
