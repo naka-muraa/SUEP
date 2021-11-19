@@ -42,7 +42,6 @@ function changeSymbolToNumber(word) {
 // 通年講義のみ抽出
 async function filterYearData(firstData, secondData) {
   const allYearLecture = await firstData.filter(item => item.開講 == "通年");
-  console.log("\nallYearDataの要素数 = " + allYearLecture.length + "\n");
   return secondData.concat(allYearLecture);
 }
 
@@ -61,8 +60,7 @@ async function importJsonFiles(lectureFileName) {
       case '総合理工':
         yearAroundData = require('../../Assets/FirstSemisterLecs/総合理工.json');
         data = require("../../Assets/SecondSemisterLecs/総合理工.json");
-        console.log("dataの要素数\n" + data.length + "\n");
-        data = await filterYearData(lecsData[0], lecsData[1]);
+        data = await filterYearData(yearAroundData, data);
         break;
       case '教養教育':
         yearAroundData = require('../../Assets/FirstSemisterLecs/教養教育.json');
