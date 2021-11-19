@@ -60,11 +60,7 @@ async function importJsonFiles(lectureFileName) {
       case '総合理工':
         yearAroundData = require('../../Assets/FirstSemisterLecs/総合理工.json');
         data = require("../../Assets/SecondSemisterLecs/総合理工.json");
-<<<<<<< HEAD
-        data = await filterYearData(lecsData[0], lecsData[1]);
-=======
         data = await filterYearData(yearAroundData, data);
->>>>>>> release
         break;
       case '教養教育':
         yearAroundData = require('../../Assets/FirstSemisterLecs/教養教育.json');
