@@ -42,7 +42,6 @@ function changeSymbolToNumber(word) {
 // 通年講義のみ抽出
 async function filterYearData(firstData, secondData) {
   const allYearLecture = await firstData.filter(item => item.開講 == "通年");
-  console.log("\nallYearDataの要素数 = " + allYearLecture.length + "\n");
   return secondData.concat(allYearLecture);
 }
 
