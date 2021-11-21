@@ -1,4 +1,4 @@
-import ReadData from './readData.js';
+import ReadData from './ReadData';
 
 //全角(英数字)→半角に変換
 function wordFormatFullTohalfSize(word) {
@@ -47,7 +47,7 @@ async function filterYearData(firstData, secondData) {
 
 
 // 通年講義と後期のJSONファイルのインポート
-async function importJsonFiles(lectureFileName) {
+async function loadLectureJSONFiles(lectureFileName) {
   lectureFileName = lectureFileName.replace(/"/g, '');
   lectureFileName = lectureFileName.trim();
   let data;
@@ -122,47 +122,48 @@ async function importJsonFiles(lectureFileName) {
     }
     return data;
   } catch (error) {
-    console.log('エラー箇所： seachLecture.js / importJsonFiles\n' + 'エラー内容：' + error + '\n');
+    console.log('エラー箇所： seachLecture.js / loadLectureJSONFiles\n' + 'エラー内容：' + error + '\n');
   }
 }
 
 // インプットされた文字と学部名から特定の講義を検索
 const searchLecture = async (inputedKeyWord) => {
-  let removalBlankWords = inputedKeyWord.split(' ');
 
-  //全角(英数字)→半角
-  let halfFormatWords = wordFormatFullTohalfSize(removalBlankWords[0]);
-  //Ⅰ,Ⅱ,Ⅲなど→1,2,3
-  let keyWords = changeSymbolToNumber(halfFormatWords);
-
-  // 複数のキーワード検索を行う
-  if (keyWords[0] == inputedKeyWord) {
-    keyWords = inputedKeyWord.split('　');
-    if (keyWords[0] == inputedKeyWord) {
-
-      // 空白でキーワードが分割されない場合
-      keyWords = keyWords[0]
+  // 複数のキーワードでの検索に対応
+  // 半角または全角の空白を含むかで場合分けすべき
+  let wordsToSearchFor = inputedKeyWord.split(' ');
+  if (wordsToSearchFor[0] == inputedKeyWord) {
+    wordsToSearchFor = inputedKeyWord.split('　');
+    if (wordsToSearchFor[0] == inputedKeyWord) {
+      wordsToSearchFor = wordsToSearchFor[0]
     }
   }
 
-  try {
-    let readFacultyInfo = await ReadData('facultyName');
+  //全角(英数字)→半角
+  // let halfFormatWords = wordFormatFullTohalfSize(wordsToSearchFor[0]);
+  //Ⅰ,Ⅱ,Ⅲなど→1,2,3
+  // let keyWords = changeSymbolToNumber(halfFormatWords);
+  let keyWords = wordsToSearchFor;
 
-    // readFacultyInfoを文字列 => 配列変更
-    readFacultyInfo = readFacultyInfo.split(',');
-    let readFileName = [];
-    readFacultyInfo.forEach(fileInfo => {
-      readFileName.push(fileInfo.replace(/'/g, ''));
+  try {
+    let facultyAndFilesName = await ReadData('facultyName');
+
+    // facultyAndFilesNameを文字列 => 配列変更
+    facultyAndFilesName = facultyAndFilesName.split(',');
+    let tmp = [];
+    facultyAndFilesName.forEach(fileInfo => {
+      tmp.push(fileInfo.replace(/'/g, ''));
     });
 
-    //  readFileName[0]は学部名
-    readFileName.shift();
+    //  tmp[0]にある学部名を削除
+    tmp.shift();
+    const jsonFileNames = tmp;
     let lectureData = [];
     let lectureFile;
 
     // for.. of 内ではawait処理を行える
-    for (const fileName of readFileName) {
-      lectureFile = await importJsonFiles(fileName);
+    for (const fileName of jsonFileNames) {
+      lectureFile = await loadLectureJSONFiles(fileName);
       for (const word of keyWords) {
         lectureFile = await lectureFile.filter(function (item) {
           return item.科目.match(word) || item.担当.match(word);
