@@ -40,6 +40,7 @@ export default function searchScreen() {
     let newData = searchResultsData;
     newData[classIdNumber].checked = !newData[classIdNumber].checked;
     setsearchResultsData(newData);
+
   }
 
   // 重複するデータを削除し、ストレージへ必要なデータを保存する
