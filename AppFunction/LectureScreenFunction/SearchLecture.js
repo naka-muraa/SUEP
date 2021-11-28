@@ -1,42 +1,43 @@
-import ReadData from './readData.js';
+import ReadData from './ReadData';
 
 //全角(英数字)→半角に変換
-function wordFormatFullTohalfSize(word) {
-  let halfWord = word.replace(/[！-～]/g,
-    function (word) {
-      //UTF-16のコード値を0xFEE0分シフト
-      return String.fromCharCode(word.charCodeAt(0) - 0xFEE0);
+function convertWordsFullToHalfSize(words) {
+  let halfSizeWords = [];
+  for (const word of words) {
+    if (word) {
+      const tmp = word.replace(/[！-～]/g,
+        function (word) {
+          //UTF-16のコード値を0xFEE0分シフト
+          return String.fromCharCode(word.charCodeAt(0) - 0xFEE0);
+        });
+      halfSizeWords.push(tmp);
     }
-  );
-  return halfWord;
+  }
+  return halfSizeWords;
 }
 
-//Ⅰ,Ⅱ,Ⅲ など→1,2,3に変換
-function changeSymbolToNumber(word) {
-  let is_search_Ⅰ = word.search('Ⅰ');
-  let is_search_I = word.search('I');
-  let is_search_Ｉ = word.search('Ｉ');
-  let is_search_Ⅱ = word.search('Ⅱ');
-  let is_search_II = word.search('II');
-  let is_search_Ⅲ = word.search('Ⅲ');
-  let is_search_III = word.search('III');
-  let is_search_IV = word.search('IV');
-  let is_search_Ⅳ = word.search('Ⅳ');
-  let is_search_Ⅴ = word.search('Ⅴ');
-
-  //上から条件の厳しい順　例:IIIがIでヒットするのを防ぐため
-  if (is_search_Ⅴ != -1) { return (word.replace('Ⅴ', '5')) };
-  if (is_search_IV != -1) { return (word.replace('IV', '4')) };
-  if (is_search_Ⅳ != -1) { return (word.replace('Ⅳ', '4')) };
-  if (is_search_Ⅲ != -1) { return (word.replace('Ⅲ', '3')) };
-  if (is_search_III != -1) { return (word.replace('III', '3')) };
-  if (is_search_Ⅱ != -1) { return (word.replace('Ⅱ', '2')) };
-  if (is_search_II != -1) { return (word.replace('II', '2')) };
-  if (is_search_Ⅰ != -1) { return (word.replace('Ⅰ', '1')) };
-  if (is_search_I != -1) { return (word.replace('I', '1')) };
-  if (is_search_Ｉ != -1) { return (word.replace('Ｉ', '1')) };
-  //どの条件にも該当しない場合
-  return word;
+function changeSymbolToNumber(searchedWords) {
+  let retChangedWords = [];
+  for (let selectedWord of searchedWords) {
+    // 条件の厳しい順　例:IIIがIでヒットするのを防ぐため
+    const fiveToBeChangedFromAndTo = [['Ⅴ'], '5'];
+    const fourToBeChangedFromAndTo = [['IV', 'Ⅳ'], '4'];
+    const threeToBeChangedFromAndTo = [['Ⅲ', 'III'], '3'];
+    const twoToBeChangedFromAndTo = [['Ⅱ', 'II'], '2'];
+    const oneToBeChangedFromAndTo = [['Ⅰ', 'I', 'Ｉ'], '1'];
+    const wordsTobeChangedFromAndTo = [fiveToBeChangedFromAndTo, fourToBeChangedFromAndTo, threeToBeChangedFromAndTo, twoToBeChangedFromAndTo, oneToBeChangedFromAndTo];
+    for (let wordsArray of wordsTobeChangedFromAndTo) {
+      for (let symbolicNumber of wordsArray[0]) {
+        const regWord = new RegExp(symbolicNumber);
+        const isSymbolicNumberExist = regWord.test(selectedWord);
+        if (isSymbolicNumberExist) {
+          selectedWord = selectedWord.replace(symbolicNumber, wordsArray[1]);
+        }
+      }
+    }
+    retChangedWords.push(selectedWord);
+  }
+  return retChangedWords;
 }
 
 // 通年講義のみ抽出
@@ -47,7 +48,7 @@ async function filterYearData(firstData, secondData) {
 
 
 // 通年講義と後期のJSONファイルのインポート
-async function importJsonFiles(lectureFileName) {
+async function loadLectureJSONFiles(lectureFileName) {
   lectureFileName = lectureFileName.replace(/"/g, '');
   lectureFileName = lectureFileName.trim();
   let data;
@@ -122,48 +123,52 @@ async function importJsonFiles(lectureFileName) {
     }
     return data;
   } catch (error) {
-    console.log('エラー箇所： seachLecture.js / importJsonFiles\n' + 'エラー内容：' + error + '\n');
+    console.log('エラー箇所： seachLecture.js / loadLectureJSONFiles\n' + 'エラー内容：' + error + '\n');
   }
 }
 
 // インプットされた文字と学部名から特定の講義を検索
 const searchLecture = async (inputedKeyWord) => {
-  let removalBlankWords = inputedKeyWord.split(' ');
 
-  //全角(英数字)→半角
-  let halfFormatWords = wordFormatFullTohalfSize(removalBlankWords[0]);
-  //Ⅰ,Ⅱ,Ⅲなど→1,2,3
-  let keyWords = changeSymbolToNumber(halfFormatWords);
-
-  // 複数のキーワード検索を行う
-  if (keyWords[0] == inputedKeyWord) {
-    keyWords = inputedKeyWord.split('　');
-    if (keyWords[0] == inputedKeyWord) {
-
-      // 空白でキーワードが分割されない場合
-      keyWords = keyWords[0]
-    }
+  // 複数のキーワードでの検索に対応, wordsToSearchForは配列の場合有り
+  let wordsToSearchFor = '';
+  const halfWidthSpace = new RegExp(' ');
+  const fullWidthSpace = new RegExp('　');
+  if (halfWidthSpace.test(inputedKeyWord)) {
+    wordsToSearchFor = inputedKeyWord.split(halfWidthSpace);
+  }
+  else if (fullWidthSpace.test(inputedKeyWord)) {
+    wordsToSearchFor = inputedKeyWord.split(fullWidthSpace);
+  }
+  else {
+    wordsToSearchFor = inputedKeyWord;
   }
 
-  try {
-    let readFacultyInfo = await ReadData('facultyName');
+  //全角(英数字)→半角
+  const halfConvertedWords = convertWordsFullToHalfSize(wordsToSearchFor);
+  //Ⅰ,Ⅱ,Ⅲなど→1,2,3
+  wordsToSearchFor = changeSymbolToNumber(halfConvertedWords);
 
-    // readFacultyInfoを文字列 => 配列変更
-    readFacultyInfo = readFacultyInfo.split(',');
-    let readFileName = [];
-    readFacultyInfo.forEach(fileInfo => {
-      readFileName.push(fileInfo.replace(/'/g, ''));
+  try {
+    let facultyAndFilesName = await ReadData('facultyName');
+
+    // facultyAndFilesNameを文字列 => 配列変更
+    facultyAndFilesName = facultyAndFilesName.split(',');
+    let tmp = [];
+    facultyAndFilesName.forEach(fileInfo => {
+      tmp.push(fileInfo.replace(/'/g, ''));
     });
 
-    //  readFileName[0]は学部名
-    readFileName.shift();
+    //  tmp[0]にある学部名を削除
+    tmp.shift();
+    const jsonFileNames = tmp;
     let lectureData = [];
     let lectureFile;
 
     // for.. of 内ではawait処理を行える
-    for (const fileName of readFileName) {
-      lectureFile = await importJsonFiles(fileName);
-      for (const word of keyWords) {
+    for (const fileName of jsonFileNames) {
+      lectureFile = await loadLectureJSONFiles(fileName);
+      for (const word of wordsToSearchFor) {
         lectureFile = await lectureFile.filter(function (item) {
           return item.科目.match(word) || item.担当.match(word);
         })
