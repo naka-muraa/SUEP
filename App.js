@@ -16,7 +16,7 @@ import lectureApp from './screens/lectureScreens/lectureApp';
 
 Sentry.init({
   dsn: 'https://469ba9b84acd4a2f8809380fbe6275b3@o1070044.ingest.sentry.io/6086543',
-  enableInExpoDevelopment: true, // If 'true', all your dev/local errors will be reported to Sentry
+  enableInExpoDevelopment: false, // If 'true', all your dev/local errors will be reported to Sentry
   debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
 });
 
