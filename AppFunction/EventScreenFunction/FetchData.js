@@ -20,8 +20,9 @@ const DataAPI = async (sheetName) => {
     let { values } = await data.json();
     let [, ...Data] = values.map((data) => data);
     return Data;
-  } catch {
-    console.log("Error");
+  } catch(error) {
+    Sentry.Native.captureException(error);
+    console.log(error);
   }
 };
 export default DataAPI;

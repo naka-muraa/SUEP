@@ -139,6 +139,7 @@ export default function homeScreenProp() {
       settableData([mondayLecs, tuesdayLecs, wednesdayLecs, thursdayLecs, fridayLecs]);
       setflatlistData(flatlistItem);
     } catch (error) {
+      Sentry.Native.captureException(error);
       console.log('ファイル名：classTable\n' + 'エラー内容：' + error + '\n');
     }
   }

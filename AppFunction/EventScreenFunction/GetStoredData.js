@@ -5,6 +5,7 @@ const getStoredData = async () => {
     const jsonValue = await AsyncStorage.getItem('store_fetchedData')
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch {
+    Sentry.Native.captureException(error);
     console.log("ストレージからデータを得る際にエラーが起きました");
   }
 }

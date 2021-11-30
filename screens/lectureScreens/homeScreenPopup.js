@@ -47,6 +47,7 @@ function storeFacultyData(facultyName) {
     // 初回起動フラグの記録
     saveData(['firstLaunch', 'alreadyLaunched']);
   } catch (error) {
+    Sentry.Native.captureException(error);
     console.log('ファイル名：homeScreenPopup.js\n' + 'エラー：' + error + '\n');
   }
 };

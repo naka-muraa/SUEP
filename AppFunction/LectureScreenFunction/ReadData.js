@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default async function loadData(itemKey) {
   try {
     let loadedData = await AsyncStorage.getItem(itemKey);
-    console.log('ファイル名：readData.js\n' + '読み込んだ値：' + loadedData + '\n');
     loadedData = JSON.stringify(loadedData);
     if (loadedData != null) {
       console.log('ファイル名：readData.js\n' + '読み込み成功\n');
@@ -14,6 +13,7 @@ export default async function loadData(itemKey) {
       return "";
     }
   } catch (error) {
+    Sentry.Native.captureException(error);
     console.log('ファイル名：readData.js\n' + 'エラー：' + error + '\n');
   }
 }

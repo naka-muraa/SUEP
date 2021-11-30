@@ -12,6 +12,7 @@ export async function readTableData(rd) {
       return null;
     }
   } catch (error) {
+    Sentry.Native.captureException(error);
     console.log('ファイル名：ReadTableData.js\nエラー発生\n' + error);
   }
 }
