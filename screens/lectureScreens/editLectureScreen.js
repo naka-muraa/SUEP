@@ -108,6 +108,7 @@ export default function editLectureScreen({ navigation }) {
           break;
       }
     } catch (error) {
+      Sentry.Native.captureException(error);
       console.log('ファイル名：editLectureScreen.js\n' + 'エラー：' + error + '\n');
     }
   };
