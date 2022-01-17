@@ -16,9 +16,7 @@ export default function searchScreen() {
   const [isLoading, setisLoading] = useState(true);
   const route = useRoute();
   const navigation = useNavigation();
-
-  getListData = async () => {
-
+  const getListData = async () => {
     // 検索実行
     const searchedLecture = await SearchLecture(route.params.keyWord);
     searchedLecture.forEach(value => value.checked = false);
