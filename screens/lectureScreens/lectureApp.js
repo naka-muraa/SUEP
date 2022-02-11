@@ -5,7 +5,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 // スクリーンの読み込み
 import SearchResult from './searchResult';
-import LectureScreen from './lectureScreen'
+import LectureScreen from './lectureScreen';
 import HomeLectureDetail from './homeLectureDetail';
 import EditLectureScreen from './editLectureScreen';
 

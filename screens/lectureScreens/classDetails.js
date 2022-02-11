@@ -21,6 +21,7 @@ function changeName(roomeName, buildingName,) {
 
 //授業詳細画面
 export default function classDetails({ navigation, lectureInfo }) {
+  console.log('aaa:  ' + lectureInfo)
   const { 科目 } = lectureInfo.params;
   const { 担当 } = lectureInfo.params;
   const { 教室名 } = lectureInfo.params;
@@ -69,79 +70,79 @@ export default function classDetails({ navigation, lectureInfo }) {
 
   return (
     <ScrollView>
-    <View style={styles.containerClass}>
-      <View style={styles.kindsCodeContainer}>
-        <View style={styles.kindsFlex}>
-          <Text style={styles.kindsText}>{時間割所属}</Text>
-        </View>
-        <View style={styles.codeFlex}>
-          <Text style={styles.codeText}>コード： {時間割コード}</Text>
-        </View>
-      </View>
-      <View style={styles.nameContainer}>
-        <Text style={styles.nameText}>{科目}</Text>
-      </View>
-      <View style={styles.itemContainer}>
-        <View style={styles.itemWrapper}>
-          <View style={styles.iconFlex}><MaterialIcons name="people-alt" size={24} color="dimgray" /></View>
-          <View style={ styles.descriptionFlex}>
-            <Text style={styles.descriptionText}>対象学年</Text>
+      <View style={styles.containerClass}>
+        <View style={styles.kindsCodeContainer}>
+          <View style={styles.kindsFlex}>
+            <Text style={styles.kindsText}>{時間割所属}</Text>
+          </View>
+          <View style={styles.codeFlex}>
+            <Text style={styles.codeText}>コード： {時間割コード}</Text>
           </View>
         </View>
-        <View style={styles.secondItemWrapper}>
-          <View style={styles.iconFlex}></View>
-          <View style={styles.descriptionFlex}>
-              <Text style={styles.itemText}>{ 学年 + ' 生'}</Text>
-          </View>
+        <View style={styles.nameContainer}>
+          <Text style={styles.nameText}>{科目}</Text>
         </View>
-      </View>
-      <View style={styles.itemContainer}>
-        <View style={styles.itemWrapper}>
-          <View style={styles.iconFlex}><Ionicons name="person" size={24} color="dimgray" /></View>
-          <View style={styles.descriptionFlex}>
-            <Text style={styles.descriptionText}>担当者</Text>
+        <View style={styles.itemContainer}>
+          <View style={styles.itemWrapper}>
+            <View style={styles.iconFlex}><MaterialIcons name="people-alt" size={24} color="dimgray" /></View>
+            <View style={styles.descriptionFlex}>
+              <Text style={styles.descriptionText}>対象学年</Text>
+            </View>
           </View>
-        </View>
           <View style={styles.secondItemWrapper}>
-          <View style={styles.iconFlex}></View>
-          <View style={styles.descriptionFlex}>
-            <Text style={styles.itemText}>{担当}</Text>
+            <View style={styles.iconFlex}></View>
+            <View style={styles.descriptionFlex}>
+              <Text style={styles.itemText}>{学年 + ' 生'}</Text>
+            </View>
           </View>
         </View>
-      </View>
-      <View style={styles.itemContainer}>
-        <View style={styles.itemWrapper}>
-          <View style={styles.iconFlex}><Ionicons name="ios-calendar-sharp" size={24} color="dimgray" /></View>
-          <View style={styles.descriptionFlex}>
-            <Text style={styles.descriptionText}>曜日・時限</Text>
+        <View style={styles.itemContainer}>
+          <View style={styles.itemWrapper}>
+            <View style={styles.iconFlex}><Ionicons name="person" size={24} color="dimgray" /></View>
+            <View style={styles.descriptionFlex}>
+              <Text style={styles.descriptionText}>担当者</Text>
+            </View>
           </View>
-        </View>
           <View style={styles.secondItemWrapper}>
-          <View style={styles.iconFlex}></View>
-          <View style={styles.descriptionFlex}>
-            <Text style={styles.itemText}>{showDayTime}</Text>
+            <View style={styles.iconFlex}></View>
+            <View style={styles.descriptionFlex}>
+              <Text style={styles.itemText}>{担当}</Text>
+            </View>
           </View>
         </View>
-      </View>
-      <View style={styles.itemContainer}>
-        <View style={styles.itemWrapper}>
-          <View style={styles.iconFlex}><MaterialIcons name="meeting-room" size={24} color="dimgray" /></View>
-          <View style={styles.descriptionFlex}>
-            <Text style={styles.descriptionText}>講義棟・教室</Text>
+        <View style={styles.itemContainer}>
+          <View style={styles.itemWrapper}>
+            <View style={styles.iconFlex}><Ionicons name="ios-calendar-sharp" size={24} color="dimgray" /></View>
+            <View style={styles.descriptionFlex}>
+              <Text style={styles.descriptionText}>曜日・時限</Text>
+            </View>
           </View>
-        </View>
           <View style={styles.secondItemWrapper}>
-          <View style={styles.iconFlex}></View>
-          <View style={styles.descriptionFlex}>
-            <Text style={styles.itemText}>{displayedRoomName}</Text>
+            <View style={styles.iconFlex}></View>
+            <View style={styles.descriptionFlex}>
+              <Text style={styles.itemText}>{showDayTime}</Text>
+            </View>
           </View>
         </View>
-      </View>
-      <View style={styles.backContainer}>
-        <TouchableOpacity style={styles.backButtonWrapper} onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>戻る</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.itemContainer}>
+          <View style={styles.itemWrapper}>
+            <View style={styles.iconFlex}><MaterialIcons name="meeting-room" size={24} color="dimgray" /></View>
+            <View style={styles.descriptionFlex}>
+              <Text style={styles.descriptionText}>講義棟・教室</Text>
+            </View>
+          </View>
+          <View style={styles.secondItemWrapper}>
+            <View style={styles.iconFlex}></View>
+            <View style={styles.descriptionFlex}>
+              <Text style={styles.itemText}>{displayedRoomName}</Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.backContainer}>
+          <TouchableOpacity style={styles.backButtonWrapper} onPress={() => navigation.goBack()}>
+            <Text style={styles.backButtonText}>戻る</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
@@ -241,6 +242,6 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     fontSize: 20,
-    color :'white',
+    color: 'white',
   }
 });
