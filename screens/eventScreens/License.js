@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text, FlatList, View, StyleSheet, SafeAreaView, Linking, TouchableOpacity } from "react-native";
-import LICENSE_FILE from "../../AppFunction/EventScreenFunction/license.json";
+import licenseFile from "../../AppFunction/EventScreenFunction/license.json";
 
 async function openUrl(url) {
   const supported = await Linking.canOpenURL(url);
@@ -17,7 +17,7 @@ async function openUrl(url) {
 }
 
 export default function License() {
-  const license = JSON.parse(JSON.stringify(LICENSE_FILE));
+  const license = JSON.parse(JSON.stringify(licenseFile));
 
   const renderItem = ({ item }) => (
     <View style={styles.item}>

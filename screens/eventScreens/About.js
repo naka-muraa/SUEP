@@ -25,7 +25,7 @@ const Separator = () => (
 
 const Stack = createStackNavigator();
 
-function aboutPage({ navigation }) {
+function AboutPage({ navigation }) {
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.titleContainer}>
@@ -78,7 +78,7 @@ export default function About() {
         headerShown: false
       }}
     >
-      <Stack.Screen name="about this app." component={aboutPage} />
+      <Stack.Screen name="about this app." component={AboutPage} />
       <Stack.Screen name="Third-party software notices" component={License} />
     </Stack.Navigator>
   );
