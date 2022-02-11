@@ -312,7 +312,6 @@ export default function homeScreenProp() {
   return (
     <>
       < View style={styles.tableContainer} >
-        <HeaderComponent />
         <FlatList
           //時間割表
           data={dayData}
@@ -320,6 +319,7 @@ export default function homeScreenProp() {
             startTime={item.開始時間} endTime={item.終了時間} timeCode={item.時間割コード} itemData={item} />}
           keyExtractor={(item, index) => index}
           numColumns={6}
+          ListHeaderComponent={<HeaderComponent />}
           //その他の講義
           ListFooterComponent={
             <RenderOtherItem otherItem={othrelecsdata} />
