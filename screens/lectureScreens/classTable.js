@@ -17,15 +17,37 @@ export default function homeScreenProp() {
   let thursdayItem = new Array;
   let flatlistItem = new Array;
   const [othrelecsdata, setothrelecsdata] = useState([]);
-  //授業科目検索に使用するデータ
-  const [inputedKeyWord, setinputedLectureInfo] = useState();
 
   //曜日・日時を判別するための配列
-
   const time = [1, 3, 5, 7, 9];
 
+  //状態変数dayDataを更新するための配列
+  let classDataGroup = [
+    { "曜日": "", 時間割コード: 'row0' }, { "曜日": "月", 時間割コード: 'column1' }, { "曜日": "火", 時間割コード: 'column2' },
+    { "曜日": "水", 時間割コード: 'column3' }, { "曜日": "木", 時間割コード: 'column4' }, { "曜日": "金", 時間割コード: 'column5' },
+    //1行目
+    { "コマ": "1", "開始時間": "9:30", "終了時間": "10:10", 時間割コード: 'row1' },
+    { 科目: '', 時間割コード: '00' }, { 科目: '', 時間割コード: '01' }, { 科目: '', 時間割コード: '02' },
+    { 科目: '', 時間割コード: '03' }, { 科目: '', 時間割コード: '04' },
+    //2行目
+    { "コマ": "2", "開始時間": "10:25", "終了時間": "12:05", 時間割コード: 'row2' },
+    { 科目: '', 時間割コード: '05' }, { 科目: '', 時間割コード: '06' }, { 科目: '', 時間割コード: '07' },
+    { 科目: '', 時間割コード: '08' }, { 科目: '', 時間割コード: '09' },
+    //3行目
+    { "コマ": "3", "開始時間": "13:00", "終了時間": "14:40", 時間割コード: 'row3' },
+    { 科目: '', 時間割コード: '10' }, { 科目: '', 時間割コード: '11' }, { 科目: '', 時間割コード: '12' },
+    { 科目: '', 時間割コード: '13' }, { 科目: '', 時間割コード: '14' },
+    //4行目
+    { "コマ": "4", "開始時間": "14:55", "終了時間": "16:35", 時間割コード: 'row4' },
+    { 科目: '', 時間割コード: '15' }, { 科目: '', 時間割コード: '16' }, { 科目: '', 時間割コード: '17' },
+    { 科目: '', 時間割コード: '18' }, { 科目: '', 時間割コード: '19' },
+    //5行目
+    { "コマ": "5", "開始時間": "16:50", "終了時間": "18:30", 時間割コード: 'row5' },
+    { 科目: '', 時間割コード: '20' }, { 科目: '', 時間割コード: '21' }, { 科目: '', 時間割コード: '22' },
+    { 科目: '', 時間割コード: '23' }, { 科目: '', 時間割コード: '24' }];
+
   //Flatlistに渡す講義データ
-  const [dayData, setdayData] = useState([])
+  const [dayData, setdayData] = useState(classDataGroup);
 
   //flatlistの更新の際に曜日時限を区別するための配列
   const firstRowArr = ['月1', '火1', '水1', '木1', '金1'];
@@ -36,14 +58,14 @@ export default function homeScreenProp() {
   const allRowArr = [firstRowArr, secondRowArr, thirdRowArr, fourthRowArr, fifthRowArr];
 
   //登録された授業データを格納するための配列
-  let gatherClassdata = [];
+  let gatheredClassData = [];
 
   //時間割表のセルタップ時の画面遷移
   const navigatoToDetailScreen = (lecsData) => {
     ((lecsData != '') && (lecsData != undefined) && (lecsData != null)) == true ? navigation.navigate("講義詳細", lecsData) : false;
   }
 
-  //曜日時限データ取り出し & gatherClassdataに追加
+  //曜日時限データ取り出し & gatheredClassDataに追加
   function fetchClassData(recordClassData) {
     let registedLecs = recordClassData[0];
     let dayName = recordClassData[1];
@@ -54,7 +76,7 @@ export default function homeScreenProp() {
       // 曜日時限の最初の二文字で判別しdateItemに順番に挿入
       dateItem = registedLecs.filter(lecture => dayAndClassTime.test((lecture.曜日時限).slice(0, 2)))
         .map(lec => lec);
-      if (dateItem[0] != undefined || dateItem[0] != null) { gatherClassdata.push(dateItem[0]) }
+      if (dateItem[0] != undefined || dateItem[0] != null) { gatheredClassData.push(dateItem[0]) }
     });
   }
 
@@ -128,32 +150,8 @@ export default function homeScreenProp() {
         }
       }
       )
-      //状態変数dayDataを更新するための配列
-      let classDataGroup = [
-        { "曜日": "", 時間割コード: 'row0' }, { "曜日": "月", 時間割コード: 'column1' }, { "曜日": "火", 時間割コード: 'column2' },
-        { "曜日": "水", 時間割コード: 'column3' }, { "曜日": "木", 時間割コード: 'column4' }, { "曜日": "金", 時間割コード: 'column5' },
-        //1行目
-        { "コマ": "1", "開始時間": "9:30", "終了時間": "10:10", 時間割コード: 'row1' },
-        { 科目: '', 時間割コード: '00' }, { 科目: '', 時間割コード: '01' }, { 科目: '', 時間割コード: '02' },
-        { 科目: '', 時間割コード: '03' }, { 科目: '', 時間割コード: '04' },
-        //2行目
-        { "コマ": "2", "開始時間": "10:25", "終了時間": "12:05", 時間割コード: 'row2' },
-        { 科目: '', 時間割コード: '05' }, { 科目: '', 時間割コード: '06' }, { 科目: '', 時間割コード: '07' },
-        { 科目: '', 時間割コード: '08' }, { 科目: '', 時間割コード: '09' },
-        //3行目
-        { "コマ": "3", "開始時間": "13:00", "終了時間": "14:40", 時間割コード: 'row3' },
-        { 科目: '', 時間割コード: '10' }, { 科目: '', 時間割コード: '11' }, { 科目: '', 時間割コード: '12' },
-        { 科目: '', 時間割コード: '13' }, { 科目: '', 時間割コード: '14' },
-        //4行目
-        { "コマ": "4", "開始時間": "14:55", "終了時間": "16:35", 時間割コード: 'row4' },
-        { 科目: '', 時間割コード: '15' }, { 科目: '', 時間割コード: '16' }, { 科目: '', 時間割コード: '17' },
-        { 科目: '', 時間割コード: '18' }, { 科目: '', 時間割コード: '19' },
-        //5行目
-        { "コマ": "5", "開始時間": "16:50", "終了時間": "18:30", 時間割コード: 'row5' },
-        { 科目: '', 時間割コード: '20' }, { 科目: '', 時間割コード: '21' }, { 科目: '', 時間割コード: '22' },
-        { 科目: '', 時間割コード: '23' }, { 科目: '', 時間割コード: '24' }];
 
-      for (const elem of gatherClassdata) {
+      for (const elem of gatheredClassData) {
         let headTwoword = elem.曜日時限.slice(0, 2);
         //行ごとでclassDataGroupを更新
         for (const [serialNumber, rowArr] of allRowArr.entries()) {
@@ -271,30 +269,33 @@ export default function homeScreenProp() {
     );
   }
 
-  const HeaderComponent = () => (
-    <View>
-      <View style={styles.upperContainer}>
-        <TextInput
-          style={styles.inputBox}
-          placeholder="授業科目検索"
-          onChangeText={text => { setinputedLectureInfo(text) }}
-          value={inputedKeyWord}
-        >
-        </TextInput>
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={() => {
-            navigation.navigate('検索結果', { keyWord: inputedKeyWord });
-          }}
-        >
-          <Text style={styles.searchTextStyle}>検索</Text>
+  const HeaderComponent = () => {
+    //授業科目検索に使用するデータ
+    const [inputedKeyWord, setinputedLectureInfo] = useState();
+    return (
+      <View>
+        <View style={styles.upperContainer}>
+          <TextInput
+            style={styles.inputBox}
+            placeholder="授業科目検索"
+            onChangeText={text => { setinputedLectureInfo(text) }}
+            value={inputedKeyWord}
+          />
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={() => {
+              navigation.navigate('検索結果', { keyWord: inputedKeyWord });
+            }}
+          >
+            <Text style={styles.searchTextStyle}>検索</Text>
+          </TouchableOpacity>
+        </View>
+        < TouchableOpacity style={styles.buttomBtn} onPress={() => navigation.navigate("編集画面")}>
+          <Text style={styles.buttomBtntext}>講義の削除・編集</Text>
         </TouchableOpacity>
       </View>
-      < TouchableOpacity style={styles.buttomBtn} onPress={() => navigation.navigate("編集画面")}>
-        <Text style={styles.buttomBtntext}>講義の削除・編集</Text>
-      </TouchableOpacity>
-    </View>
-  )
+    )
+  }
 
   // 初回描画時に実行
   useEffect(() => {
@@ -318,10 +319,7 @@ export default function homeScreenProp() {
             startTime={item.開始時間} endTime={item.終了時間} timeCode={item.時間割コード} itemData={item} />}
           keyExtractor={(item, index) => index}
           numColumns={6}
-          //講義削除・返信ボタン
-          ListHeaderComponent={
-            <HeaderComponent />
-          }
+          ListHeaderComponent={<HeaderComponent />}
           //その他の講義
           ListFooterComponent={
             <RenderOtherItem otherItem={othrelecsdata} />
@@ -337,7 +335,6 @@ const styles = StyleSheet.create({
   upperContainer: {
     width: "100%",
     marginBottom: '7%',
-    flex: 1,
     backgroundColor: "#fff",
     flexDirection: 'row',
     alignItems: 'center',
@@ -373,7 +370,9 @@ const styles = StyleSheet.create({
   tableContainer: {
     padding: 5,
     backgroundColor: '#fff',
-    width: '100%'
+    width: '100%',
+    flex: 1,
+    flexDirection: 'column',
   },
   rotatedStyle: {
     transform: [

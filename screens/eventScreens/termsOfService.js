@@ -15,7 +15,7 @@ async function openUrl(url) {
   }
 }
 
-export default function termsOfService() {
+export default function TermsOfService() {
   return (
     <SafeAreaView>
       <ScrollView style={styles.scrollView}>

@@ -12,7 +12,7 @@ import Terms from './screens/eventScreens/termsOfService';
 import Clubs from './screens/eventScreens/Clubs';
 import Univ from './screens/eventScreens/University';
 import Community from "./screens/eventScreens/Community";
-import lectureApp from './screens/lectureScreens/lectureApp';
+import LectureApp from './screens/lectureScreens/lectureApp';
 
 Sentry.init({
   dsn: 'https://469ba9b84acd4a2f8809380fbe6275b3@o1070044.ingest.sentry.io/6086543',
@@ -23,7 +23,7 @@ Sentry.init({
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
-const bottomTabNavigator = ({ navigation }) => {
+const BottomTabNavigator = ({ navigation }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -64,12 +64,12 @@ export default function App() {
   return (
     < NavigationContainer >
       <Drawer.Navigator >
-        <Drawer.Screen name="時間割ホーム" component={lectureApp}
+        <Drawer.Screen name="時間割ホーム" component={LectureApp}
           options={{
             headerShown: false,
           }}
         />
-        <Drawer.Screen name="イベント情報" component={bottomTabNavigator}
+        <Drawer.Screen name="イベント情報" component={BottomTabNavigator}
           options={{
             headerShown: false,
           }} />

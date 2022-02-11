@@ -13,29 +13,29 @@ import EditLectureScreen from './editLectureScreen';
 const Stack = createStackNavigator();
 
 //  時間割管理ホーム画面
-function lectureHome() {
+function LectureHome() {
   const navigation = useNavigation();
   return <LectureScreen navigation={navigation} />
 };
 
 //  ホーム画面での講義情報画面
-function lectureHomeDetail() {
+function LectureHomeDetail() {
   const navigation = useNavigation();
   return <HomeLectureDetail navigation={navigation} />
 };
 
 //  検索結果画面
-function searchResultScreen() {
+function SearchResultScreen() {
   const navigation = useNavigation();
   return <SearchResult navigation={navigation} />
 };
 
-function editScreen() {
+function EditScreen() {
   const navigation = useNavigation();
   return <EditLectureScreen navigation={navigation} />
 };
 
-export default function lectureApp() {
+export default function LectureApp() {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -54,10 +54,10 @@ export default function lectureApp() {
             <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "#1DA1F2" }} />
           ),
         })}
-        component={lectureHome} />
-      <Stack.Screen name="講義詳細" component={lectureHomeDetail} />
-      <Stack.Screen name="編集画面" component={editScreen} />
-      <Stack.Screen name="検索結果" component={searchResultScreen} />
+        component={LectureHome} />
+      <Stack.Screen name="講義詳細" component={LectureHomeDetail} />
+      <Stack.Screen name="編集画面" component={EditScreen} />
+      <Stack.Screen name="検索結果" component={SearchResultScreen} />
     </Stack.Navigator>
   );
 }
