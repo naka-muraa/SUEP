@@ -12,7 +12,7 @@ import Terms from './screens/eventScreens/termsOfService';
 import Clubs from './screens/eventScreens/Clubs';
 import Univ from './screens/eventScreens/University';
 import Community from "./screens/eventScreens/Community";
-import lectureApp from './screens/LectureScreens/lectureApp';
+import lectureApp from './screens/lectureScreens/lectureApp';
 
 Sentry.init({
   dsn: 'https://469ba9b84acd4a2f8809380fbe6275b3@o1070044.ingest.sentry.io/6086543',
