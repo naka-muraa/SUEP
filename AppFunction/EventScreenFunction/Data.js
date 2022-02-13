@@ -1,17 +1,22 @@
-import SearchData from "./SearchData";
-import FetchData from "./FetchData";
-import StoreData from "./storeData";
-import GetStoredData from "./GetStoredData";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, ActivityIndicator, Alert, Linking, FlatList, View, Image, TouchableOpacity, TextInput } from "react-native";
+import SearchData from './SearchData';
+import FetchData from './FetchData';
+import StoreData from './storeData';
+import GetStoredData from './GetStoredData';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, ActivityIndicator, Alert, Linking, FlatList, View, Image, TouchableOpacity, TextInput } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import { Ionicons } from '@expo/vector-icons';
 
 // 画像素材のインポート
 import reply from '../../Assets/reply.png';
-import retweet from "../../Assets/retweet.png";
-import like from "../../Assets/like.png";
-import TwitterLogo from "../../Assets/2021Twitterlogo-blue.png";
+import retweet from '../../Assets/retweet.png';
+import like from '../../Assets/like.png';
+import TwitterLogo from '../../Assets/2021Twitterlogo-blue.png';
+
+// コンポーネントとスタイルのインポート
+import CustomedSearchBar from '../../Components/CustomedSearchBar';
+import CustomedIndicator from '../../Components/CustomedIndicator';
+import CommonStyles from '../../StyleSheet/CommonStyels'
 
 async function openUrl(url) {
   const supported = await Linking.canOpenURL(url);
@@ -19,9 +24,9 @@ async function openUrl(url) {
     await Linking.openURL(url);
   } else {
     Alert.alert(
-      "エラー",
-      "このページを開ませんでした",
-      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+      'エラー',
+      'このページを開ませんでした',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
       { cancelable: false }
     );
   }
@@ -33,7 +38,7 @@ const fetchStorage = async () => {
 }
 
 export default function Data(props) {
-  const [InputtedText, onChangeText] = useState();
+  const [InputtedText, setInputtedText] = useState();
   const [searching, setSearching] = useState(false);
   const [value, setValue] = useState();
   const [refreshing, setRefreshing] = useState(true);
@@ -65,55 +70,21 @@ export default function Data(props) {
 
   if (!value) {
     return (
-      <ActivityIndicator
-        size="large"
-        animating={true}
-        color="rgba(137,232,207,100)"
-      />
+      <View style={CommonStyles.pagePadding}>
+        <CustomedIndicator />
+      </View>
     );
   }
 
   return (
-    <View style={{
-      marginHorizontal: 5,
-      marginVertical: 5,
-    }}>
-      <View
-        style={{
-          marginBottom: 8,
-          paddingVertical: 9,
-          paddingHorizontal: 12,
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexDirection: 'row',
-          backgroundColor: 'white',
-          borderColor: '#ddd',
-          borderBottomWidth: 0,
-          shadowColor: '#000000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.7,
-          shadowRadius: 3,
-          elevation: 8,
-        }}>
-        <TextInput
-          onChangeText={text => { onChangeText(text) }}
-          onEndEditing={() => { setSearching(true) }}
-          value={InputtedText}
-          placeholder='Search'
-          autoCapitalize='none'
-          style={{
-            flex: 1,
-            backgroundColor: 'white',
-          }}
-          textStyle={{ color: 'black' }}
-          editable
-          maxLength={40}
-        />
-        <TouchableOpacity
-          onPress={() => { onChangeText(''), setValue(storageData._W) }}>
-          <Ionicons name="close-circle-sharp" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
+    <View style={CommonStyles.pagePadding}>
+      <CustomedSearchBar
+        onChangeText={text => { setInputtedText(text) }}
+        onEndEditing={() => { setSearching(true) }}
+        value={InputtedText}
+        placeholder='Search'
+        onTapIcon={() => { setInputtedText(''), setValue(storageData._W) }}
+      />
       <FlatList
         data={value}
         refreshing={refreshing}
@@ -130,16 +101,16 @@ export default function Data(props) {
         }
         renderItem={({ item }) => (
           <View style={styles.listItem}>
-            <TouchableOpacity onPress={() => openUrl("https://twitter.com/" + item[6] + "/status/" + item[2])}>
+            <TouchableOpacity onPress={() => openUrl('https://twitter.com/' + item[6] + '/status/' + item[2])}>
               <View style={styles.wrapTitleIcon}>
-                <TouchableOpacity style={styles.Icon} onPress={() => openUrl("https://twitter.com/" + item[6])}>
+                <TouchableOpacity style={styles.Icon} onPress={() => openUrl('https://twitter.com/' + item[6])}>
                   <Image source={{ uri: item[4] }} style={styles.Icon} />
                 </TouchableOpacity>
                 <View style={styles.wrapTitleID}>
-                  <TouchableOpacity style={styles.listTitle} onPress={() => openUrl("https://twitter.com/" + item[6])}>
-                    <Text style={styles.listTitle}>{!item[3] ? "Not Provided" : item[3]}</Text>
+                  <TouchableOpacity style={styles.listTitle} onPress={() => openUrl('https://twitter.com/' + item[6])}>
+                    <Text style={styles.listTitle}>{!item[3] ? 'Not Provided' : item[3]}</Text>
                   </TouchableOpacity>
-                  <Text style={styles.userID}>{!item[6] ? "Not Provided" : "@" + item[6]}</Text>
+                  <Text style={CommonStyles.smallFont}>{!item[6] ? 'Not Provided' : '@' + item[6]}</Text>
                 </View>
                 <Image source={TwitterLogo} style={styles.logo} />
               </View>
@@ -151,25 +122,25 @@ export default function Data(props) {
               </View>
               <View style={styles.wrapFooter}>
                 <View style={styles.wrapUtil}>
-                  <TouchableOpacity activeOpacity={1.0} style={styles.Utility} onPress={() => openUrl("https://twitter.com/intent/tweet?in_reply_to=" + item[2])}>
+                  <TouchableOpacity activeOpacity={1.0} style={styles.Utility} onPress={() => openUrl('https://twitter.com/intent/tweet?in_reply_to=' + item[2])}>
                     <Image source={reply} style={styles.Utility} />
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.Utility} onPress={() => openUrl("https://twitter.com/intent/retweet?tweet_id=" + item[2])}>
+                  <TouchableOpacity style={styles.Utility} onPress={() => openUrl('https://twitter.com/intent/retweet?tweet_id=' + item[2])}>
                     <Image source={retweet} style={styles.Utility} />
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.Utility} onPress={() => openUrl("https://twitter.com/intent/like?tweet_id=" + item[2])}>
+                  <TouchableOpacity style={styles.Utility} onPress={() => openUrl('https://twitter.com/intent/like?tweet_id=' + item[2])}>
                     <Image source={like} style={styles.Utility} />
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.wrappostedAt} onPress={() => openUrl("https://twitter.com/" + item[6] + "/status/" + item[2])}>
-                  <Text style={styles.postedAt}>{!item[1] ? "Not Provided" : item[1]}</Text>
+                <TouchableOpacity style={styles.wrappostedAt} onPress={() => openUrl('https://twitter.com/' + item[6] + '/status/' + item[2])}>
+                  <Text style={styles.postedAt}>{!item[1] ? 'Not Provided' : item[1]}</Text>
                 </TouchableOpacity>
               </View>
             </TouchableOpacity>
           </View>
         )
         }
-        keyExtractor={item => item[2]}
+        keyExtractor={(item, index) => index}
       />
     </View>
   );
@@ -204,12 +175,9 @@ const styles = StyleSheet.create({
   p: {
     fontSize: 16,
   },
-  userID: {
-    fontSize: 14,
-  },
   listTitle: {
     fontSize: 13,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   wrapTitleIcon: {
     flex: 2,
@@ -235,7 +203,7 @@ const styles = StyleSheet.create({
     flex: 3,
     textAlign: 'right',
     fontSize: 12,
-    color: "gray",
+    color: 'gray',
   },
   wrapFooter: {
     flexDirection: 'row',

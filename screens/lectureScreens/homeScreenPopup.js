@@ -78,11 +78,11 @@ export default function homeScreenProp() {
   return (
     <>
       <Modal
-        animationType="fade"
+        animationType='fade'
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("所属先は必ず選んでください");
+          Alert.alert('', '必ず所属先を選んでください');
           setModalVisible(true);
         }}
       >
@@ -107,17 +107,17 @@ export default function homeScreenProp() {
 
 const styles = StyleSheet.create({
   centeredView: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalView: {
-    width: "75%",
-    marginVertical: "45%",
-    backgroundColor: "white",
+    width: '75%',
+    marginVertical: '45%',
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2
@@ -134,18 +134,18 @@ const styles = StyleSheet.create({
     elevation: 2
   },
   buttonOpen: {
-    backgroundColor: "#F194FF",
+    backgroundColor: '#F194FF',
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: '#2196F3',
   },
   textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center'
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
+    textAlign: 'center'
   }
 });
