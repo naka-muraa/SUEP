@@ -5,6 +5,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+// スタイル・コンポーネントのインポート
+import CustomedButton from '../../Components/CustomedButton'
+import CommonStyles from '../../StyleSheet/CommonStyels'
+
 async function openUrl(url) {
   const supported = await Linking.canOpenURL(url);
   if (supported) {
@@ -27,45 +31,46 @@ const Stack = createStackNavigator();
 
 function AboutPage({ navigation }) {
   return (
-    <ScrollView style={styles.scrollView}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>お問い合わせ先と開発者</Text>
+    <ScrollView style={CommonStyles.scrollViewPageContainer}>
+      <View style={styles.inquiryAndDevelopperContainer}>
+        <View style={styles.titleContainer}>
+          <Text style={CommonStyles.largeFontBold}>お問い合わせ先と開発者</Text>
+        </View>
+        <View style={styles.rowContainer}>
+          <Text style={CommonStyles.basicFont}>SUEP（お問い合わせはこちら）</Text>
+          <TouchableOpacity
+            onPress={() => openUrl("https://suep.netlify.app/")}
+          >
+            <MaterialCommunityIcons name="web" size={24} color="#55c500" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.rowContainer}>
+          <Text style={CommonStyles.basicFont}>Nabe-cyan（プログラマ・UIデザイン） </Text>
+          <TouchableOpacity
+            onPress={() => openUrl("https://twitter.com/n_a_b_e_t_a_s_o")}
+          >
+            <FontAwesome5 name="twitter-square" size={24} color="#00acee" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.rowContainer}>
+          <Text style={CommonStyles.basicFont}>中村優利（プログラマ）</Text>
+        </View>
       </View>
-      <View style={styles.rowContainer}>
-        <Text style={styles.description}>SUEP（お問い合わせはこちら）</Text>
-        <TouchableOpacity
-          onPress={() => openUrl("https://suep.netlify.app/")}
-        >
-          <MaterialCommunityIcons name="web" size={24} color="#55c500" />
-        </TouchableOpacity>
+
+      <View style={styles.specialThanksContainer}>
+        <View style={styles.titleContainer}>
+          <Text style={CommonStyles.largeFontBold}>Special Thanks</Text>
+        </View>
+        <View style={styles.rowContainer}>
+          <Text style={CommonStyles.basicFont}>島根大学ものづくり部Pimの皆さん</Text>
+        </View>
       </View>
-      <View style={styles.rowContainer}>
-        <Text style={styles.description}>Nabe-cyan（プログラマ・UIデザイン） </Text>
-        <TouchableOpacity
-          onPress={() => openUrl("https://twitter.com/n_a_b_e_t_a_s_o")}
-        >
-          <FontAwesome5 name="twitter-square" size={24} color="#00acee" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.rowContainer}>
-        <Text style={styles.description}>中村優利（プログラマ）</Text>
-      </View>
-      <Separator />
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>OSSライセンス一覧</Text>
-      </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Third-party software notices')}
-      >
-        <Text>ReactNative, Expoに関するライセンスについて</Text>
-      </TouchableOpacity>
-      <Separator />
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Special Thanks</Text>
-      </View>
-      <View style={styles.rowContainer}>
-        <Text style={styles.description}>島根大学ものづくり部Pimの皆さん</Text>
+
+      <View style={styles.licenseContainer}>
+        <CustomedButton
+          onPress={() => navigation.navigate('Third-party software notices')}
+          buttonText='ReactNative, Expoに関するライセンス'
+        />
       </View>
     </ScrollView>
   );
@@ -85,6 +90,23 @@ export default function About() {
 }
 
 const styles = StyleSheet.create({
+  inquiryAndDevelopperContainer: {
+    padding: 10,
+    backgroundColor: 'white',
+    flex: 3,
+    marginBottom: 10,
+  },
+  specialThanksContainer: {
+    padding: 10,
+    backgroundColor: 'white',
+    flex: 1,
+    marginBottom: 10,
+  },
+  licenseContainer: {
+    padding: 10,
+    backgroundColor: 'white',
+    flex: 1,
+  },
   rowContainer: {
     flexDirection: 'row',
     marginTop: 10,
@@ -93,28 +115,5 @@ const styles = StyleSheet.create({
   titleContainer: {
     marginTop: 5,
     marginBottom: 15,
-  },
-  scrollView: {
-    marginHorizontal: 10,
-    marginVertical: 10,
-    backgroundColor: 'white',
-    padding: 5,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  description: {
-    fontSize: 16
-  },
-  separator: {
-    marginVertical: 8,
-    borderBottomColor: '#4788ff',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10
   },
 });

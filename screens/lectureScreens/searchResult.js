@@ -10,6 +10,10 @@ import SearchLecture from '../../AppFunction/LectureScreenFunction/SearchLecture
 import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
 import DeleteDuplicateLecture from '../../AppFunction/LectureScreenFunction/deleteDuplicateLecture';
 
+// コンポーネントのインポート
+import CustomedButton from '../../Components/CustomedButton';
+import CustomedIndicator from '../../Components/CustomedIndicator';
+
 export default function searchScreen() {
   const [searchResultsData, setsearchResultsData] = useState();
   const [isChecked, setisChecked] = useState(true);
@@ -32,7 +36,7 @@ export default function searchScreen() {
     getAsyncData();
   }, []);
 
-  // チェックマークを付けたデータで "check" = true or falseを設定
+  // チェックマークを付けたデータで 'check' = true or falseを設定
   const checkMark = (classId) => {
     const classIdNumber = searchResultsData.findIndex((id) => id.時間割コード == classId);
     let newData = searchResultsData;
@@ -58,11 +62,10 @@ export default function searchScreen() {
       if (duplicateFlag) {
         Alert.alert(
           '同じ曜日・時限の科目が複数選択されています。',
-          '選択する科目を訂正してください。',
+          '選択した科目を訂正してください。',
           [
-            { text: '戻る', onPress: () => console.log("戻る Pressed") },
-          ],
-          { cancelable: false });
+            { text: '戻る' },
+          ],)
       }
       else {
         selectedLectures = await DeleteDuplicateLecture(selectedLectures);
@@ -74,11 +77,9 @@ export default function searchScreen() {
 
   if (isLoading) {
     return (
-      <ActivityIndicator
-        size="large"
-        animating={true}
-        color="rgba(137,232,207,100)"
-      />
+      <View style={styles.containerSearch}>
+        <CustomedIndicator/>
+      </View>
     );
   }
 
@@ -97,7 +98,7 @@ export default function searchScreen() {
       </View>
       <View style={styles.iconTextWrapper}>
         <View style={styles.iconWrapper}>
-          <Ionicons name="person" size={18} color="dimgray" />
+          <Ionicons name='person' size={18} color='dimgray' />
         </View>
         <View style={styles.textWrapper}>
           <Text style={styles.descriptionText}>{item.担当}</Text>
@@ -105,7 +106,7 @@ export default function searchScreen() {
       </View>
       <View style={styles.iconTextWrapper}>
         <View style={styles.iconWrapper}>
-          <Ionicons name="ios-calendar-sharp" size={18} color="dimgray" />
+          <Ionicons name='ios-calendar-sharp' size={18} color='dimgray' />
         </View>
         <View style={styles.textWrapper}>
           <Text style={styles.descriptionText}>{item.曜日時限}</Text>
@@ -113,10 +114,10 @@ export default function searchScreen() {
       </View>
       <View style={styles.iconTextWrapper}>
         <View style={styles.iconWrapper}>
-          <MaterialIcons name="meeting-room" size={18} color="dimgray" />
+          <MaterialIcons name='meeting-room' size={18} color='dimgray' />
         </View>
         <View style={styles.textWrapper}>
-          {item.棟名 != "" ? <Text style={styles.descriptionText}>{item.棟名 + ' ' + item.教室名}</Text> : <Text style={styles.descriptionText}>未定またはオンライン講義です</Text>}
+          {item.棟名 != '' ? <Text style={styles.descriptionText}>{item.棟名 + ' ' + item.教室名}</Text> : <Text style={styles.descriptionText}>未定またはオンライン講義です</Text>}
         </View>
       </View>
       <View style={styles.checkBoxWrapper}>
@@ -147,9 +148,10 @@ export default function searchScreen() {
         />
       </SafeAreaView>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.addButtonWrapper} onPress={() => { storeFilteredData(); }}>
-          <Text style={styles.addButtonText}>時間割に追加</Text>
-        </TouchableOpacity>
+        <CustomedButton
+          onPress={() => { storeFilteredData(); }}
+          buttonText='時間割に追加'
+        />
       </View>
     </>
   );
@@ -157,6 +159,7 @@ export default function searchScreen() {
 
 const styles = StyleSheet.create({
   containerSearch: {
+    justifyContent: 'center',
     marginHorizontal: 5,
     marginTop: 10,
     flex: 1,
@@ -174,14 +177,14 @@ const styles = StyleSheet.create({
   // flatList内アイテムのデザイン
   resultItemContainer: {
     marginVertical: 5,
-    flexDirection: "column",
-    backgroundColor: "white",
+    flexDirection: 'column',
+    backgroundColor: 'white',
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
   emptyTextWrapper: {
-    marginVertical: "10%",
-    marginHorizontal: "10%",
+    marginVertical: '10%',
+    marginHorizontal: '10%',
   },
   emptyText: {
     fontSize: 18,
@@ -189,25 +192,25 @@ const styles = StyleSheet.create({
 
   //時間割所属
   kindsMarkWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignContent: 'space-between',
   },
   kindFlex: {
     flex: 1,
     marginRight: 10,
   },
   kindsText: {
-    backgroundColor: "#d3d3d3",
+    backgroundColor: '#d3d3d3',
     fontSize: 14,
   },
   codeWrapper: {
     paddingVertical: 5,
-    alignItems: "flex-end",
+    alignItems: 'flex-end',
   },
   codeText: {
     fontSize: 14,
-    color: "dimgray",
+    color: 'dimgray',
   },
 
   // 科目名
@@ -221,17 +224,17 @@ const styles = StyleSheet.create({
 
   // チェックマーク
   checkBoxWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-end",
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
   },
 
   //共通
   iconTextWrapper: {
     flex: 1,
     marginBottom: 4,
-    alignItems: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   iconWrapper: {
     flex: 1,
@@ -242,14 +245,14 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     fontSize: 16,
-    color: "dimgray",
+    color: 'dimgray',
   },
 
   // 画面下の追加ボタンデザイン
   buttonContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: "white",
+    backgroundColor: 'white',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: -8 },
     shadowOpacity: 0.5,

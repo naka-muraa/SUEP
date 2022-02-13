@@ -21,7 +21,6 @@ function changeName(roomeName, buildingName,) {
 
 //授業詳細画面
 export default function classDetails({ navigation, lectureInfo }) {
-  console.log('aaa:  ' + lectureInfo)
   const { 科目 } = lectureInfo.params;
   const { 担当 } = lectureInfo.params;
   const { 教室名 } = lectureInfo.params;
@@ -139,7 +138,7 @@ export default function classDetails({ navigation, lectureInfo }) {
           </View>
         </View>
         <View style={styles.backContainer}>
-          <TouchableOpacity style={styles.backButtonWrapper} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backButtonWrapper} onPress={() => { navigation.goBack(); }}>
             <Text style={styles.backButtonText}>戻る</Text>
           </TouchableOpacity>
         </View>

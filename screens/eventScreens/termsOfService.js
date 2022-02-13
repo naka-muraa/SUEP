@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { StyleSheet, Text, SafeAreaView, ScrollView, TouchableOpacity, Linking, Alert } from "react-native";
 
+// コンポーネントのインポート
+import CustomedButton from '../../Components/CustomedButton'
+
 async function openUrl(url) {
   const supported = await Linking.canOpenURL(url);
   if (supported) {
@@ -90,29 +93,23 @@ export default function TermsOfService() {
 第13条（Twitter APIの利用）\n
 　本サービスではTwitter, Inc.が提供するTwitter APIを利用し，Twitter上のコンテンツを再配布しています。本アプリケーションを利用するユーザーはTwitterの利用規約およびプライバシーポリシーに同意しているものとみなします。
         `}</Text>
-        <TouchableOpacity
-        style={styles.button}
-        onPress={() => openUrl("https://cdn.cms-twdigitalassets.com/content/dam/legal-twitter/site-assets/privacy-policy-new/pp-tos-ja.pdf")}
-      >
-        <Text>「Twitterの利用規約」はこちらから</Text>
-      </TouchableOpacity>
+        <CustomedButton
+          buttonText='「Twitterの利用規約」はこちらから'
+          onPress={() => openUrl("https://cdn.cms-twdigitalassets.com/content/dam/legal-twitter/site-assets/privacy-policy-new/pp-tos-ja.pdf")}
+        />
         <Text>{"\n"}</Text>
-        <TouchableOpacity
-        style={styles.button}
-        onPress={() => openUrl("https://cdn.cms-twdigitalassets.com/content/dam/legal-twitter/site-assets/privacy-june-18th-2020/Twitter_Privacy_Policy_JA.pdf")}
-      >
-        <Text>「Twitterのプライバシーポリシー」はこちらから</Text>
-      </TouchableOpacity>
+        <CustomedButton
+          buttonText='「Twitterのプライバシーポリシー」はこちらから'
+          onPress={() => openUrl("https://cdn.cms-twdigitalassets.com/content/dam/legal-twitter/site-assets/privacy-june-18th-2020/Twitter_Privacy_Policy_JA.pdf")}
+        />
         <Text style={styles.text}>{`
 第13条（Googleフォームの利用）\n
 　本サービスではお問い合わせの際にGoogleフォームを用いる場合があります．Googleが提供するサービスを用いる場合にはGoogleの利用規約が適用されるます．詳しくは下に記載したリンクからご確認ください．
 `}</Text>
-        <TouchableOpacity
-        style={styles.button}
-        onPress={() => openUrl("https://policies.google.com/terms?hl=ja")}
-      >
-        <Text>「Googleのプライバシーポリシーと利用規約」はこちらから</Text>
-      </TouchableOpacity>
+        <CustomedButton
+          buttonText='「Googleのプライバシーポリシーと利用規約」はこちらから'
+          onPress={() => openUrl("https://policies.google.com/terms?hl=ja")}
+        />
       </ScrollView>
     </SafeAreaView>
   );
