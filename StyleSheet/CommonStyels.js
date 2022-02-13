@@ -2,10 +2,10 @@ import { StyleSheet } from 'react-native';
 
 const CommonStyles = StyleSheet.create({
   pagePadding: {
+    margin: 5,
     padding: 5,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
     flex: 1,
+    justifyContent: 'center',
   },
   scrollViewPageContainer: {
     margin: 5,
@@ -25,17 +25,23 @@ const CommonStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  basicColorTomato: {
+  colorTomato: {
     color: 'tomato',
   },
-  basicColorGrey: {
+  colorGray: {
     color: 'gray',
   },
-  basicColorDimGray: {
+  colorDimGray: {
     color: 'dimgray',
   },
-  basicColorBlue: {
+  colorBlue: {
     color: '#00acee',
+  },
+  bgColorWhite: {
+    backgroundColor: 'white',
+  },
+  bgColorTomato: {
+    backgroundColor: 'tomato',
   },
 });
 

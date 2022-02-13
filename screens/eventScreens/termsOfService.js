@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { StyleSheet, Text, SafeAreaView, ScrollView, TouchableOpacity, Linking, Alert } from "react-native";
 
-// コンポーネントのインポート
-import CustomedButton from '../../Components/CustomedButton'
+// スタイルとコンポーネントのインポート
+import CustomedButton from '../../Components/CustomedButton';
+import CommonStyles from '../../StyleSheet/CommonStyels';
 
 async function openUrl(url) {
   const supported = await Linking.canOpenURL(url);
@@ -20,9 +21,9 @@ async function openUrl(url) {
 
 export default function TermsOfService() {
   return (
-    <SafeAreaView>
-      <ScrollView style={styles.scrollView}>
-        <Text style={styles.text}>{`
+    <SafeAreaView style={CommonStyles.scrollViewPageContainer}>
+      <ScrollView style={[styles.pageContainer, CommonStyles.bgColorWhite]}>
+        <Text style={[styles.text, CommonStyles.basicFont]}>{`
 　この利用規約（以下，「本規約」といいます。）は，開発者（以下，「私」といいます。）がこのアプリケーション上で提供するサービス（以下，「本サービス」といいます。）の利用条件を定めるものです。利用者の皆さま（以下，「ユーザー」といいます。）には，本規約に従って，本サービスをご利用いただきます。\n
 
 第1条（適用）\n
@@ -102,7 +103,7 @@ export default function TermsOfService() {
           buttonText='「Twitterのプライバシーポリシー」はこちらから'
           onPress={() => openUrl("https://cdn.cms-twdigitalassets.com/content/dam/legal-twitter/site-assets/privacy-june-18th-2020/Twitter_Privacy_Policy_JA.pdf")}
         />
-        <Text style={styles.text}>{`
+        <Text style={[styles.text, CommonStyles.basicFont]}>{`
 第13条（Googleフォームの利用）\n
 　本サービスではお問い合わせの際にGoogleフォームを用いる場合があります．Googleが提供するサービスを用いる場合にはGoogleの利用規約が適用されるます．詳しくは下に記載したリンクからご確認ください．
 `}</Text>
@@ -116,26 +117,16 @@ export default function TermsOfService() {
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
-    marginHorizontal: 10,
-    marginVertical: 10,
-    backgroundColor: 'white',
+  pageContainer: {
+    paddingHorizontal: 5,
+    padding: 10,
+    flex: 1,
   },
   text: {
     marginHorizontal: 10,
-    fontSize: 16,
   },
-  twitterText: {
-    color: '#ffffff',
-  },
-  touch: {
-    marginBottom: 10,
-    marginTop: 10,
-    backgroundColor: '#1e90ff',
-  },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10
+  buttonWrapper: {
+    marginHorizontal: 5,
+    marginBottom: 5,
   },
 });

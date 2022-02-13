@@ -1,6 +1,6 @@
 import License from './License'
 import * as React from 'react';
-import { Text, View, ScrollView, TouchableOpacity, StyleSheet, Linking } from "react-native";
+import { Text, View, ScrollView, TouchableOpacity, StyleSheet, Linking } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -15,62 +15,74 @@ async function openUrl(url) {
     await Linking.openURL(url);
   } else {
     Alert.alert(
-      "エラー",
-      "このページを開ませんでした",
-      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+      'エラー',
+      'このページを開ませんでした',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
       { cancelable: false }
     );
   }
 }
-
-const Separator = () => (
-  <View style={styles.separator} />
-);
 
 const Stack = createStackNavigator();
 
 function AboutPage({ navigation }) {
   return (
     <ScrollView style={CommonStyles.scrollViewPageContainer}>
-      <View style={styles.inquiryAndDevelopperContainer}>
-        <View style={styles.titleContainer}>
-          <Text style={CommonStyles.largeFontBold}>お問い合わせ先と開発者</Text>
-        </View>
-        <View style={styles.rowContainer}>
-          <Text style={CommonStyles.basicFont}>SUEP（お問い合わせはこちら）</Text>
-          <TouchableOpacity
-            onPress={() => openUrl("https://suep.netlify.app/")}
-          >
-            <MaterialCommunityIcons name="web" size={24} color="#55c500" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.rowContainer}>
-          <Text style={CommonStyles.basicFont}>Nabe-cyan（プログラマ・UIデザイン） </Text>
-          <TouchableOpacity
-            onPress={() => openUrl("https://twitter.com/n_a_b_e_t_a_s_o")}
-          >
-            <FontAwesome5 name="twitter-square" size={24} color="#00acee" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.rowContainer}>
-          <Text style={CommonStyles.basicFont}>中村優利（プログラマ）</Text>
+      {/* 開発者と問い合わせ */}
+      <View style={styles.contentWrapper}>
+        <Text style={CommonStyles.largeFontBold}>開発者</Text>
+        <View style={styles.sentenceWrapper}>
+          <View style={styles.nameIconRow}>
+            <View style={styles.nameWrapper}>
+              <Text style={CommonStyles.basicFont}>Nabe-cyan</Text>
+            </View>
+            <View style={styles.iconWrapper}>
+              <TouchableOpacity
+                onPress={() => openUrl('https://twitter.com/n_a_b_e_t_a_s_o')}
+                style={styles.touchableSpace}
+              >
+                <FontAwesome5 name='twitter-square' size={28} color='#00acee' />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => openUrl('https://github.com/htnabe')}
+              >
+                <FontAwesome5 name="github-square" size={28} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.nameIconRow}>
+            <View style={styles.nameWrapper}>
+              <Text style={CommonStyles.basicFont}>中村優利</Text>
+            </View>
+            <View style={styles.iconWrapper}>
+            </View>
+          </View>
         </View>
       </View>
-
-      <View style={styles.specialThanksContainer}>
-        <View style={styles.titleContainer}>
-          <Text style={CommonStyles.largeFontBold}>Special Thanks</Text>
+      {/* ライセンス */}
+      <View style={styles.contentWrapper}>
+        <View style={styles.sentenceWrapper}>
+          <CustomedButton
+            onPress={() => openUrl('https://suep.netlify.app/')}
+            buttonText='お問い合わせはこちらから'
+          />
         </View>
-        <View style={styles.rowContainer}>
+      </View>
+      {/* ライセンス */}
+      <View style={styles.contentWrapper}>
+        <View style={styles.sentenceWrapper}>
+          <CustomedButton
+            onPress={() => navigation.navigate('Third-party software notices')}
+            buttonText='ReactNative, Expoに関するライセンス'
+          />
+        </View>
+      </View>
+      {/* スペシャルサンクス */}
+      <View style={styles.contentWrapper}>
+        <Text style={CommonStyles.largeFontBold}>Special Thanks</Text>
+        <View style={styles.sentenceWrapper}>
           <Text style={CommonStyles.basicFont}>島根大学ものづくり部Pimの皆さん</Text>
         </View>
-      </View>
-
-      <View style={styles.licenseContainer}>
-        <CustomedButton
-          onPress={() => navigation.navigate('Third-party software notices')}
-          buttonText='ReactNative, Expoに関するライセンス'
-        />
       </View>
     </ScrollView>
   );
@@ -78,42 +90,47 @@ function AboutPage({ navigation }) {
 
 export default function About() {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false
-      }}
-    >
-      <Stack.Screen name="about this app." component={AboutPage} />
-      <Stack.Screen name="Third-party software notices" component={License} />
+    <Stack.Navigator>
+      <Stack.Screen name='アプリについて' component={AboutPage}
+        options={({ navigation }) => ({
+          headerLeft: () => (
+            <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "#1DA1F2" }} />
+          ),
+        })}/>
+      <Stack.Screen name='Third-party software notices' component={License} />
     </Stack.Navigator>
   );
 }
 
 const styles = StyleSheet.create({
-  inquiryAndDevelopperContainer: {
+  contentWrapper: {
     padding: 10,
     backgroundColor: 'white',
-    flex: 3,
     marginBottom: 10,
   },
-  specialThanksContainer: {
-    padding: 10,
-    backgroundColor: 'white',
-    flex: 1,
-    marginBottom: 10,
+  sentenceWrapper: {
+    justifyContent: 'center',
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
-  licenseContainer: {
-    padding: 10,
-    backgroundColor: 'white',
+  nameIconRow: {
     flex: 1,
-  },
-  rowContainer: {
     flexDirection: 'row',
-    marginTop: 10,
-    marginBottom: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginVertical: 5,
   },
-  titleContainer: {
-    marginTop: 5,
-    marginBottom: 15,
+  nameWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  iconWrapper: {
+    flex: 2,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginHorizontal: '10%',
+  },
+  touchableSpace: {
+  marginHorizontal: '20%'
   },
 });
