@@ -3,9 +3,8 @@ import FetchData from './FetchData';
 import StoreData from './storeData';
 import GetStoredData from './GetStoredData';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, ActivityIndicator, Alert, Linking, FlatList, View, Image, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, Alert, Linking, FlatList, View, Image, TouchableOpacity } from 'react-native';
 import HTMLView from 'react-native-htmlview';
-import { Ionicons } from '@expo/vector-icons';
 
 // 画像素材のインポート
 import reply from '../../Assets/reply.png';
@@ -70,14 +69,14 @@ export default function Data(props) {
 
   if (!value) {
     return (
-      <View style={CommonStyles.pagePadding}>
+      <View style={CommonStyles.viewPageContainer}>
         <CustomedIndicator />
       </View>
     );
   }
 
   return (
-    <View style={CommonStyles.pagePadding}>
+    <View style={[CommonStyles.viewPageContainer, { backgroundColor: 'white'},]}>
       <CustomedSearchBar
         onChangeText={text => { setInputtedText(text) }}
         onEndEditing={() => { setSearching(true) }}

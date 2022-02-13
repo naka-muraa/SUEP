@@ -73,9 +73,28 @@ export default function App() {
           options={{
             headerShown: false,
           }} />
-        <Drawer.Screen name="利用規約" component={Terms} />
-        <Drawer.Screen name="プライバシーポリシー" component={PrivacyPolicy} />
-        <Drawer.Screen name="このアプリについて" component={About} />
+        <Drawer.Screen name="利用規約" component={Terms}
+          options={{
+            headerShown: false,
+          }}
+          options={({ navigation }) => ({
+            headerLeft: () => (
+              <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "#1DA1F2" }} />
+            ),
+          })}/>
+        <Drawer.Screen name="プライバシーポリシー" component={PrivacyPolicy}
+          options={{
+            headerShown: false,
+          }}
+          options={({ navigation }) => ({
+            headerLeft: () => (
+              <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "#1DA1F2" }} />
+            ),
+          })}/>
+        <Drawer.Screen name="このアプリについて" component={About}
+          options={{
+            headerShown: false,
+          }}/>
       </Drawer.Navigator>
     </NavigationContainer >
   );
