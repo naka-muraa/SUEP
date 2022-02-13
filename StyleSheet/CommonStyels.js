@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 const CommonStyles = StyleSheet.create({
-  pagePadding: {
+  viewPageContainer: {
     margin: 5,
     padding: 5,
     flex: 1,

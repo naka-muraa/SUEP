@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, FlatList, View, StyleSheet, SafeAreaView, Linking, TouchableOpacity } from 'react-native';
+import { Text, FlatList, View, StyleSheet, Linking } from 'react-native';
 import licenseFile from '../../AppFunction/EventScreenFunction/license.json';
 
 // スタイルとコンポーネントのインポート
@@ -33,41 +33,45 @@ export default function License() {
         <Text style={styles.licenseContent}>{!item._licenseContent ? 'License description is not provided.' : item._licenseContent}</Text>
       </View>
       {item.homepage &&
-      <CustomedButton
-        onPress={() => openUrl(item.homepage)}
-        buttonText='Home page'
+        <CustomedButton
+          onPress={() => openUrl(item.homepage)}
+          buttonText='Home page'
+          buttonStyle={styles.buttonExtraStyle}
         />
       }
     </View >
   );
 
   return (
-    <SafeAreaView style={CommonStyles.pagePadding}>
-      <View style={styles.allContentWrapper}>
+    <View style={CommonStyles.viewPageContainer}>
       <FlatList
         data={license}
         renderItem={renderItem}
         keyExtractor={(item, index) => index}
-        />
-      </View>
-    </SafeAreaView>
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  allContentWrapper: {
-  },
   rowContainer: {
     marginTop: 4,
   },
   eachItemContainer: {
+    flex: 1,
     backgroundColor: 'white',
     padding: 10,
     marginBottom: 10,
+    justifyContent: 'center',
   },
   licenseDescriptionWrapper: {
     marginVertical: 5,
     padding: 5,
     backgroundColor: '#e6e6e6',
+  },
+  buttonExtraStyle: {
+    flex: 1,
+    paddingHorizontal: '10%',
+    alignSelf: 'center'
   },
 });

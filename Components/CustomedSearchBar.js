@@ -2,9 +2,9 @@ import React from "react";
 import { StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
-export default function CustomedSearchBar({ onChangeText, onEndEditing, value, placeholder, onTapIcon }) {
+export default function CustomedSearchBar({ onChangeText, onEndEditing, value, placeholder, onTapIcon , style}) {
   return (
-    < View style={styles.textInputWrapper }>
+    < View style={[styles.textInputWrapper, style] }>
       <TextInput
         onChangeText={onChangeText}
         onEndEditing={onEndEditing}
@@ -25,13 +25,12 @@ export default function CustomedSearchBar({ onChangeText, onEndEditing, value, p
 
 const styles = StyleSheet.create({
   textInputWrapper: {
-    marginBottom: 8,
+    backgroundColor: 'white',
     paddingVertical: 9,
     paddingHorizontal: 12,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
-    backgroundColor: 'white',
     borderColor: '#ddd',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },

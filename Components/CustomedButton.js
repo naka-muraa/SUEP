@@ -4,9 +4,9 @@ import { StyleSheet,  TouchableOpacity, Text } from "react-native";
 // スタイルのインポート
 import CommonStyles from "../StyleSheet/CommonStyels";
 
-export default function CustomedButton({buttonText, onPress}) {
+export default function CustomedButton({buttonText, onPress, buttonStyle}) {
   return (
-    < TouchableOpacity style={styles.buttonDesign} onPress={onPress}>
+    < TouchableOpacity style={[styles.buttonDesign, buttonStyle]} onPress={onPress}>
       <Text style={[styles.buttonText, CommonStyles.basicFont]}>{buttonText}</Text>
     </TouchableOpacity>
   )

@@ -250,6 +250,7 @@ export default function homeScreenProp() {
             value={inputedKeyWord}
             placeholder='授業科目検索'
             onTapIcon={() => { setinputedLectureInfo('') }}
+            style={styles.extraSearchBarStyle}
           />
         </View>
           <View style={styles.editBarWrapper}>
@@ -315,6 +316,9 @@ const styles = StyleSheet.create({
   },
   searchBarWrapper: {
     width: '98%',
+  },
+  extraSearchBarStyle: {
+  marginBottom: 10,
   },
   editBarWrapper: {
     marginBottom: 10,

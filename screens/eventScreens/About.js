@@ -65,6 +65,7 @@ function AboutPage({ navigation }) {
           <CustomedButton
             onPress={() => openUrl('https://suep.netlify.app/')}
             buttonText='お問い合わせはこちらから'
+            buttonStyle={styles.buttonExtraDesign}
           />
         </View>
       </View>
@@ -74,6 +75,7 @@ function AboutPage({ navigation }) {
           <CustomedButton
             onPress={() => navigation.navigate('Third-party software notices')}
             buttonText='ReactNative, Expoに関するライセンス'
+            buttonStyle={styles.buttonExtraDesign}
           />
         </View>
       </View>
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   sentenceWrapper: {
-    justifyContent: 'center',
+    alignItems: 'flex-start',
     marginHorizontal: 10,
     marginVertical: 5,
   },
@@ -132,5 +134,8 @@ const styles = StyleSheet.create({
   },
   touchableSpace: {
   marginHorizontal: '20%'
+  },
+  buttonExtraDesign: {
+    flex: 1,
   },
 });
