@@ -5,13 +5,11 @@ const CommonStyles = StyleSheet.create({
     padding: 5,
     backgroundColor: '#fff',
     justifyContent: 'center',
-    width: '100%',
     flex: 1,
   },
-  scrollViewPadding: {
+  scrollViewPageContainer: {
+    margin: 5,
     padding: 5,
-    backgroundColor: '#fff',
-    width: '100%',
     flex: 1,
   },
   largeFont: {
@@ -33,10 +31,12 @@ const CommonStyles = StyleSheet.create({
   basicColorGrey: {
     color: 'gray',
   },
-  basicColorDarkGray: {
-    color: 'gray'
+  basicColorDimGray: {
+    color: 'dimgray',
   },
-  basicColorBlue: {},
+  basicColorBlue: {
+    color: '#00acee',
+  },
 });
 
 export default CommonStyles;

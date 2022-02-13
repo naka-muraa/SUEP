@@ -274,14 +274,9 @@ export default function homeScreenProp() {
           <ListItem.Content >
             <TouchableOpacity onPress={() => navigatoToDetailScreen(otherItem[elementNumber])}>
               <View style={styles.otherItem}>
-                <View style={styles.otreItemTItle}>
+                <View style={styles.othreItemTitle}>
                   <ListItem.Title>
                     <Text style={styles.otherItemText}>{element.科目}</Text>
-                  </ListItem.Title>
-                </View>
-                <View style={styles.othreItemTeacher}>
-                  <ListItem.Title>
-                    <Text style={styles.otherItemText}>{element.担当}</Text>
                   </ListItem.Title>
                 </View>
               </View>
@@ -319,7 +314,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchBarWrapper: {
-    width: '100%',
+    width: '98%',
   },
   editBarWrapper: {
     marginBottom: 10,
@@ -359,7 +354,6 @@ const styles = StyleSheet.create({
   },
   listItemContainer: {
     width: '100%',
-    borderBottomWidth: 1.5,
   },
   titleStyle: {
     textAlign: 'center',
@@ -396,8 +390,7 @@ const styles = StyleSheet.create({
     padding: '1%',
     marginHorizontal: '4%',
   },
-  otreItemTItle: {
-    flex: 2,
+  othreItemTitle: {
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     paddingRight: 2,
