@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text, FlatList, View, StyleSheet, Linking } from 'react-native';
-import licenseFile from '../../AppFunction/EventScreenFunction/license.json';
+import licenseFile from './assets/license.json';
 
 // スタイルとコンポーネントのインポート
 import CommonStyles from '../../StyleSheet/CommonStyels';

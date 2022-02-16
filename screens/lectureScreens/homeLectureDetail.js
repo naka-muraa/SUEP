@@ -1,21 +1,32 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  FontAwesome5,
+  Entypo,
+  MaterialIcons,
+} from '@expo/vector-icons';
+import { CheckBox } from 'react-native-elements';
+
+// スタイルとコンポーネントのインポート
+import CustomedButton from '../../Components/CustomedButton';
+import CommonStyles from '../../StyleSheet/CommonStyels';
 
 // 教室名と棟名が空白の場合の処理
-function changeName(rName, bName,) {
-  if (rName == '' || bName == '') {
+function changePlaceName(room, building,) {
+  if (room == '' || building == '') {
     return '未定またはオンライン講義です';
   }
-  else if (bName != '' && rName == '') {
-    return bName;
+  else if (building != '' && room == '') {
+    return building;
   }
-  else if (bName == '' && rName != '') {
-    return rName;
+  else if (building == '' && room != '') {
+    return room;
   }
-  else if (bName != '' && rName != '') {
-    return bName + '\n' + rName;
+  else if (building != '' && room != '') {
+    return building + '\n' + room;
   }
 };
 
@@ -25,100 +36,169 @@ export default function lectureDetail() {
   const route = useRoute();
   const lectureName = route.params.科目;
   const teacher = route.params.担当;
-  const dayTime = route.params.曜日時限;
   let roomName = route.params.教室名;
   let buildingName = route.params.棟名;
-  let buildName = route.params.棟;
   let displayedRoomName = '';
 
-  if (buildingName == undefined && buildName != undefined) {
-    displayedRoomName = changeName(roomName, buildName);
-  }
-  else if (buildingName != undefined && buildName == undefined) {
-    displayedRoomName = changeName(roomName, buildingName);
-  }
-
-  const classDayTime = dayTime.split(',')
-  const daytime_1 = classDayTime[0] + 'コマ';
-  const daytime_2 = classDayTime[1] + 'コマ';
-  const showDaytime = daytime_1 + '・' + daytime_2;
+  displayedRoomName = changePlaceName(roomName, buildingName);
 
   return (
-    <ScrollView>
-      <View style={styles.containerClass}>
-        <View style={styles.classTapframe}>
-          <Text style={styles.classTapHeader}>講義名</Text>
-          <Text style={styles.classTapText}>{lectureName}</Text>
-        </View>
-        <View style={styles.classTapframe}>
-          <Text style={styles.classTapHeader}>担当者</Text>
-          <Text style={styles.classTapText}>{teacher}</Text>
-        </View>
-        <View style={styles.classTapframe}>
-          <Text style={styles.classTapHeader}>棟名・教室名</Text>
-          <View style={styles.buildingRoom}>
-          <Text style={styles.classTapText}>{displayedRoomName}</Text>
+    <View style={CommonStyles.viewPageContainer}>
+      <View style={[CommonStyles.bgColorWhite, styles.separatedItemContainer]}>
+        <View style={styles.headerInfoLabelWrapper}>
+          <View style={styles.iconFlex}>
+            <MaterialIcons name="title" size={24} color="dimgray" />
+          </View>
+          <View style={styles.textFlex}>
+            <Text style={styles.infoText}>{lectureName}</Text>
           </View>
         </View>
-        <View style={styles.ctTuikaContainer}>
-          <TouchableOpacity style={styles.ctTuikaBtn} onPress={() => navigation.goBack()}>
-            <Text style={styles.ctTuikaBtnText}>戻る</Text>
-          </TouchableOpacity>
+        <View style={styles.headerInfoLabelWrapper}>
+          <View style={styles.iconFlex}>
+            <Ionicons name="person" size={18} color="dimgray" />
+          </View>
+          <View style={styles.textFlex}>
+            <Text style={styles.infoText}>{teacher}</Text>
+          </View>
+        </View>
+        <View style={styles.headerInfoLabelWrapper}>
+          <View style={styles.iconFlex}>
+            <MaterialIcons name="meeting-room" size={18} color="dimgray" />
+          </View>
+          <View style={styles.textFlex}>
+            <Text style={styles.infoText}>{displayedRoomName}</Text>
+          </View>
         </View>
       </View>
-    </ScrollView>
+      <View style={[CommonStyles.bgColorWhite, styles.separatedItemContainer]}>
+        <View style={styles.scheduleTitleWrapper}>
+          <Text style={styles.scheduleTitleText}>スケジュール</Text>
+        </View>
+      </View>
+      <View style={[CommonStyles.bgColorWhite, styles.separatedItemContainer]}>
+        <CustomedButton
+          buttonStyle={styles.extraButtonStyle}
+          buttonText='戻る'
+          onPress={() => { navigation.goBack(); }}
+        />
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   // 全体のコンテナ
-  containerClass: {
-    flex: 1,
-    alignItems: 'center',
+  container: {
     justifyContent: 'center',
-  },
-  // 各情報について
-  classTapframe: {
-    width: '100%',
-    backgroundColor: '#78bbc7',
-  },
-  classTapHeader: {
-    width: '100%',
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    fontSize: 24,
-    color: 'white',
-    fontWeight: '600',
-  },
-  classTapText: {
     padding: 5,
-    textAlign: 'center',
-    width: '100%',
-    fontSize: 22,
-    backgroundColor: '#e6f2f5',
-    color: 'black',
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'white',
   },
-  buildingRoom: {
-    marginTop: '2%'
+  separatedItemContainer: {
+    marginVertical: 10,
+  },
+  // 講義情報について
+  headerInfoLabelWrapper: {
+    paddingHorizontal: 5,
+    marginVertical: 5,
+    width: '100%',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  iconFlex: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  textFlex: {
+    alignSelf: 'flex-start',
+    flex: 6,
+  },
+  infoText: {
+    width: '100%',
+    fontSize: 18,
+  },
+  // スケジュール関連
+  scheduleTitleWrapper: {
+    marginLeft: 10,
+    width: '100%',
+  },
+  scheduleTitleText: {
+    fontSize: 18,
+  },
+  listRowWrapper: {},
+  innerMargin: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flex: 1,
+    padding: 5,
+  },
+  checkBoxWrapper: {
+    flex: 1,
+  },
+  periodTitleWrapper: {
+    flex: 10,
+    flexDirection: 'row',
+    height: '100%',
+  },
+  periodWrapper: {
+    height: '100%',
+    justifyContent: 'center',
+    flex: 4,
+  },
+  taskTitleWrapper: {
+    height: '100%',
+    justifyContent: 'center',
+    flex: 6,
+  },
+  arrowIcon: {
+    paddingRight: 5,
+    justifyContent: 'flex-end',
+  },
+  memoWrapper: {
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    backgroundColor: 'white',
+  },
+  separator: {
+    height: 1,
+    marginHorizontal: '1%',
+    backgroundColor: '#CED0CE',
+  },
+  // アイコン関連
+  iconWrapper: {
+    marginTop: 20,
+    justifyContent: 'space-around',
+    flex: 1,
+    flexDirection: 'row',
+  },
+  iconBackCricle: {
+    backgroundColor: '#F8F8F8',
+    borderRadius:
+      Math.round(
+        Dimensions.get('window').width + Dimensions.get('window').height
+      ) / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: (Dimensions.get('window').width * 0.5) / 3,
+    height: (Dimensions.get('window').width * 0.5) / 3,
   },
   // 追加ボタン関連
-  ctTuikaContainer: {
-    width: '30%',
+  goBackButtonWrapper: {
+    margin: 30,
     alignItems: 'center',
-    marginTop: 30,
   },
-  ctTuikaBtn: {
+  goBackButton: {
     borderWidth: 1,
     borderRadius: 10,
     borderColor: '#dcdcdc',
-    backgroundColor: '#78bbc7'
+    backgroundColor: '#78bbc7',
+    padding: 5,
+    width: '30%',
   },
-  ctTuikaBtnText: {
-    paddingRight: 30,
-    paddingLeft: 30,
-    paddingVertical: 5,
-    fontSize: 20,
-    fontWeight: 'bold',
+  goBackButtonText: {
+    fontSize: 18,
+    textAlign: 'center',
     color: 'white',
-  }
+  },
 });
