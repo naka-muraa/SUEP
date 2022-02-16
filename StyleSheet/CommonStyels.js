@@ -5,12 +5,14 @@ const CommonStyles = StyleSheet.create({
     margin: 5,
     padding: 5,
     flex: 1,
-    justifyContent: 'center',
   },
   scrollViewPageContainer: {
     margin: 5,
     padding: 5,
     flex: 1,
+  },
+  xLargeFont: {
+    fontSize: 20,
   },
   largeFont: {
     fontSize: 18,
@@ -20,6 +22,10 @@ const CommonStyles = StyleSheet.create({
   },
   smallFont: {
     fontSize: 14
+  },
+  xLargeFontBold: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   largeFontBold: {
     fontSize: 18,
