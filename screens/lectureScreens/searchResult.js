@@ -8,7 +8,9 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 // 外部関数のインポート
 import SearchLecture from '../../AppFunction/LectureScreenFunction/SearchLecture';
 import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
-import DeleteDuplicateLecture from '../../AppFunction/LectureScreenFunction/deleteDuplicateLecture';
+import CombineTableDataWithSelectedData from '../../AppFunction/LectureScreenFunction/CombineTableDataWithSelectedData';
+import ConvertDataForTableScreen from '../../AppFunction/LectureScreenFunction/ConvertDataForTableScreen';
+import SeparateTableAndOtherLectureData from '../../AppFunction/LectureScreenFunction/SeparateTableAndOtherLectureData'
 
 // スタイルとコンポーネントのインポート
 import CustomedButton from '../../Components/CustomedButton';
@@ -43,34 +45,51 @@ export default function searchScreen() {
     let newData = searchResultsData;
     newData[classIdNumber].checked = !newData[classIdNumber].checked;
     setsearchResultsData(newData);
+  }
 
+  const storeEachData = (item) => {
+    saveData([item.key, item.value]);
   }
 
   // 重複するデータを削除し、ストレージへ必要なデータを保存する
-  const storeFilteredData = async () => {
-    if (searchResultsData != null && searchResultsData != undefined) {
-      let selectedLectures = searchResultsData.filter((lecture) => lecture.checked);
+  async function storeFilteredData() {
+    let selectedLectures = searchResultsData.filter((lecture) => lecture.checked);
+    if (selectedLectures != null && selectedLectures != undefined) {
 
       // 曜日・時限が重複するデータがある場合にアラート表示
-      let duplicateFlag = false;
+      let isDuplicate = false;
       selectedLectures.filter(lecture1 => {
         selectedLectures.filter(lecture2 => {
           if ((lecture1 != lecture2) && (lecture1.曜日時限.slice(0, 1) != '他') && (lecture1.曜日時限.slice(0, 2) == lecture2.曜日時限.slice(0, 2))) {
-            duplicateFlag = true;
+            isDuplicate = true;
           }
-        })
+        });
       });
-      if (duplicateFlag) {
+      if (isDuplicate) {
         Alert.alert(
           '同じ曜日・時限の科目が複数選択されています。',
           '選択した科目を訂正してください。',
           [
             { text: '戻る' },
-          ],)
+          ]);
       }
       else {
-        selectedLectures = await DeleteDuplicateLecture(selectedLectures);
-        await saveData(['tableKey', selectedLectures]);
+
+        // 時間割表のデータ・その他のデータを分割、整形、保存
+        selectedLectures = await CombineTableDataWithSelectedData(selectedLectures);
+        let [lectureTableData, otherLectureData] = await SeparateTableAndOtherLectureData(selectedLectures);
+        const tableDataToBeStored = await ConvertDataForTableScreen(lectureTableData);
+        const keyValueSet = [
+          {
+            key: 'tableKey',
+            value: tableDataToBeStored,
+          },
+          {
+            key: 'otherLectureKey',
+            value: otherLectureData,
+          }
+        ];
+        await Promise.all(keyValueSet.forEach(item => storeEachData(item)));
         navigation.navigate('時間割表');
       }
     }
@@ -79,7 +98,7 @@ export default function searchScreen() {
   if (isLoading) {
     return (
       <View style={CommonStyles.viewPageContainer}>
-        <CustomedIndicator/>
+        <CustomedIndicator />
       </View>
     );
   }

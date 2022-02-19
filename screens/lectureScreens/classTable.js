@@ -1,9 +1,9 @@
-//TODO: 講義情報を追加後に時間割表の通りにasyncstorageに講義情報を保存する関数の作成
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { ListItem } from 'react-native-elements';
+import * as Sentry from 'sentry-expo';
 
 // 外部関数のインポート
 import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
@@ -18,7 +18,7 @@ export default function homeScreenProp() {
   const [othreLecsData, setOthreLecsData] = useState([]);
 
   //状態変数tableDataを更新するための配列
-  let classDataGroup = [
+  const defaultTableData = [
     { '曜日': '', 時間割コード: 'row0' }, { '曜日': '月', 時間割コード: 'column1' }, { '曜日': '火', 時間割コード: 'column2' },
     { '曜日': '水', 時間割コード: 'column3' }, { '曜日': '木', 時間割コード: 'column4' }, { '曜日': '金', 時間割コード: 'column5' },
     //1行目
@@ -43,119 +43,46 @@ export default function homeScreenProp() {
     { 科目: '', 時間割コード: '23' }, { 科目: '', 時間割コード: '24' }];
 
   //Flatlistに渡す講義データ
-  const [tableData, setTbaleData] = useState(classDataGroup);
+  const [tableData, setTableData] = useState(defaultTableData);
 
-  //flatlistの更新の際に曜日時限を区別するための配列
-  const firstRowArr = ['月1', '火1', '水1', '木1', '金1'];
-  const secondRowArr = ['月3', '火3', '水3', '木3', '金3'];
-  const thirdRowArr = ['月5', '火5', '水5', '木5', '金5'];
-  const fourthRowArr = ['月7', '火7', '水7', '木7', '金7'];
-  const fifthRowArr = ['月9', '火9', '水9', '木9', '金9'];
-  const allRowArr = [firstRowArr, secondRowArr, thirdRowArr, fourthRowArr, fifthRowArr];
 
-  //登録された授業データを格納するための配列
-  let gatheredClassData = [];
-
-  //曜日時限データ取り出し & gatheredClassDataに追加
-  function fetchLectureData(recordedClassData) {
-    let registedLecs = recordedClassData[0];
-    let dayName = recordedClassData[1];
-    const numberOfPeriod = [1, 3, 5, 7, 9];
-    let dateItem = new Array;
-
-    numberOfPeriod.forEach(period => {
-      // '月1'などを正規表現で定義
-      const dayAndClassTime = new RegExp(dayName + String(period));
-      // 曜日時限の最初の二文字で判別しdateItemに順番に挿入
-      dateItem = registedLecs.filter(lecture => dayAndClassTime.test((lecture.曜日時限).slice(0, 2)))
-        .map(relevantLecture => relevantLecture);
-      if (dateItem[0] != undefined || dateItem[0] != null) {
-        gatheredClassData.push(dateItem[0])
-      }
-    });
-  }
-
-  // 各行にアイテムを挿入
-  function putItemsInEachRow() {
-    for (const elem of gatheredClassData) {
-      let headTwoword = elem.曜日時限.slice(0, 2);
-      //行ごとでclassDataGroupを更新
-      for (const [serialNumber, rowArr] of allRowArr.entries()) {
-        switch (serialNumber) {
-          case 0:
-            for (const [firstIndexNum, firstRowElem] of rowArr.entries()) {
-              let firstInitNum = 7;
-              headTwoword == firstRowElem ? classDataGroup.splice(firstInitNum + firstIndexNum, 1, elem) : false;
-            }
-            break;
-          case 1:
-            for (const [secondIndexNum, secondRowElem] of rowArr.entries()) {
-              let secondInitNum = 13;
-              headTwoword == secondRowElem ? classDataGroup.splice(secondInitNum + secondIndexNum, 1, elem) : false;
-            }
-            break;
-          case 2:
-            for (const [thirdIndexNum, thirdRowElem] of rowArr.entries()) {
-              let thirdInitNum = 19;
-              headTwoword == thirdRowElem ? classDataGroup.splice(thirdInitNum + thirdIndexNum, 1, elem) : false;
-            }
-            break;
-          case 3:
-            for (const [fourthIndexNum, fourthRowElem] of rowArr.entries()) {
-              let fourthInitNum = 25;
-              headTwoword == fourthRowElem ? classDataGroup.splice(fourthInitNum + fourthIndexNum, 1, elem) : false;
-            }
-            break;
-          case 4:
-            for (const [fifthIndexNum, fifthRowElem] of rowArr.entries()) {
-              let fifthInitNum = 31;
-              headTwoword == fifthRowElem ? classDataGroup.splice(fifthInitNum + fifthIndexNum, 1, elem) : false;
-            }
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  }
-
-  function arrangeLectureData(selectedLectures) {
+  function setTableAndOtherLecture(tableLectures, otherLectures) {
     try {
-      const days = ['月', '火', '水', '木', '金', '他'];
-      days.forEach(day => {
-        switch (day) {
-          case '他':
-            let lecturesOfListItem = new Array
-            // '他'を正規表現で定義
-            let dayTime = new RegExp(day);
-            lecturesOfListItem = selectedLectures.filter(lecture => dayTime.test(lecture.曜日時限)).map(lec => lec);
-            // 該当する講義が無い場合
-            if (lecturesOfListItem == undefined || lecturesOfListItem == null) {
-              lecturesOfListItem = []
-            }
-            setOthreLecsData(lecturesOfListItem)
-            break;
-          default:
-            fetchLectureData([selectedLectures, day]);
-            break;
-        }
-      });
-      putItemsInEachRow();
-      setTbaleData(classDataGroup);
+      if (tableLectures != null && tableLectures != undefined && otherLectures != null && otherLectures != undefined) {
+        console.log('executed here!');
+        tableLectures = JSON.parse(tableLectures);
+        otherLectures = JSON.parse(otherLectures);
+        setTableData(tableLectures);
+        setOthreLecsData(otherLectures);
+      }
+      else if ((tableLectures != null && tableLectures != undefined) && (otherLectures == null || otherLectures == undefined)) {
+        console.log('executed here!!');
+        tableLectures = JSON.parse(tableLectures);
+        setTableData(tableLectures);
+      }
+      else if ((tableLectures == null || tableLectures == undefined) && (otherLectures != null || otherLectures != undefined)) {
+        console.log('executed here!!!');
+        otherLectures = JSON.parse(otherLectures);
+        setOthreLecsData(otherLectures);
+      }
     } catch (error) {
       Sentry.Native.captureException(error);
-      console.log('ファイル名：classTable\n' + 'エラー内容：' + error + '\n');
+      console.log('関数名:setTableAndOtherLecture\n' + error + '\n');
     }
   }
 
   // 初回描画時に実行
   useEffect(() => {
+    const fetchAllData = (storageKey) => {
+      const calledData = readTableData(storageKey);
+      return calledData
+    }
     const arrangeFunc = async () => {
-      let storedLectureData = await readTableData('tableKey');
-      storedLectureData = JSON.parse(storedLectureData);
-      if (storedLectureData != null || storedLectureData != undefined) {
-        await new Promise(() => arrangeLectureData(storedLectureData));
-      }
+      const keys = ['tableKey', 'otherLectureKey'];
+
+      // await Promise.all(引数)で引数の処理が完了するまで処理を止める
+      const allData = await Promise.all(keys.map(fetchAllData))
+      setTableAndOtherLecture(allData[0], allData[1]);
     }
     arrangeFunc();
   }, [isFocused])
@@ -253,13 +180,13 @@ export default function homeScreenProp() {
             style={styles.extraSearchBarStyle}
           />
         </View>
-          <View style={styles.editBarWrapper}>
-            <CustomedButton
-              buttonText='講義の削除'
-              onPress={() => navigation.navigate('編集画面')}
-            />
-          </View>
+        <View style={styles.editBarWrapper}>
+          <CustomedButton
+            buttonText='講義の削除'
+            onPress={() => navigation.navigate('編集画面')}
+          />
         </View>
+      </View>
     )
   }
 
@@ -318,7 +245,7 @@ const styles = StyleSheet.create({
     width: '98%',
   },
   extraSearchBarStyle: {
-  marginBottom: 10,
+    marginBottom: 10,
   },
   editBarWrapper: {
     marginBottom: 10,
