@@ -47,11 +47,6 @@ export default function searchScreen() {
     setsearchResultsData(newData);
   }
 
-  const storeEachData = (item) => {
-
-    console.log('problem is not saveData part');
-  }
-
   // 重複するデータを削除し、ストレージへ必要なデータを保存する
   async function storeFilteredData() {
     let selectedLectures = searchResultsData.filter((lecture) => lecture.checked);
@@ -91,7 +86,6 @@ export default function searchScreen() {
             value: stringfiedOtherLectureData,
           }
         ];
-        console.log('problem is not keyValueSet');
         await Promise.all(
           keyValueSet.map(item =>
             saveData([item.key, item.value]

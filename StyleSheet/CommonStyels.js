@@ -31,6 +31,14 @@ const CommonStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  basicFontBold: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  smallFontBold: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
   colorTomato: {
     color: 'tomato',
   },
@@ -43,6 +51,9 @@ const CommonStyles = StyleSheet.create({
   colorBlue: {
     color: '#00acee',
   },
+  colorLightTomato: {
+    color: '#FF8747',
+  },
   bgColorWhite: {
     backgroundColor: 'white',
   },
@@ -51,6 +62,12 @@ const CommonStyles = StyleSheet.create({
   },
   bgColorLightTomato: {
   backgroundColor: '#FF8747',
+  },
+  bgColorLightGray: {
+  backgroundColor: '#f7f7f7'
+  },
+  bgColorDarkGray: {
+    backgroundColor: 'dimgray',
   },
 });
 

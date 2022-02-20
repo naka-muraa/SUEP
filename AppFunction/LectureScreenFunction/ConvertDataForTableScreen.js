@@ -1,8 +1,6 @@
 import * as Sentry from 'sentry-expo';
 
 export default async function ConvertDataForTableScreen(lecturesToBeDisplayedOnTable) {
-  console.log('here is executed')
-  console.log('渡された値' + lecturesToBeDisplayedOnTable + '\n')
   try {
     const firstRowItem = [{ '曜日': '' }, { '曜日': '月' }, { '曜日': '火' }, { '曜日': '水' }, { '曜日': '木' }, { '曜日': '金' },];
     let secondRowItem = [{ 'period': '1', 'startTime': '9:30', 'endTime': '10:10', }, {}, {}, {}, {}, {},];

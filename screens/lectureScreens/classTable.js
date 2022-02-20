@@ -38,20 +38,17 @@ export default function homeScreenProp() {
 
   function setTableAndOtherLecture(tableLectures, otherLectures) {
     try {
-      if (tableLectures != null && otherLectures != null ) {
-        console.log('executed here!');
+      if (tableLectures != null && otherLectures != null) {
         tableLectures = JSON.parse(tableLectures);
         otherLectures = JSON.parse(otherLectures);
         setTableData(tableLectures);
         setOthreLecsData(otherLectures);
       }
       else if (tableLectures != null && otherLectures == null) {
-        console.log('executed here!!');
         tableLectures = JSON.parse(tableLectures);
         setTableData(tableLectures);
       }
       else if (tableLectures == null && otherLectures != null) {
-        console.log('executed here!!!');
         otherLectures = JSON.parse(otherLectures);
         setOthreLecsData(otherLectures);
       }
@@ -85,41 +82,60 @@ export default function homeScreenProp() {
     }
   }
 
-  const RenderDetail = ({ prop }) => {
+  const RenderDayName = ({ prop }) => (
+    <Text style={[CommonStyles.basicFontBold, styles.dayName]}>{prop}</Text>
+  )
+
+  const RenderFirstColumnItem = ({ prop }) => {
     if (prop == '～') {
       return (
         <View style={styles.rotatedStyle}>
           <View >
-            <Text style={CommonStyles.smallFont}>{prop}</Text>
+            <Text style={[CommonStyles.smallFontBold, CommonStyles.colorTomato]}>{prop}</Text>
           </View>
         </View>
       )
     } else {
-      return (<Text numberOfLines={4} style={CommonStyles.basicFont }>{prop}</Text>)
+      return (<Text style={[CommonStyles.smallFontBold, CommonStyles.colorTomato]}>{prop}</Text>)
+    }
+  }
+
+  const RenderLectureName = ({ prop }) => (
+    <TouchableOpacity onPress={() => navigatoToDetailScreen(prop)}>
+      <Text numberOfLines={4} style={CommonStyles.basicFont}>{prop.科目}</Text>
+    </TouchableOpacity>
+  )
+
+  function stylesDependingOnValue(dayName, number, lectureName) {
+    const dayIsIncluded = dayName ? true : false;
+    const periodIsIncluded = number ? true : false;
+    const lectureIsIncluded = lectureName ? true : false;
+    if (dayIsIncluded) {
+      return CommonStyles.bgColorTomato
+    }
+    else if (periodIsIncluded) {
+      return CommonStyles.bgColorWhite
+    }
+    else if (lectureIsIncluded) {
+      return CommonStyles.bgColorLightGray
     }
   }
 
   //時間割テーブルのセル部分
-  function RenderTable({ tableItem}) {
+  function RenderTable({ tableItem }) {
+    const dayName = tableItem.曜日;
     const numberOfLectures = tableItem.period;
-    const day = tableItem.曜日;
-    const period = tableItem.時限;
     const startTime = tableItem.startTime;
     const endTime = tableItem.endTime;
     const lectureName = tableItem.科目;
     return (
-      <View style={styles.defaltCellStyle}>
-        {numberOfLectures ? <RenderDetail prop={numberOfLectures} /> : null}
-        {day ? <RenderDetail prop={day} /> : null}
-        {period ? <RenderDetail prop={period} /> : null}
-        {startTime ? <RenderDetail prop={startTime} /> : null}
-        {startTime ? <RenderDetail prop='～' /> : null}
-        {endTime ? <RenderDetail prop={endTime} /> : null}
-        {lectureName &&
-          <TouchableOpacity onPress={() => navigatoToDetailScreen(tableItem)}>
-            {lectureName ? <RenderDetail prop={lectureName} /> : null}
-          </TouchableOpacity>
-        }
+      <View style={[styles.defaltCellStyle, stylesDependingOnValue(dayName, numberOfLectures, lectureName)]}>
+        {dayName ? <RenderDayName prop={dayName} /> : null}
+        {numberOfLectures ? <RenderFirstColumnItem prop={numberOfLectures} /> : null}
+        {startTime ? <RenderFirstColumnItem prop={startTime} /> : null}
+        {startTime ? <RenderFirstColumnItem prop='～' /> : null}
+        {endTime ? <RenderFirstColumnItem prop={endTime} /> : null}
+        {lectureName ? <RenderLectureName prop={tableItem} /> : null}
       </View>
     );
   }
@@ -127,7 +143,7 @@ export default function homeScreenProp() {
   const HeaderComponent = () => {
     const [inputedKeyWord, setinputedLectureInfo] = useState();
     return (
-      <View style={styles.upperContainer}>
+      <View style={[styles.upperContainer]}>
         <View style={styles.searchBarWrapper}>
           <CustomedSearchBar
             onChangeText={text => { setinputedLectureInfo(text) }}
@@ -152,8 +168,8 @@ export default function homeScreenProp() {
 
   //その他の講義部分
   const FooterComponent = ({ otherItem }) => (
-    <View>
-      <Text style={styles.otherLectureTitle}>その他の講義</Text>
+    <View style={[styles.footerContainer]}>
+      <Text style={[CommonStyles.xLargeFontBold, styles.otherLectureTitle]}>その他の講義</Text>
       {otherItem.map((element, elementNumber) => (
         <ListItem
           key={elementNumber}
@@ -164,7 +180,7 @@ export default function homeScreenProp() {
               <View style={styles.otherItem}>
                 <View style={styles.othreItemTitle}>
                   <ListItem.Title>
-                    <Text style={styles.otherItemText}>{element.科目}</Text>
+                    <Text style={[CommonStyles.basicFont]}>{element.科目}</Text>
                   </ListItem.Title>
                 </View>
               </View>
@@ -176,20 +192,18 @@ export default function homeScreenProp() {
   )
 
   return (
-    <>
-      < View style={styles.tableContainer} >
-        <FlatList
-          data={tableData}
-          renderItem={({ item }) => <RenderTable tableItem={item}/>}
-          keyExtractor={(item, index) => index}
-          numColumns={6}
-          ListHeaderComponent={<HeaderComponent />}
-          ListFooterComponent={
-            <FooterComponent otherItem={othreLecsData} />
-          }
-        />
-      </View>
-    </>
+    <View style={CommonStyles.viewPageContainer}>
+      <FlatList
+        data={tableData}
+        renderItem={({ item }) => <RenderTable tableItem={item} />}
+        keyExtractor={(item, index) => index}
+        numColumns={6}
+        ListHeaderComponent={<HeaderComponent />}
+        ListFooterComponent={
+          <FooterComponent otherItem={othreLecsData} />
+        }
+      />
+    </View>
   )
 }
 
@@ -197,31 +211,24 @@ const styles = StyleSheet.create({
   // 検索ボタン関連
   upperContainer: {
     width: '100%',
-    backgroundColor: '#fff',
+    marginBottom: 10,
     alignItems: 'center',
   },
   searchBarWrapper: {
     width: '98%',
   },
   extraSearchBarStyle: {
-    marginBottom: 10,
+    marginBottom: 30,
   },
   editBarWrapper: {
-    marginBottom: 10,
+    marginBottom: 15,
     width: '100%',
     alignItems: 'flex-end'
   },
 
   //時間割表のデザイン
-  tableContainer: {
-    padding: 5,
-    backgroundColor: '#fff',
-    width: '100%',
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'column',
-  },
   rotatedStyle: {
+    flex: 1,
     transform: [
       { rotate: '90deg' }
     ]
@@ -231,31 +238,30 @@ const styles = StyleSheet.create({
   },
   defaltCellStyle: {
     width: '16%',
-    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
+    margin: 1,
+    borderBottomColor: '#cccccc',
+    borderBottomWidth: 1,
+  },
+  dayName: {
+    color: 'white',
   },
 
   // その他・集中講義部分のデザイン
+  footerContainer: {
+    padding: 10,
+    marginTop: 10,
+  },
   otherLectureTitle: {
-    fontSize: 20,
     textAlign: 'center',
-    marginTop: '7%',
-    marginBottom: '2%',
   },
   otherItem: {
-    flexDirection: 'row',
     width: '92%',
-    padding: '1%',
-    marginHorizontal: '4%',
   },
   othreItemTitle: {
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     paddingRight: 2,
-  },
-  otherItemText: {
-    fontSize: 18,
-    color: 'black',
   },
 })
