@@ -2,7 +2,7 @@ import * as Sentry from 'sentry-expo';
 
 export default async function ConvertDataForTableScreen(lecturesToBeDisplayedOnTable) {
   console.log('here is executed')
-  console.log('渡された値' + JSON.stringify(lecturesToBeDisplayedOnTable) + '\n')
+  console.log('渡された値' + lecturesToBeDisplayedOnTable + '\n')
   try {
     const firstRowItem = [{ '曜日': '' }, { '曜日': '月' }, { '曜日': '火' }, { '曜日': '水' }, { '曜日': '木' }, { '曜日': '金' },];
     let secondRowItem = [{ 'period': '1', 'startTime': '9:30', 'endTime': '10:10', }, {}, {}, {}, {}, {},];
@@ -25,7 +25,10 @@ export default async function ConvertDataForTableScreen(lecturesToBeDisplayedOnT
               //当てはまる要素を特定の行のアイテムに追加
               switch (period) {
                 case 1:
-                  secondRowItem[dayNumber + 1] = lectureData;
+                  const periodOneIsTrulyIncluded = dayAndTime.test(lectureData.曜日時限.slice(0, 2));
+                  if (periodOneIsTrulyIncluded) {
+                    secondRowItem[dayNumber + 1] = lectureData;
+                  }
                   break;
                 case 3:
                   thirdRowItem[dayNumber + 1] = lectureData;
@@ -55,6 +58,6 @@ export default async function ConvertDataForTableScreen(lecturesToBeDisplayedOnT
     }
   } catch (error) {
     Sentry.Native.captureException(error);
-    console.log('ファイル名: ConvertDataForTableScreen.js\n'  + error + '\n');
+    console.log('ファイル名: ConvertDataForTableScreen.js\n' + error + '\n');
   }
 }

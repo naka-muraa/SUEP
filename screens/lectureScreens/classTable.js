@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { ListItem } from 'react-native-elements';
 import * as Sentry from 'sentry-expo';
@@ -11,6 +11,7 @@ import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTable
 // コンポーネントのインポート
 import CustomedSearchBar from '../../Components/CustomedSearchBar';
 import CustomedButton from '../../Components/CustomedButton';
+import CommonStyles from '../../StyleSheet/CommonStyels';
 
 export default function homeScreenProp() {
   const navigation = useNavigation();
@@ -19,28 +20,17 @@ export default function homeScreenProp() {
 
   //状態変数tableDataを更新するための配列
   const defaultTableData = [
-    { '曜日': '', 時間割コード: 'row0' }, { '曜日': '月', 時間割コード: 'column1' }, { '曜日': '火', 時間割コード: 'column2' },
-    { '曜日': '水', 時間割コード: 'column3' }, { '曜日': '木', 時間割コード: 'column4' }, { '曜日': '金', 時間割コード: 'column5' },
+    { '曜日': '' }, { '曜日': '月' }, { '曜日': '火' }, { '曜日': '水' }, { '曜日': '木' }, { '曜日': '金' },
     //1行目
-    { 'コマ': '1', '開始時間': '9:30', '終了時間': '10:10', 時間割コード: 'row1' },
-    { 科目: '', 時間割コード: '00' }, { 科目: '', 時間割コード: '01' }, { 科目: '', 時間割コード: '02' },
-    { 科目: '', 時間割コード: '03' }, { 科目: '', 時間割コード: '04' },
+    { 'period': '1', 'startTime': '9:30', 'endTime': '10:10', }, {}, {}, {}, {}, {},
     //2行目
-    { 'コマ': '2', '開始時間': '10:25', '終了時間': '12:05', 時間割コード: 'row2' },
-    { 科目: '', 時間割コード: '05' }, { 科目: '', 時間割コード: '06' }, { 科目: '', 時間割コード: '07' },
-    { 科目: '', 時間割コード: '08' }, { 科目: '', 時間割コード: '09' },
+    { 'period': '2', 'startTime': '10:25', 'endTime': '12:05', }, {}, {}, {}, {}, {},
     //3行目
-    { 'コマ': '3', '開始時間': '13:00', '終了時間': '14:40', 時間割コード: 'row3' },
-    { 科目: '', 時間割コード: '10' }, { 科目: '', 時間割コード: '11' }, { 科目: '', 時間割コード: '12' },
-    { 科目: '', 時間割コード: '13' }, { 科目: '', 時間割コード: '14' },
+    { 'period': '3', 'startTime': '13:00', 'endTime': '14:40', }, {}, {}, {}, {}, {},
     //4行目
-    { 'コマ': '4', '開始時間': '14:55', '終了時間': '16:35', 時間割コード: 'row4' },
-    { 科目: '', 時間割コード: '15' }, { 科目: '', 時間割コード: '16' }, { 科目: '', 時間割コード: '17' },
-    { 科目: '', 時間割コード: '18' }, { 科目: '', 時間割コード: '19' },
+    { 'period': '4', 'startTime': '14:55', 'endTime': '16:35', }, {}, {}, {}, {}, {},
     //5行目
-    { 'コマ': '5', '開始時間': '16:50', '終了時間': '18:30', 時間割コード: 'row5' },
-    { 科目: '', 時間割コード: '20' }, { 科目: '', 時間割コード: '21' }, { 科目: '', 時間割コード: '22' },
-    { 科目: '', 時間割コード: '23' }, { 科目: '', 時間割コード: '24' }];
+    { 'period': '5', 'startTime': '16:50', 'endTime': '18:30', }, {}, {}, {}, {}, {}];
 
   //Flatlistに渡す講義データ
   const [tableData, setTableData] = useState(defaultTableData);
@@ -48,19 +38,19 @@ export default function homeScreenProp() {
 
   function setTableAndOtherLecture(tableLectures, otherLectures) {
     try {
-      if (tableLectures != null && tableLectures != undefined && otherLectures != null && otherLectures != undefined) {
+      if (tableLectures != null && otherLectures != null ) {
         console.log('executed here!');
         tableLectures = JSON.parse(tableLectures);
         otherLectures = JSON.parse(otherLectures);
         setTableData(tableLectures);
         setOthreLecsData(otherLectures);
       }
-      else if ((tableLectures != null && tableLectures != undefined) && (otherLectures == null || otherLectures == undefined)) {
+      else if (tableLectures != null && otherLectures == null) {
         console.log('executed here!!');
         tableLectures = JSON.parse(tableLectures);
         setTableData(tableLectures);
       }
-      else if ((tableLectures == null || tableLectures == undefined) && (otherLectures != null || otherLectures != undefined)) {
+      else if (tableLectures == null && otherLectures != null) {
         console.log('executed here!!!');
         otherLectures = JSON.parse(otherLectures);
         setOthreLecsData(otherLectures);
@@ -78,7 +68,7 @@ export default function homeScreenProp() {
       return calledData
     }
     const arrangeFunc = async () => {
-      const keys = ['tableKey', 'otherLectureKey'];
+      const keys = ['formattedTableDataKey', 'otherLectureKey'];
 
       // await Promise.all(引数)で引数の処理が完了するまで処理を止める
       const allData = await Promise.all(keys.map(fetchAllData))
@@ -90,76 +80,46 @@ export default function homeScreenProp() {
 
   //時間割表のセルタップ時の画面遷移
   const navigatoToDetailScreen = (lecsData) => {
-    if (lecsData != null && lecsData != undefined) {
+    if (lecsData != null) {
       navigation.navigate('講義詳細', lecsData);
     }
   }
 
-  //時間割テーブルのセル部分
-  function RenderTable(props) {
-    const {
-      timePeriod,
-      day,
-      period,
-      lectureName,
-      startTime,
-      endTime,
-      timeCode,
-      itemData,
-    } = props;
-
-    //時間割行名セルとそれ以外のセルstyle変更のための配列
-    let rowNumber = ['row1', 'row2', 'row3', 'row4', 'row5']
-
-    function changeCellTextStyle(cellItem) {
-      let cellTextStyle;
-      let columnArr = ['column1', 'column2', 'column3', 'column4', 'column5'];
-
-      //列名の変更
-      if (((rowNumber.indexOf(cellItem) == -1) && (columnArr.indexOf(cellItem) != -1)) == true) {
-        cellTextStyle = styles.changedColumnStyle;
-        //行名の変更
-      } else if (((rowNumber.indexOf(cellItem) != -1) && (columnArr.indexOf(cellItem) == -1)) == true) {
-        cellTextStyle = styles.changedRowStyle;
-        //セル内のテキストの変更
-      } else {
-        cellTextStyle = styles.defaultTextStyle;
-      }
-      return cellTextStyle
-    }
-
-    const RenderDetail = ({ prop }) => {
-      if (prop == '～') {
-        return (
-          <View style={styles.rotatedStyle}>
-            <View >
-              <Text style={styles.titleStyle}>{prop}</Text>
-            </View>
+  const RenderDetail = ({ prop }) => {
+    if (prop == '～') {
+      return (
+        <View style={styles.rotatedStyle}>
+          <View >
+            <Text style={CommonStyles.smallFont}>{prop}</Text>
           </View>
-        )
-      } else {
-        return (<Text numberOfLines={4} style={changeCellTextStyle(timeCode)}>{prop}</Text>)
-      }
+        </View>
+      )
+    } else {
+      return (<Text numberOfLines={4} style={CommonStyles.basicFont }>{prop}</Text>)
     }
+  }
 
-    //時間割表セルのstyle変更
-    function changeCellStyle(cellItem) {
-      let cellStyle;
-      rowNumber.indexOf(cellItem) != -1 ? cellStyle = styles.tableRowCell : cellStyle = styles.defaltCellStyle;
-      return cellStyle
-    }
-
+  //時間割テーブルのセル部分
+  function RenderTable({ tableItem}) {
+    const numberOfLectures = tableItem.period;
+    const day = tableItem.曜日;
+    const period = tableItem.時限;
+    const startTime = tableItem.startTime;
+    const endTime = tableItem.endTime;
+    const lectureName = tableItem.科目;
     return (
-      <View style={changeCellStyle(timeCode)}>
-        {timePeriod ? <RenderDetail prop={timePeriod} /> : null}
+      <View style={styles.defaltCellStyle}>
+        {numberOfLectures ? <RenderDetail prop={numberOfLectures} /> : null}
         {day ? <RenderDetail prop={day} /> : null}
         {period ? <RenderDetail prop={period} /> : null}
         {startTime ? <RenderDetail prop={startTime} /> : null}
         {startTime ? <RenderDetail prop='～' /> : null}
         {endTime ? <RenderDetail prop={endTime} /> : null}
-        <TouchableOpacity onPress={() => navigatoToDetailScreen(itemData)}>
-          {lectureName ? <RenderDetail prop={lectureName} /> : null}
-        </TouchableOpacity>
+        {lectureName &&
+          <TouchableOpacity onPress={() => navigatoToDetailScreen(tableItem)}>
+            {lectureName ? <RenderDetail prop={lectureName} /> : null}
+          </TouchableOpacity>
+        }
       </View>
     );
   }
@@ -220,8 +180,7 @@ export default function homeScreenProp() {
       < View style={styles.tableContainer} >
         <FlatList
           data={tableData}
-          renderItem={({ item }) => <RenderTable timePeriod={item.コマ} day={item.曜日} period={item.時限} lectureName={item.科目}
-            startTime={item.開始時間} endTime={item.終了時間} timeCode={item.時間割コード} itemData={item} />}
+          renderItem={({ item }) => <RenderTable tableItem={item}/>}
           keyExtractor={(item, index) => index}
           numColumns={6}
           ListHeaderComponent={<HeaderComponent />}
@@ -259,6 +218,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: '100%',
     flex: 1,
+    justifyContent: 'center',
     flexDirection: 'column',
   },
   rotatedStyle: {
@@ -266,46 +226,14 @@ const styles = StyleSheet.create({
       { rotate: '90deg' }
     ]
   },
-  defaultTextStyle: {
-    textAlign: 'left',
-    fontSize: 16,
-    color: 'black',
-  },
-  changedRowStyle: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 13.5,
-    fontWeight: 'bold'
-  },
-  changedColumnStyle: {
-    textAlign: 'center',
-    color: 'black',
-    fontSize: 17,
-    fontWeight: 'bold'
-  },
   listItemContainer: {
     width: '100%',
   },
-  titleStyle: {
-    textAlign: 'center',
-    color: 'white'
-  },
   defaltCellStyle: {
-    width: '16.66%',
+    width: '16%',
     backgroundColor: 'white',
     justifyContent: 'center',
-    paddingVertical: 10,
-    borderWidth: 0.75,
-    borderColor: '#CED0CE'
-  },
-  tableRowCell: {
-    width: '16.66%',
-    color: 'white',
-    backgroundColor: '#167F92',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    borderWidth: 0.6,
-    borderColor: '#CED0CE'
+    alignItems: 'center',
   },
 
   // その他・集中講義部分のデザイン
@@ -325,12 +253,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     paddingRight: 2,
-  },
-  othreItemTeacher: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    paddingLeft: 2,
   },
   otherItemText: {
     fontSize: 18,

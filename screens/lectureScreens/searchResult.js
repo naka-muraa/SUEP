@@ -8,7 +8,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 // 外部関数のインポート
 import SearchLecture from '../../AppFunction/LectureScreenFunction/SearchLecture';
 import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
-import CombineTableDataWithSelectedData from '../../AppFunction/LectureScreenFunction/CombineTableDataWithSelectedData';
+import CombineCurrentDataWithSelectedData from '../../AppFunction/LectureScreenFunction/CombineCurrentDataWithSelectedData';
 import ConvertDataForTableScreen from '../../AppFunction/LectureScreenFunction/ConvertDataForTableScreen';
 import SeparateTableAndOtherLectureData from '../../AppFunction/LectureScreenFunction/SeparateTableAndOtherLectureData'
 
@@ -48,13 +48,14 @@ export default function searchScreen() {
   }
 
   const storeEachData = (item) => {
-    saveData([item.key, item.value]);
+
+    console.log('problem is not saveData part');
   }
 
   // 重複するデータを削除し、ストレージへ必要なデータを保存する
   async function storeFilteredData() {
     let selectedLectures = searchResultsData.filter((lecture) => lecture.checked);
-    if (selectedLectures != null && selectedLectures != undefined) {
+    if (selectedLectures != null) {
 
       // 曜日・時限が重複するデータがある場合にアラート表示
       let isDuplicate = false;
@@ -68,7 +69,7 @@ export default function searchScreen() {
       if (isDuplicate) {
         Alert.alert(
           '同じ曜日・時限の科目が複数選択されています。',
-          '選択した科目を訂正してください。',
+          '選択する科目を訂正してください。',
           [
             { text: '戻る' },
           ]);
@@ -76,20 +77,26 @@ export default function searchScreen() {
       else {
 
         // 時間割表のデータ・その他のデータを分割、整形、保存
-        selectedLectures = await CombineTableDataWithSelectedData(selectedLectures);
-        let [lectureTableData, otherLectureData] = await SeparateTableAndOtherLectureData(selectedLectures);
-        const tableDataToBeStored = await ConvertDataForTableScreen(lectureTableData);
+        const allLectureData = await CombineCurrentDataWithSelectedData(selectedLectures);
+        let [lectureTableData, stringfiedOtherLectureData] = await SeparateTableAndOtherLectureData(allLectureData);
+        saveData(['plainTableDataKey', JSON.stringify(lectureTableData)]);
+        const stringfiedTableFormattedData = await ConvertDataForTableScreen(lectureTableData);
         const keyValueSet = [
           {
-            key: 'tableKey',
-            value: tableDataToBeStored,
+            key: 'formattedTableDataKey',
+            value: stringfiedTableFormattedData,
           },
           {
             key: 'otherLectureKey',
-            value: otherLectureData,
+            value: stringfiedOtherLectureData,
           }
         ];
-        await Promise.all(keyValueSet.forEach(item => storeEachData(item)));
+        console.log('problem is not keyValueSet');
+        await Promise.all(
+          keyValueSet.map(item =>
+            saveData([item.key, item.value]
+            )
+          ));
         navigation.navigate('時間割表');
       }
     }
@@ -169,7 +176,11 @@ export default function searchScreen() {
       </SafeAreaView>
       <View style={styles.buttonContainer}>
         <CustomedButton
-          onPress={() => { storeFilteredData(); }}
+          onPress={() => {
+            if (searchResultsData) {
+              storeFilteredData()
+            }
+          }}
           buttonText='時間割に追加'
           buttonStyle={styles.extraButtonStyle}
         />

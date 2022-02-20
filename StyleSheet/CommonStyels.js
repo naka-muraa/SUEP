@@ -49,6 +49,9 @@ const CommonStyles = StyleSheet.create({
   bgColorTomato: {
     backgroundColor: 'tomato',
   },
+  bgColorLightTomato: {
+  backgroundColor: '#FF8747',
+  },
 });
 
 export default CommonStyles;
