@@ -76,13 +76,14 @@ export default function Data(props) {
   }
 
   return (
-    <View style={[CommonStyles.viewPageContainer, { backgroundColor: 'white'},]}>
+    <View style={[CommonStyles.viewPageContainer, CommonStyles.bgColorWhite]}>
       <CustomedSearchBar
         onChangeText={text => { setInputtedText(text) }}
         onEndEditing={() => { setSearching(true) }}
         value={InputtedText}
         placeholder='Search'
         onTapIcon={() => { setInputtedText(''), setValue(storageData._W) }}
+        showShadow={true}
       />
       <FlatList
         data={value}

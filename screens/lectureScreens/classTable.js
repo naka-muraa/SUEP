@@ -3,10 +3,12 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { ListItem } from 'react-native-elements';
+import { Ionicons } from '@expo/vector-icons';
 import * as Sentry from 'sentry-expo';
 
 // 外部関数のインポート
 import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
+import PopUp from './homeScreenPopup';
 
 // コンポーネントのインポート
 import CustomedSearchBar from '../../Components/CustomedSearchBar';
@@ -16,20 +18,15 @@ import CommonStyles from '../../StyleSheet/CommonStyels';
 export default function homeScreenProp() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const [othreLecsData, setOthreLecsData] = useState([]);
+  const [othreLecsData, setOthreLecsData] = useState(null);
 
   //状態変数tableDataを更新するための配列
   const defaultTableData = [
     { '曜日': '' }, { '曜日': '月' }, { '曜日': '火' }, { '曜日': '水' }, { '曜日': '木' }, { '曜日': '金' },
-    //1行目
     { 'period': '1', 'startTime': '9:30', 'endTime': '10:10', }, {}, {}, {}, {}, {},
-    //2行目
     { 'period': '2', 'startTime': '10:25', 'endTime': '12:05', }, {}, {}, {}, {}, {},
-    //3行目
     { 'period': '3', 'startTime': '13:00', 'endTime': '14:40', }, {}, {}, {}, {}, {},
-    //4行目
     { 'period': '4', 'startTime': '14:55', 'endTime': '16:35', }, {}, {}, {}, {}, {},
-    //5行目
     { 'period': '5', 'startTime': '16:50', 'endTime': '18:30', }, {}, {}, {}, {}, {}];
 
   //Flatlistに渡す講義データ
@@ -83,17 +80,13 @@ export default function homeScreenProp() {
   }
 
   const RenderDayName = ({ prop }) => (
-    <Text style={[CommonStyles.basicFontBold, styles.dayName]}>{prop}</Text>
+    <Text style={[CommonStyles.basicFontBold, CommonStyles.colorWhite]}>{prop}</Text>
   )
 
   const RenderFirstColumnItem = ({ prop }) => {
     if (prop == '～') {
       return (
-        <View style={styles.rotatedStyle}>
-          <View >
-            <Text style={[CommonStyles.smallFontBold, CommonStyles.colorTomato]}>{prop}</Text>
-          </View>
-        </View>
+        <Ionicons name="chevron-down-outline" size={16} color="tomato" />
       )
     } else {
       return (<Text style={[CommonStyles.smallFontBold, CommonStyles.colorTomato]}>{prop}</Text>)
@@ -117,7 +110,7 @@ export default function homeScreenProp() {
       return CommonStyles.bgColorWhite
     }
     else if (lectureIsIncluded) {
-      return CommonStyles.bgColorLightGray
+      return CommonStyles.bgColorWhite
     }
   }
 
@@ -154,45 +147,66 @@ export default function homeScreenProp() {
             placeholder='授業科目検索'
             onTapIcon={() => { setinputedLectureInfo('') }}
             style={styles.extraSearchBarStyle}
+            iconType={'search'}
           />
         </View>
-        <View style={styles.editBarWrapper}>
+        <View style={styles.headerButtonsWrapper}>
+        <View style={styles.editBelongButton}>
+          <CustomedButton
+            buttonText='所属先の変更'
+              onPress={() => <PopUp/>}
+          />
+        </View>
+        <View style={styles.editLectureButton}>
           <CustomedButton
             buttonText='講義の削除'
             onPress={() => navigation.navigate('編集画面')}
           />
+          </View>
         </View>
       </View>
     )
   }
 
+  const OtherLectureContent = ({ displayedItem }) => (
+    <>
+      {
+        displayedItem.map((element, elementNumber) => (
+          <ListItem
+            key={elementNumber}
+            containerStyle={styles.listItemContainer}
+          >
+            <ListItem.Content >
+              <TouchableOpacity onPress={() => navigatoToDetailScreen(displayedItem[elementNumber])}>
+                <View style={styles.otherItem}>
+                  <View style={styles.othreItemTitle}>
+                    <ListItem.Title>
+                      <Text style={[CommonStyles.basicFont]}>{element.科目}</Text>
+                    </ListItem.Title>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </ListItem.Content>
+          </ListItem>
+        ))
+      }
+    </>
+  );
+
+  const OtherLectureEmpty = () => (
+    <Text style={CommonStyles.basicFont}>集中講義などはここに表示されます</Text>
+  );
+
   //その他の講義部分
   const FooterComponent = ({ otherItem }) => (
     <View style={[styles.footerContainer]}>
       <Text style={[CommonStyles.xLargeFontBold, styles.otherLectureTitle]}>その他の講義</Text>
-      {otherItem.map((element, elementNumber) => (
-        <ListItem
-          key={elementNumber}
-          containerStyle={styles.listItemContainer}
-        >
-          <ListItem.Content >
-            <TouchableOpacity onPress={() => navigatoToDetailScreen(otherItem[elementNumber])}>
-              <View style={styles.otherItem}>
-                <View style={styles.othreItemTitle}>
-                  <ListItem.Title>
-                    <Text style={[CommonStyles.basicFont]}>{element.科目}</Text>
-                  </ListItem.Title>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </ListItem.Content>
-        </ListItem>
-      ))}
+      {otherItem ? <OtherLectureContent displayedItem={otherItem} /> : <OtherLectureEmpty />}
     </View>
   )
 
   return (
-    <View style={CommonStyles.viewPageContainer}>
+    <View style={[CommonStyles.bgColorWhite, styles.screenContainer]}>
       <FlatList
         data={tableData}
         renderItem={({ item }) => <RenderTable tableItem={item} />}
@@ -208,6 +222,10 @@ export default function homeScreenProp() {
 }
 
 const styles = StyleSheet.create({
+  screenContainer: {
+  padding: 10,
+  },
+
   // 検索ボタン関連
   upperContainer: {
     width: '100%',
@@ -220,10 +238,15 @@ const styles = StyleSheet.create({
   extraSearchBarStyle: {
     marginBottom: 30,
   },
-  editBarWrapper: {
+  headerButtonsWrapper: {
+    flexDirection: 'row',
     marginBottom: 15,
-    width: '100%',
-    alignItems: 'flex-end'
+    marginLeft: 'auto',
+  },
+  editBelongButton: {
+    marginRight: 5,
+  },
+  editLectureButton: {
   },
 
   //時間割表のデザイン
@@ -235,6 +258,8 @@ const styles = StyleSheet.create({
   },
   listItemContainer: {
     width: '100%',
+    borderBottomWidth: 1,
+    borderColor: '#cccccc',
   },
   defaltCellStyle: {
     width: '16%',
@@ -243,9 +268,6 @@ const styles = StyleSheet.create({
     margin: 1,
     borderBottomColor: '#cccccc',
     borderBottomWidth: 1,
-  },
-  dayName: {
-    color: 'white',
   },
 
   // その他・集中講義部分のデザイン

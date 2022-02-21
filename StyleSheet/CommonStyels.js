@@ -2,13 +2,8 @@ import { StyleSheet } from 'react-native';
 
 const CommonStyles = StyleSheet.create({
   viewPageContainer: {
+    padding: 10,
     margin: 5,
-    padding: 5,
-    flex: 1,
-  },
-  scrollViewPageContainer: {
-    margin: 5,
-    padding: 5,
     flex: 1,
   },
   xLargeFont: {
@@ -39,14 +34,17 @@ const CommonStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
+  colorWhite: {
+  color: 'white',
+  },
   colorTomato: {
     color: 'tomato',
   },
   colorGray: {
     color: 'gray',
   },
-  colorDimGray: {
-    color: 'dimgray',
+  colorLightGray: {
+    color: '#cccccc',
   },
   colorBlue: {
     color: '#00acee',
@@ -64,10 +62,7 @@ const CommonStyles = StyleSheet.create({
   backgroundColor: '#FF8747',
   },
   bgColorLightGray: {
-  backgroundColor: '#f7f7f7'
-  },
-  bgColorDarkGray: {
-    backgroundColor: 'dimgray',
+    backgroundColor: '#cccccc'
   },
 });
 

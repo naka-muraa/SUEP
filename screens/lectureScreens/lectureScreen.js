@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 // 表示パーツと汎用関数のインポート
 import HomeScreenPopup from './homeScreenPopup';
@@ -7,7 +7,7 @@ import HomeScreenTable from './classTable';
 import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
 
 //時間割管理ホーム画面
-export default function lectureScreen({ navigation }) {
+export default function lectureScreen() {
   const [initialBoot, setinitialBoot] = useState(false);
 
   useEffect(() => {
@@ -44,5 +44,4 @@ const styles = StyleSheet.create({
   bottom: {
     flex: 6,
   },
-
 });

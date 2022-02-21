@@ -1,6 +1,6 @@
 //TODO:  Flatlistのパフォーマンス改善
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, FlatList, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, View, Text, FlatList, Alert } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -159,7 +159,7 @@ export default function searchScreen() {
 
   return (
     <>
-      <SafeAreaView style={CommonStyles.viewPageContainer}>
+      <View style={CommonStyles.viewPageContainer}>
         <FlatList
           ListHeaderComponent={flatListHeader}
           data={searchResultsData}
@@ -167,7 +167,7 @@ export default function searchScreen() {
           keyExtractor={item => item.時間割コード}
           ListEmptyComponent={<View style={CommonStyles.viewPageContainer}><Text style={CommonStyles.largeFont}>該当データがありません</Text></View>}
         />
-      </SafeAreaView>
+      </View>
       <View style={styles.buttonContainer}>
         <CustomedButton
           onPress={() => {

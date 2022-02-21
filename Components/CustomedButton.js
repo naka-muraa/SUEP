@@ -14,7 +14,7 @@ export default function CustomedButton({buttonText, onPress, buttonStyle}) {
 
 const styles = StyleSheet.create({
   buttonDesign: {
-    backgroundColor: 'tomato',
+    backgroundColor: '#FFA595',
     borderRadius: 5,
     padding: 5,
     alignItems: 'center'
