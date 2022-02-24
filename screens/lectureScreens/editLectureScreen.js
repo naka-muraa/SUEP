@@ -91,9 +91,8 @@ export default function editLectureScreen({ navigation }) {
         case '人文社会学研究科':
           saveData(['facultyName', '人文社会学研究科, 人文社会学研究科'])
           break;
-        // 訂正要
         case '人間社会科学研究科':
-          saveData(['facultyName', '人文社会学研究科, 人文社会学研究科'])
+          saveData(['facultyName', '人間社会科学研究科, 人間社会科学'])
           break;
         case '教育学研究科':
           saveData(['facultyName', '教育学研究科, 教育学, 教育学_教職'])

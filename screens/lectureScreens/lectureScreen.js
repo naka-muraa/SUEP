@@ -22,26 +22,17 @@ export default function lectureScreen() {
   }, [])
 
   return (
-    <View style={styles.container}>
-      {initialBoot && <HomeScreenPopup />}
+      <View style={styles.container}>
+        {initialBoot && <HomeScreenPopup />}
 
-      {/* テーブル部分をインポート */}
-      <View style={styles.bottom}>
+        {/* テーブル部分をインポート */}
         <HomeScreenTable />
       </View>
-    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 5,
-    marginHorizontal: 5,
     flex: 1,
-    backgroundColor: '#fff',
-    flexDirection: 'column',
-  },
-  bottom: {
-    flex: 6,
   },
 });

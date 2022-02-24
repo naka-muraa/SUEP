@@ -36,10 +36,10 @@ function storeFacultyData(facultyName) {
         saveData(['facultyName', '法文学部, 法文, 教養教育'])
         break;
       case '人文社会科学研究科':
-        saveData(['facultyName', '人文社会学研究科, 人文社会学研究科'])
+        saveData(['facultyName', '人文社会科学研究科, 人文科学'])
         break;
       case '人間社会科学研究科':
-        saveData(['facultyName', '人文社会学研究科, 人文社会学研究科'])
+        saveData(['facultyName', '人間社会科学研究科, 人間社会科学'])
         break;
       case '教育学研究科':
         saveData(['facultyName', '教育学研究科, 教育学, 教育学_教職'])
@@ -86,12 +86,10 @@ export default function ModalToChangeBelongs() {
     { name: '自然科学研究科' },
   ];
 
-
   return (
     <Modal
-      animationType='fade'
+      animationType='none'
       transparent={true}
-      visible={context.isVisible}
       onRequestClose={() => {
         context.setIsVisible(!context.isVisible);
       }}

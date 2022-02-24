@@ -1,4 +1,5 @@
 import ReadData from './ReadData';
+import * as Sentry from 'sentry-expo';
 
 //全角(英数字)→半角に変換
 function convertWordsFullToHalfSize(words) {
@@ -98,7 +99,7 @@ async function loadLectureJSONFiles(lectureFileName) {
         data = require("./assets/SecondSemisterLecs/法文.json");
         data = await filterYearData(yearAroundData, data);
         break;
-      case '人文社会科学研究科':
+      case '人文科学':
         yearAroundData = require('./assets/FirstSemisterLecs/人文科学.json');
         data = require("./assets/SecondSemisterLecs/人文科学.json");
         data = await filterYearData(yearAroundData, data);

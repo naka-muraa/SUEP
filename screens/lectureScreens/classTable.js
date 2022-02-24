@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -196,7 +196,7 @@ export default function homeScreenProp() {
   );
 
   const OtherLectureEmpty = () => (
-    <Text style={CommonStyles.basicFont}>集中講義などはここに表示されます</Text>
+    <Text style={[CommonStyles.basicFont, styles.textWhenEmpty]}>集中講義などの講義はここに表示されます</Text>
   );
 
   //その他の講義部分
@@ -209,10 +209,12 @@ export default function homeScreenProp() {
 
   return (
     <>
-      <ShowModalContext.Provider
-        value={{ isVisible: showModal, setIsVisible: setShowModal }}>
-        <ModalToChangeBelongs />
-      </ShowModalContext.Provider>
+      {showModal ?
+        <ShowModalContext.Provider
+          value={{ isVisible: showModal, setIsVisible: setShowModal }}>
+          <ModalToChangeBelongs />
+        </ShowModalContext.Provider>
+        : null}
       <FlatList
         style={[styles.screenContainer, CommonStyles.bgColorWhite]}
         data={tableData}
@@ -281,6 +283,10 @@ const styles = StyleSheet.create({
   footerContainer: {
     padding: 10,
     marginTop: 10,
+  },
+  textWhenEmpty: {
+    paddingTop: 10,
+    alignItems: 'center',
   },
   otherLectureTitle: {
     textAlign: 'center',
