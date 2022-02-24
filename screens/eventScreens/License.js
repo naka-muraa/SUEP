@@ -36,7 +36,7 @@ export default function License() {
         <CustomedButton
           onPress={() => openUrl(item.homepage)}
           buttonText='Home page'
-          buttonStyle={styles.buttonExtraStyle}
+          buttonStyle={[styles.buttonExtraStyle, CommonStyles.bgColorTomato]}
         />
       }
     </View >

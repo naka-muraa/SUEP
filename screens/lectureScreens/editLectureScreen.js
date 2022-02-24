@@ -143,7 +143,7 @@ export default function editLectureScreen({ navigation }) {
   }
 
   return (
-    <>
+    <View style={{flex: 1,}}>
       <FlatList
         style={styles.flatlistContainer}
         ListHeaderComponent={headerComponent}
@@ -166,15 +166,16 @@ export default function editLectureScreen({ navigation }) {
           <Text style={styles.searchTuikaBtnText}>登録情報を変更</Text>
         </TouchableOpacity>
       </View>
-    </>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   // 検索結果一覧のデザイン
   flatlistContainer: {
-    marginHorizontal: 5,
-    marginVertical: 5,
+    backgroundColor: 'white',
+    margin: 5,
+    padding: 5,
   },
   itemSearch: {
     backgroundColor: '#167F92',
@@ -244,8 +245,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   descriptionContainer: {
-    marginVertical: 10,
-    marginHorizontal: 5,
+    backgroundColor: 'white',
+    margin: 5,
+    padding: 5,
   },
   description: {
     fontSize: 20,

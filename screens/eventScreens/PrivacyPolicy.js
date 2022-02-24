@@ -34,7 +34,7 @@ export default function PrivacyPolicy() {
           <CustomedButton
             buttonText='「Twitterのプライバシーポリシー」はこちらから'
             onPress={() => openUrl("https://cdn.cms-twdigitalassets.com/content/dam/legal-twitter/site-assets/privacy-june-18th-2020/Twitter_Privacy_Policy_JA.pdf")}
-            buttonStyle={styles.buttonExtraStyle}
+            buttonStyle={[styles.buttonExtraStyle, CommonStyles.bgColorTomato]}
           />
         <Text style={[CommonStyles.basicFont]}>
           {`3.  Googleが提供するサービスを利用する際のプライバシーポリシー\n
@@ -44,7 +44,7 @@ export default function PrivacyPolicy() {
           <CustomedButton
             buttonText='「Googleのプライバシーポリシーと利用規約」はこちらから'
             onPress={() => openUrl("https://policies.google.com/terms?hl=ja")}
-            buttonStyle={styles.buttonExtraStyle}
+            buttonStyle={[styles.buttonExtraStyle, CommonStyles.bgColorTomato]}
           />
       </View>
     </ScrollView>

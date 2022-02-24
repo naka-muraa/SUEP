@@ -98,7 +98,7 @@ async function loadLectureJSONFiles(lectureFileName) {
         data = require("./assets/SecondSemisterLecs/法文.json");
         data = await filterYearData(yearAroundData, data);
         break;
-      case '人文社会学研究科':
+      case '人文社会科学研究科':
         yearAroundData = require('./assets/FirstSemisterLecs/人文科学.json');
         data = require("./assets/SecondSemisterLecs/人文科学.json");
         data = await filterYearData(yearAroundData, data);
@@ -124,7 +124,7 @@ async function loadLectureJSONFiles(lectureFileName) {
     return data;
   } catch (error) {
     Sentry.Native.captureException(error);
-    console.log('エラー箇所： seachLecture.js / loadLectureJSONFiles\n' + 'エラー内容：' + error + '\n');
+    console.log('エラー箇所: seachLecture.js / loadLectureJSONFiles\n' + error + '\n');
   }
 }
 
@@ -181,7 +181,7 @@ const searchLecture = async (inputedKeyWord) => {
     return lectureData;
   } catch (error) {
     Sentry.Native.captureException(error);
-    console.log('ファイル名：SearchLecture.js\n' + 'エラー：' + error + '\n');
+    console.log('ファイル名: SearchLecture.js\n'  + error + '\n');
   }
 }
 

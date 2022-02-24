@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -8,7 +8,8 @@ import * as Sentry from 'sentry-expo';
 
 // 外部関数のインポート
 import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
-import PopUp from './homeScreenPopup';
+import ModalToChangeBelongs from './ModalToChangeBelongs';
+import { ShowModalContext } from './ShowModalContext';
 
 // コンポーネントのインポート
 import CustomedSearchBar from '../../Components/CustomedSearchBar';
@@ -18,6 +19,7 @@ import CommonStyles from '../../StyleSheet/CommonStyels';
 export default function homeScreenProp() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const [showModal, setShowModal] = useState(false);
   const [othreLecsData, setOthreLecsData] = useState(null);
 
   //状態変数tableDataを更新するための配列
@@ -151,17 +153,17 @@ export default function homeScreenProp() {
           />
         </View>
         <View style={styles.headerButtonsWrapper}>
-        <View style={styles.editBelongButton}>
-          <CustomedButton
-            buttonText='所属先の変更'
-              onPress={() => <PopUp/>}
-          />
-        </View>
-        <View style={styles.editLectureButton}>
-          <CustomedButton
-            buttonText='講義の削除'
-            onPress={() => navigation.navigate('編集画面')}
-          />
+          <View style={styles.editBelongButton}>
+            <CustomedButton
+              buttonText='所属先の変更'
+              onPress={() => setShowModal(true)}
+            />
+          </View>
+          <View style={styles.editLectureButton}>
+            <CustomedButton
+              buttonText='講義の削除'
+              onPress={() => navigation.navigate('編集画面')}
+            />
           </View>
         </View>
       </View>
@@ -206,8 +208,13 @@ export default function homeScreenProp() {
   )
 
   return (
-    <View style={[CommonStyles.bgColorWhite, styles.screenContainer]}>
+    <>
+      <ShowModalContext.Provider
+        value={{ isVisible: showModal, setIsVisible: setShowModal }}>
+        <ModalToChangeBelongs />
+      </ShowModalContext.Provider>
       <FlatList
+        style={[styles.screenContainer, CommonStyles.bgColorWhite]}
         data={tableData}
         renderItem={({ item }) => <RenderTable tableItem={item} />}
         keyExtractor={(item, index) => index}
@@ -217,13 +224,13 @@ export default function homeScreenProp() {
           <FooterComponent otherItem={othreLecsData} />
         }
       />
-    </View>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   screenContainer: {
-  padding: 10,
+    padding: 10,
   },
 
   // 検索ボタン関連

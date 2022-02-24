@@ -85,12 +85,12 @@ export default function TermsOfService() {
         <CustomedButton
           buttonText='「Twitterの利用規約」はこちらから'
           onPress={() => openUrl("https://cdn.cms-twdigitalassets.com/content/dam/legal-twitter/site-assets/privacy-policy-new/pp-tos-ja.pdf")}
-          buttonStyle={styles.buttonExtraStyle}
+          buttonStyle={[styles.buttonExtraStyle, CommonStyles.bgColorTomato]}
         />
         <CustomedButton
           buttonText='「Twitterのプライバシーポリシー」はこちらから'
           onPress={() => openUrl("https://cdn.cms-twdigitalassets.com/content/dam/legal-twitter/site-assets/privacy-june-18th-2020/Twitter_Privacy_Policy_JA.pdf")}
-          buttonStyle={styles.buttonExtraStyle}
+          buttonStyle={[styles.buttonExtraStyle, CommonStyles.bgColorTomato]}
         />
         <Text style={[styles.text, CommonStyles.basicFont]}>
           {`\n第14条（Googleフォームの利用）\n
@@ -100,7 +100,7 @@ export default function TermsOfService() {
         <CustomedButton
           buttonText='「Googleのプライバシーポリシーと利用規約」はこちらから'
           onPress={() => openUrl("https://policies.google.com/terms?hl=ja")}
-          buttonStyle={styles.buttonExtraStyle}
+          buttonStyle={[styles.buttonExtraStyle, CommonStyles.bgColorTomato]}
         />
       </View>
     </ScrollView>
