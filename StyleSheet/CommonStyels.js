@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 const CommonStyles = StyleSheet.create({
   viewPageContainer: {
     padding: 10,
-    margin: 5,
     flex: 1,
   },
   xLargeFont: {
@@ -37,6 +36,9 @@ const CommonStyles = StyleSheet.create({
   colorWhite: {
   color: 'white',
   },
+  colorBlack: {
+  color: 'black',
+  },
   colorTomato: {
     color: 'tomato',
   },
@@ -50,16 +52,19 @@ const CommonStyles = StyleSheet.create({
     color: '#00acee',
   },
   colorLightTomato: {
-    color: '#FF8747',
+    color: '#FFA595',
   },
   bgColorWhite: {
     backgroundColor: 'white',
+  },
+  bgColorBlack: {
+  backgroundColor: 'black',
   },
   bgColorTomato: {
     backgroundColor: 'tomato',
   },
   bgColorLightTomato: {
-  backgroundColor: '#FF8747',
+    backgroundColor: '#FFA595',
   },
   bgColorLightGray: {
     backgroundColor: '#cccccc'

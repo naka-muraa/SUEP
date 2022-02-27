@@ -10,6 +10,7 @@ import * as Sentry from 'sentry-expo';
 import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
 import ModalToChangeBelongs from './ModalToChangeBelongs';
 import { ShowModalContext } from './ShowModalContext';
+import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
 
 // コンポーネントのインポート
 import CustomedSearchBar from '../../Components/CustomedSearchBar';
@@ -20,7 +21,9 @@ export default function homeScreenProp() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [showModal, setShowModal] = useState(false);
-  const [othreLecsData, setOthreLecsData] = useState(null);
+  const [otherLecsData, setOtherLecsData] = useState(null);
+  const [isReadyToDelete, setIsReadyToDelete] = useState(false);
+  const [numberOfLecturesDeleted, setNumberOfLecturesDeleted] = useState();
 
   //状態変数tableDataを更新するための配列
   const defaultTableData = [
@@ -34,14 +37,13 @@ export default function homeScreenProp() {
   //Flatlistに渡す講義データ
   const [tableData, setTableData] = useState(defaultTableData);
 
-
   function setTableAndOtherLecture(tableLectures, otherLectures) {
     try {
       if (tableLectures != null && otherLectures != null) {
         tableLectures = JSON.parse(tableLectures);
         otherLectures = JSON.parse(otherLectures);
         setTableData(tableLectures);
-        setOthreLecsData(otherLectures);
+        setOtherLecsData(otherLectures);
       }
       else if (tableLectures != null && otherLectures == null) {
         tableLectures = JSON.parse(tableLectures);
@@ -49,7 +51,7 @@ export default function homeScreenProp() {
       }
       else if (tableLectures == null && otherLectures != null) {
         otherLectures = JSON.parse(otherLectures);
-        setOthreLecsData(otherLectures);
+        setOtherLecsData(otherLectures);
       }
     } catch (error) {
       Sentry.Native.captureException(error);
@@ -82,57 +84,131 @@ export default function homeScreenProp() {
   }
 
   const RenderDayName = ({ prop }) => (
-    <Text style={[CommonStyles.basicFontBold, CommonStyles.colorWhite]}>{prop}</Text>
+    <Text style={[CommonStyles.basicFontBold, CommonStyles.colorBlack]}>{prop}</Text>
   )
 
   const RenderFirstColumnItem = ({ prop }) => {
     if (prop == '～') {
       return (
-        <Ionicons name="chevron-down-outline" size={16} color="tomato" />
+        <Ionicons name="chevron-down-outline" size={16} color="black" />
       )
     } else {
-      return (<Text style={[CommonStyles.smallFontBold, CommonStyles.colorTomato]}>{prop}</Text>)
+      return (<Text style={[CommonStyles.smallFont, CommonStyles.colorBlack]}>{prop}</Text>)
     }
   }
 
-  const RenderLectureName = ({ prop }) => (
-    <TouchableOpacity onPress={() => navigatoToDetailScreen(prop)}>
-      <Text numberOfLines={4} style={CommonStyles.basicFont}>{prop.科目}</Text>
+  function changeFlatListValue(itemIndex) {
+    if (tableData[itemIndex].selected == true) {
+      setNumberOfLecturesDeleted(numberOfLecturesDeleted - 1);
+      let tmp = tableData;
+      tmp[itemIndex].selected = false;
+      setTableData(tmp);
+    }
+    else {
+      setNumberOfLecturesDeleted(numberOfLecturesDeleted + 1);
+      let tmp = tableData;
+      tmp[itemIndex].selected = true;
+      setTableData(tmp);
+    }
+  }
+
+  const RenderLectureName = ({ item, index }) => (
+    <TouchableOpacity
+      onPress={() => {
+        isReadyToDelete ?
+          changeFlatListValue(index)
+          :
+          navigatoToDetailScreen(item)
+      }}
+    >
+      <Text numberOfLines={4} style={CommonStyles.basicFont}>{item.科目}</Text>
     </TouchableOpacity>
   )
 
-  function stylesDependingOnValue(dayName, number, lectureName) {
+  function stylesDependingOnValue(dayName) {
     const dayIsIncluded = dayName ? true : false;
-    const periodIsIncluded = number ? true : false;
-    const lectureIsIncluded = lectureName ? true : false;
-    if (dayIsIncluded) {
-      return CommonStyles.bgColorTomato
+    const today = new Date();
+    const numberOfDay = today.getDay();
+    const dayOfWeekArray = ['日', '月', '火', '水', '木', '金', '土'];
+    if (dayIsIncluded && (dayOfWeekArray[numberOfDay] == dayName)) {
+      return { borderBottomColor: 'tomato', borderBottomWidth: 3 }
     }
-    else if (periodIsIncluded) {
-      return CommonStyles.bgColorWhite
+    else {
+      return {
+        borderBottomColor: '#cccccc',
+        borderBottomWidth: 1,
+      }
     }
-    else if (lectureIsIncluded) {
-      return CommonStyles.bgColorWhite
+  }
+
+  function stylesDependingOnStateToDelteLectures(name) {
+    const nameIsIncluded = name ? true : false;
+    if (nameIsIncluded) {
+      return { borderBottomColor: '#FFA595', borderBottomWidth: 2, }
     }
   }
 
   //時間割テーブルのセル部分
-  function RenderTable({ tableItem }) {
+  function RenderTable({ tableItem, itemIndex }) {
     const dayName = tableItem.曜日;
     const numberOfLectures = tableItem.period;
     const startTime = tableItem.startTime;
     const endTime = tableItem.endTime;
     const lectureName = tableItem.科目;
     return (
-      <View style={[styles.defaltCellStyle, stylesDependingOnValue(dayName, numberOfLectures, lectureName)]}>
+      <View style={
+        [
+          styles.defaltCellStyle,
+          stylesDependingOnValue(dayName),
+          isReadyToDelete && (
+            tableItem.selected ?
+              CommonStyles.bgColorLightGray
+              :
+              stylesDependingOnStateToDelteLectures(lectureName)
+          )
+        ]
+      }>
         {dayName ? <RenderDayName prop={dayName} /> : null}
         {numberOfLectures ? <RenderFirstColumnItem prop={numberOfLectures} /> : null}
         {startTime ? <RenderFirstColumnItem prop={startTime} /> : null}
         {startTime ? <RenderFirstColumnItem prop='～' /> : null}
         {endTime ? <RenderFirstColumnItem prop={endTime} /> : null}
-        {lectureName ? <RenderLectureName prop={tableItem} /> : null}
+        {lectureName ? <RenderLectureName item={tableItem} index={itemIndex} /> : null}
       </View>
     );
+  }
+
+  function initializeStateToDeleteLectures() {
+    setNumberOfLecturesDeleted(0);
+    setIsReadyToDelete(true);
+  }
+
+  async function deleteSelectedLectures() {
+    let tmp = otherLecsData.filter(item => !item.selected)
+    setOtherLecsData(tmp);
+    tmp = tableData;
+    tmp.filter((item, index) => {
+      if (item.selected == true) {
+        tmp[index] = {};
+      }
+    })
+    setTableData(tmp);
+    setIsReadyToDelete(false);
+    const keyValueSet = [
+      {
+        key: 'formattedTableDataKey',
+        value: JSON.stringify(tableData),
+      },
+      {
+        key: 'otherLectureKey',
+        value: JSON.stringify(otherLecsData),
+      }
+    ];
+    await Promise.all(
+      keyValueSet.map(item =>
+        saveData([item.key, item.value]
+        )
+      ));
   }
 
   const HeaderComponent = () => {
@@ -142,7 +218,7 @@ export default function homeScreenProp() {
         <View style={styles.searchBarWrapper}>
           <CustomedSearchBar
             onChangeText={text => { setinputedLectureInfo(text) }}
-            onEndEditing={() => {
+            onSubmitEditing={() => {
               navigation.navigate('検索結果', { keyWord: inputedKeyWord });
             }}
             value={inputedKeyWord}
@@ -153,21 +229,48 @@ export default function homeScreenProp() {
           />
         </View>
         <View style={styles.headerButtonsWrapper}>
-          <View style={styles.editBelongButton}>
-            <CustomedButton
-              buttonText='所属先の変更'
-              onPress={() => setShowModal(true)}
-            />
-          </View>
-          <View style={styles.editLectureButton}>
-            <CustomedButton
-              buttonText='講義の削除'
-              onPress={() => navigation.navigate('編集画面')}
-            />
-          </View>
+          {!isReadyToDelete ?
+            <>
+              <View style={styles.headerButtonWrapper}>
+                <CustomedButton
+                  buttonText='所属先の変更'
+                  onPress={() => setShowModal(true)}
+                />
+              </View>
+              <View style={styles.headerButtonWrapper}>
+                <CustomedButton
+                  buttonText='講義の削除'
+                  onPress={() => initializeStateToDeleteLectures()}
+                />
+              </View>
+            </>
+            :
+            <View style={styles.headerButtonWrapper}>
+              <CustomedButton
+                buttonText={numberOfLecturesDeleted + '個の講義を削除'}
+                buttonStyle={CommonStyles.bgColorTomato}
+                onPress={() => { deleteSelectedLectures(); }}
+              />
+            </View>
+          }
         </View>
       </View>
     )
+  }
+
+  function changeValueOfOtherLectures(itemIndex) {
+    if (otherLecsData[itemIndex].selected == true) {
+      setNumberOfLecturesDeleted(numberOfLecturesDeleted - 1);
+      let tmp = otherLecsData;
+      tmp[itemIndex].selected = false;
+      setOtherLecsData(tmp);
+    }
+    else {
+      setNumberOfLecturesDeleted(numberOfLecturesDeleted + 1);
+      let tmp = otherLecsData;
+      tmp[itemIndex].selected = true;
+      setOtherLecsData(tmp);
+    }
   }
 
   const OtherLectureContent = ({ displayedItem }) => (
@@ -176,12 +279,26 @@ export default function homeScreenProp() {
         displayedItem.map((element, elementNumber) => (
           <ListItem
             key={elementNumber}
-            containerStyle={styles.listItemContainer}
+            containerStyle={
+              [
+                styles.listItemContainer,
+                isReadyToDelete && (element.selected ?
+                  CommonStyles.bgColorLightGray
+                  :
+                  styles.listItemContainerToDelete),
+              ]
+            }
           >
             <ListItem.Content >
-              <TouchableOpacity onPress={() => navigatoToDetailScreen(displayedItem[elementNumber])}>
+              <TouchableOpacity
+                onPress={() => isReadyToDelete ?
+                  changeValueOfOtherLectures(elementNumber)
+                  :
+                  navigatoToDetailScreen(displayedItem[elementNumber])
+                }
+              >
                 <View style={styles.otherItem}>
-                  <View style={styles.othreItemTitle}>
+                  <View style={styles.otherItemTitle}>
                     <ListItem.Title>
                       <Text style={[CommonStyles.basicFont]}>{element.科目}</Text>
                     </ListItem.Title>
@@ -209,21 +326,21 @@ export default function homeScreenProp() {
 
   return (
     <>
-      {showModal ?
+      {showModal &&
         <ShowModalContext.Provider
           value={{ isVisible: showModal, setIsVisible: setShowModal }}>
           <ModalToChangeBelongs />
         </ShowModalContext.Provider>
-        : null}
+      }
       <FlatList
-        style={[styles.screenContainer, CommonStyles.bgColorWhite]}
+        style={[CommonStyles.viewPageContainer, CommonStyles.bgColorWhite]}
         data={tableData}
-        renderItem={({ item }) => <RenderTable tableItem={item} />}
+        renderItem={({ item, index }) => <RenderTable tableItem={item} itemIndex={index} />}
         keyExtractor={(item, index) => index}
         numColumns={6}
         ListHeaderComponent={<HeaderComponent />}
         ListFooterComponent={
-          <FooterComponent otherItem={othreLecsData} />
+          <FooterComponent otherItem={otherLecsData} />
         }
       />
     </>
@@ -231,31 +348,28 @@ export default function homeScreenProp() {
 }
 
 const styles = StyleSheet.create({
-  screenContainer: {
-    padding: 10,
-  },
 
   // 検索ボタン関連
   upperContainer: {
     width: '100%',
     marginBottom: 10,
     alignItems: 'center',
+    backgroundColor: 'white',
   },
   searchBarWrapper: {
     width: '98%',
   },
   extraSearchBarStyle: {
-    marginBottom: 30,
+    marginBottom: 40,
   },
   headerButtonsWrapper: {
     flexDirection: 'row',
-    marginBottom: 15,
-    marginLeft: 'auto',
-  },
-  editBelongButton: {
+    marginBottom: 5,
     marginRight: 5,
+    alignSelf: 'flex-end',
   },
-  editLectureButton: {
+  headerButtonWrapper: {
+    marginHorizontal: 10,
   },
 
   //時間割表のデザイン
@@ -270,19 +384,23 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#cccccc',
   },
+  listItemContainerToDelete: {
+    borderBottomWidth: 2,
+    borderColor: '#FFA595',
+  },
   defaltCellStyle: {
+    paddingVertical: 2,
     width: '16%',
     justifyContent: 'center',
     alignItems: 'center',
     margin: 1,
-    borderBottomColor: '#cccccc',
-    borderBottomWidth: 1,
   },
 
   // その他・集中講義部分のデザイン
   footerContainer: {
     padding: 10,
     marginTop: 10,
+    backgroundColor: 'white',
   },
   textWhenEmpty: {
     paddingTop: 10,
@@ -294,7 +412,7 @@ const styles = StyleSheet.create({
   otherItem: {
     width: '92%',
   },
-  othreItemTitle: {
+  otherItemTitle: {
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     paddingRight: 2,

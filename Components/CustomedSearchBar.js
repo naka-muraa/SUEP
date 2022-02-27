@@ -6,12 +6,13 @@ function shadowStyle(showShadow) {
   return showShadow ? styles.shadow : styles.barBorder;
 }
 
-export default function CustomedSearchBar({ onChangeText, onEndEditing, value, placeholder, onTapIcon, style, showShadow, iconType }) {
+export default function CustomedSearchBar({ onChangeText, onEndEditing, value, placeholder, onTapIcon, style, showShadow, iconType, onSubmitEditing }) {
   return (
     < View style={[styles.textInputWrapper, style, shadowStyle(showShadow)] }>
       <TextInput
         onChangeText={onChangeText}
         onEndEditing={onEndEditing}
+        onSubmitEditing={onSubmitEditing}
         value={value}
         placeholder={placeholder}
         autoCapitalize='none'

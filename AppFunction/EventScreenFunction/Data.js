@@ -79,7 +79,7 @@ export default function Data(props) {
     <View style={[CommonStyles.viewPageContainer, CommonStyles.bgColorWhite]}>
       <CustomedSearchBar
         onChangeText={text => { setInputtedText(text) }}
-        onEndEditing={() => { setSearching(true) }}
+        onSubmitEditing={() => { setSearching(true) }}
         value={InputtedText}
         placeholder='Search'
         onTapIcon={() => { setInputtedText(''), setValue(storageData._W) }}

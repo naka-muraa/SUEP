@@ -21,8 +21,7 @@ async function openUrl(url) {
 
 export default function TermsOfService() {
   return (
-    <ScrollView style={CommonStyles.scrollViewPageContainer}>
-      <View style={[styles.pageContainer, CommonStyles.bgColorWhite]}>
+      <ScrollView style={[CommonStyles.viewPageContainer, CommonStyles.bgColorWhite]}>
         <Text style={[styles.text, CommonStyles.basicFont]}>
           {` この利用規約（以下 、「本規約」といいます。）は 、開発者（以下 、「私」といいます。）がこのアプリケーション上で提供するサービス（以下 、「本サービス」といいます。）の利用条件を定めるものです。利用者の皆さま（以下 、「ユーザー」といいます。）には 、本規約に従って 、本サービスをご利用いただきます。\n
 第1条（適用）\n
@@ -102,17 +101,11 @@ export default function TermsOfService() {
           onPress={() => openUrl("https://policies.google.com/terms?hl=ja")}
           buttonStyle={[styles.buttonExtraStyle, CommonStyles.bgColorTomato]}
         />
-      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  pageContainer: {
-    paddingHorizontal: 5,
-    padding: 10,
-    flex: 1,
-  },
   text: {
     marginHorizontal: 10,
   },
