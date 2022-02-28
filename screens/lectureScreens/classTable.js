@@ -97,17 +97,32 @@ export default function homeScreenProp() {
     }
   }
 
-  function changeFlatListValue(itemIndex) {
+  function makeSameItemSelected(selectedLecture) {
+    const lectureCode = selectedLecture.時間割コード;
+    if (lectureCode != null) {
+      let tmp = tableData;
+      tmp.filter((item) => {
+        if (item.時間割コード == lectureCode) {
+          item.selected = true;
+        }
+      })
+      setTableData(tmp)
+    }
+  }
+
+  function toggleItemSelected(itemIndex) {
     if (tableData[itemIndex].selected == true) {
       setNumberOfLecturesDeleted(numberOfLecturesDeleted - 1);
       let tmp = tableData;
       tmp[itemIndex].selected = false;
+      makeSameItemSelected(tmp[itemIndex]);
       setTableData(tmp);
     }
     else {
       setNumberOfLecturesDeleted(numberOfLecturesDeleted + 1);
       let tmp = tableData;
       tmp[itemIndex].selected = true;
+      makeSameItemSelected(tmp[itemIndex]);
       setTableData(tmp);
     }
   }
@@ -116,7 +131,7 @@ export default function homeScreenProp() {
     <TouchableOpacity
       onPress={() => {
         isReadyToDelete ?
-          changeFlatListValue(index)
+          toggleItemSelected(index)
           :
           navigatoToDetailScreen(item)
       }}
@@ -183,32 +198,61 @@ export default function homeScreenProp() {
     setIsReadyToDelete(true);
   }
 
-  async function deleteSelectedLectures() {
-    let tmp = otherLecsData.filter(item => !item.selected)
-    setOtherLecsData(tmp);
-    tmp = tableData;
-    tmp.filter((item, index) => {
-      if (item.selected == true) {
-        tmp[index] = {};
-      }
+  async function deleteDataFromPlainTableData(selectedLecture) {
+    console.log('選ばれた講義:' + selectedLecture + '\n')
+    let tablePlainData = await readTableData('plainTableDataKey');
+    tablePlainData = JSON.parse(tablePlainData);
+    let arrayNumberToDelete = [];
+    tablePlainData.filter((item, index) => {
+      selectedLecture.filter(selectedItem => {
+        if (item.科目 == selectedItem.科目) {
+          arrayNumberToDelete.push(index);
+        }
+      })
     })
-    setTableData(tmp);
+    for (let itr = 0; itr < arrayNumberToDelete.length; itr++){
+      tablePlainData.splice(arrayNumberToDelete[itr], 1);
+    }
+    saveData(['plainTableDataKey', JSON.stringify(tablePlainData)])
+  }
+
+  async function deleteSelectedLectures() {
+    if (numberOfLecturesDeleted > 0) {
+
+      // その他の講義の削除
+      let tmp = otherLecsData.filter(item => !item.selected)
+      setOtherLecsData(tmp);
+
+      // 時間割表用の素のデータから削除
+      const selectedLectureInfo = tableData.filter(item => item.selected);
+      deleteDataFromPlainTableData(selectedLectureInfo);
+
+      // 時間割表用データから削除
+      tmp = tableData;
+      tmp.filter((item, index) => {
+        if (item.selected == true) {
+          tmp[index] = {};
+        }
+      })
+      setTableData(tmp);
+
+      // 削除後のデータの保存
+      const keyValueSet = [
+        {
+          key: 'formattedTableDataKey',
+          value: JSON.stringify(tableData),
+        },
+        {
+          key: 'otherLectureKey',
+          value: JSON.stringify(otherLecsData),
+        }
+      ];
+      await Promise.all(
+        keyValueSet.map(item =>
+          saveData([item.key, item.value])
+        ));
+    }
     setIsReadyToDelete(false);
-    const keyValueSet = [
-      {
-        key: 'formattedTableDataKey',
-        value: JSON.stringify(tableData),
-      },
-      {
-        key: 'otherLectureKey',
-        value: JSON.stringify(otherLecsData),
-      }
-    ];
-    await Promise.all(
-      keyValueSet.map(item =>
-        saveData([item.key, item.value]
-        )
-      ));
   }
 
   const HeaderComponent = () => {
@@ -291,13 +335,14 @@ export default function homeScreenProp() {
           >
             <ListItem.Content >
               <TouchableOpacity
+                style={styles.otherItem}
                 onPress={() => isReadyToDelete ?
                   changeValueOfOtherLectures(elementNumber)
                   :
                   navigatoToDetailScreen(displayedItem[elementNumber])
                 }
               >
-                <View style={styles.otherItem}>
+                <View>
                   <View style={styles.otherItemTitle}>
                     <ListItem.Title>
                       <Text style={[CommonStyles.basicFont]}>{element.科目}</Text>
@@ -313,7 +358,9 @@ export default function homeScreenProp() {
   );
 
   const OtherLectureEmpty = () => (
-    <Text style={[CommonStyles.basicFont, styles.textWhenEmpty]}>集中講義などの講義はここに表示されます</Text>
+    <View style={styles.footerEmptyContentWrapper}>
+      <Text style={[CommonStyles.basicFont, styles.textWhenEmpty]}>集中講義などの講義はここに表示されます</Text>
+    </View>
   );
 
   //その他の講義部分
@@ -399,12 +446,15 @@ const styles = StyleSheet.create({
   // その他・集中講義部分のデザイン
   footerContainer: {
     padding: 10,
-    marginTop: 10,
+    marginVertical: 10,
     backgroundColor: 'white',
   },
   textWhenEmpty: {
     paddingTop: 10,
     alignItems: 'center',
+  },
+  footerEmptyContentWrapper: {
+    marginVertical: 20,
   },
   otherLectureTitle: {
     textAlign: 'center',

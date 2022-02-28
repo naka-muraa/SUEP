@@ -97,9 +97,8 @@ export default function ModalToChangeBelongs() {
       <View style={[styles.centeredView, context.isVisible ? { backgroundColor: 'rgba(0,0,0,0.5)' } : '']}>
         <View style={styles.modalView}>
           <ScrollView style={styles.contentWrapper}>
-            <View style={styles.eachItem}>
-              <Text style={CommonStyles.basicFontBold}>所属先を変更できます</Text>
-              <Text style={CommonStyles.basicFont}>現在の所属先は{stringFacultyName}です。</Text>
+            <View style={styles.modalTitle}>
+              <Text style={CommonStyles.basicFont}>所属先を変更できます</Text>
             </View>
             {facultyNameArray.map((value, index) => (
               <View
@@ -113,6 +112,7 @@ export default function ModalToChangeBelongs() {
                 />
               </View>
             ))}
+            <View style={{marginTop: 20}}></View>
           </ScrollView>
         </View>
       </View>
@@ -127,28 +127,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    height: '75%',
-    width: '80%',
+    height: '60%',
+    width: '90%',
     backgroundColor: 'white',
-    borderRadius: 20,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: 'black',
     shadowOffset: {
       width: 0,
       height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 30,
   },
   contentWrapper: {
     width: '100%',
-    paddingBottom: 20,
     paddingTop: 20,
     flexDirection: 'column',
   },
-  eachItem: {
+  modalTitle: {
     paddingHorizontal: '10%',
-    marginBottom: '10%'
+    marginBottom: 20
+  },
+  eachItem: {
+    paddingHorizontal: '20%',
+    marginBottom: 20
   },
 });

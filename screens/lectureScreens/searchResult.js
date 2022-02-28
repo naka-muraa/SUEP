@@ -17,12 +17,11 @@ import CustomedButton from '../../Components/CustomedButton';
 import CustomedIndicator from '../../Components/CustomedIndicator';
 import CommonStyles from '../../StyleSheet/CommonStyels';
 
-export default function searchScreen() {
+export default function SearchScreen({navigation}) {
   const [searchResultsData, setsearchResultsData] = useState();
   const [isChecked, setisChecked] = useState(true);
   const [isLoading, setisLoading] = useState(true);
   const route = useRoute();
-  const navigation = useNavigation();
   const getListData = async () => {
     // 検索実行
     const searchedLecture = await SearchLecture(route.params.keyWord);

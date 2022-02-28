@@ -7,7 +7,7 @@ import HomeScreenTable from './classTable';
 import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
 
 //時間割管理ホーム画面
-export default function lectureScreen() {
+export default function LectureScreen() {
   const [initialBoot, setinitialBoot] = useState(false);
 
   useEffect(() => {

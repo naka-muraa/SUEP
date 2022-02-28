@@ -7,7 +7,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
 import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
 
-export default function editLectureScreen({ navigation }) {
+export default function EditLectureScreen({ navigation }) {
   const [registeredData, setRegisteredData] = useState();
   const [isChecked, setisChecked] = useState(true);
   const [open, setOpen] = useState(false);
