@@ -97,32 +97,29 @@ export default function homeScreenProp() {
     }
   }
 
-  function makeSameItemSelected(selectedLecture) {
+  function makeSameItemSelected(allData, index) {
+    const selectedLecture = allData[index];
     const lectureCode = selectedLecture.時間割コード;
     if (lectureCode != null) {
-      let tmp = tableData;
+      let tmp = allData;
       tmp.filter((item) => {
         if (item.時間割コード == lectureCode) {
-          item.selected = true;
+          item.selected = !item.selected;
         }
       })
-      setTableData(tmp)
+      return tmp
     }
   }
 
   function toggleItemSelected(itemIndex) {
     if (tableData[itemIndex].selected == true) {
       setNumberOfLecturesDeleted(numberOfLecturesDeleted - 1);
-      let tmp = tableData;
-      tmp[itemIndex].selected = false;
-      makeSameItemSelected(tmp[itemIndex]);
+      const tmp = makeSameItemSelected(tableData, itemIndex);
       setTableData(tmp);
     }
     else {
       setNumberOfLecturesDeleted(numberOfLecturesDeleted + 1);
-      let tmp = tableData;
-      tmp[itemIndex].selected = true;
-      makeSameItemSelected(tmp[itemIndex]);
+      const tmp =  makeSameItemSelected(tableData, itemIndex);
       setTableData(tmp);
     }
   }
