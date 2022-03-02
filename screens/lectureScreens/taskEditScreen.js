@@ -1,215 +1,220 @@
-// 日にちの参照にはhttps://github.com/mmazzarolo/react-native-modal-datetime-picker
 import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
-  TextInput,
+  TextInput, Alert
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-// スタイルのインポート
+// 外部関数のインポート
+import arrangeDate from '../../AppFunction/LectureScreenFunction/arrangeDate';
+import saveData from '../../AppFunction/LectureScreenFunction/saveData';
+
+// スタイルとコンポーネントのインポート
 import CommonStyles from '../../StyleSheet/CommonStyels';
+import CustomedButton from '../../Components/CustomedButton';
 
 export default function TaskEdit({ navigation }) {
   const [title, setTitle] = useState();
   const [memoText, setMemoText] = useState();
   const route = useRoute();
-  if (route.params) {
-    setTitle(route.params.title);
-    setMemoText(route.params.memo);
-    setFrom(route.params.from);
-    setTo(route.params.to);
-  }
-  const [isFromDatePickerVisible, setFromDatePickerVisibility] = useState(false);
-  const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
-  const [fromDate, setFrom] = useState();
-  const [toDate, setTo] = useState();
+  const [starDateString, setStartDateString] = useState();
+  const [endDateString, setendDateString] = useState();
+  const [plainStartDate, setPlainStartDate] = useState();
+  const [plainEndDate, setPlainEndDate] = useState();
+  const [isStartDatePickerVisible, setStartDatePickerVisibility] = useState(false);
+  const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
 
   useEffect(() => {
-    const today = new Date();
-    const date = today.getDate();
-    const month = today.getMonth() + 1;
-    const year = today.getFullYear();
-    const fullDate = `${year} / ${month} / ${date}`;
-    setFrom(fullDate);
-    setTo(fullDate);
+    if (route.params) {
+      setTitle(route.params.title);
+      setStartDateString(route.params.from);
+      setendDateString(route.params.to);
+    }
+    else {
+      const today = new Date();
+      setPlainStartDate(today);
+      setPlainEndDate(today);
+      const date = today.getDate();
+      const month = today.getMonth() + 1;
+      const year = today.getFullYear();
+      const fullDate = `${year} / ${month} / ${date}`;
+      setStartDateString(fullDate);
+      setendDateString(fullDate);
+    }
   }, [])
 
-  const MemoSpace = () => (
-    <View>
-      <View style={styles.titleTextMargin}>
-        <Text>メモ</Text>
+  const MemoSpace = () => {
+    return (
+      <View>
+        <Text style={[CommonStyles.basicFont, CommonStyles.colorTomato]}>メモ</Text>
+        <View style={styles.memoInput}>
+          <TextInput
+            style={[styles.memoInputSpaceDesign, CommonStyles.basicFont]}
+            value={memoText}
+            autoCapitalize='none'
+            onChangeText={setMemoText}
+            placeholder='スケジュールに関する情報を入力'
+            multiline={true}
+          />
+        </View>
       </View>
-      <View style={styles.memoInput}>
-        <TextInput
-          style={styles.memoInputSpaceDesign}
-          value={memoText}
-          autoCapitalize='none'
-          onChangeText={setMemoText}
-          placeholder='メモ欄'
-          multiline={true}
-        />
-      </View>
-    </View>
-  );
+    );
+  };
+
+  const verifyDate = () => {
+    if ((plainEndDate < plainStartDate) && (plainEndDate.getDate() != plainStartDate.getDate())) {
+      Alert.alert(
+        '日にちの修正が必要です',
+        '終了日は開始日と同じかそれより後にしてください。',
+        [
+          { text: '戻る' },
+        ],
+        { cancelable: true }
+      );
+    } else {
+      const shcheduleData = {
+        title: title ? title : 'No title',
+        startDate: starDateString,
+        endDate: endDateString,
+        note: memoText ? memoText : null,
+      };
+//      saveData([科目, JSON.stringfy(shcheduleData)]);
+      navigation.goBack()
+    }
+  }
 
   // 新しいスケジュールをasyncstorageで保存 + 画面遷移
   const DoneEditButton = () => (
     <View style={styles.editDoneWrapper}>
-      <TouchableOpacity
-        style={styles.editDoneButton}
-        onPress={() => navigation.goBack()}>
-        <Text>完了</Text>
-        <Ionicons name='checkmark-done' size={24} color='black' />
-      </TouchableOpacity>
+      <CustomedButton
+        onPress={verifyDate}
+        buttonStyle={CommonStyles.bgColorTomato}
+        buttonText={<><Text>完了 </Text><Ionicons name='checkmark-done' size={24} color='white' /></>}
+      />
     </View>
   );
 
-  const handleConfirmTo = (date) => {
-    setTo(arrangeDate(date));
+  const confirmEndDate = (date) => {
+    setPlainEndDate(date);
+    setendDateString(arrangeDate(date));
     hideDatePicker('to');
   };
 
   const hideDatePicker = (criteria) => {
     if (criteria == 'from') {
-      setFromDatePickerVisibility(false);
+      setStartDatePickerVisibility(false);
     } else {
-      setToDatePickerVisibility(false);
+      setEndDatePickerVisibility(false);
     }
   }
 
-  const handleComfirmFrom = (date) => {
-    setFrom(arrangeDate(date))
+  const confirmStartDate = (date) => {
+    setPlainStartDate(date);
+    setStartDateString(arrangeDate(date))
     hideDatePicker('from');
   };
 
   const showDatePicker = (criteria) => {
     if (criteria == 'from') {
-      setFromDatePickerVisibility(true);
+      setStartDatePickerVisibility(true);
     } else {
-      setToDatePickerVisibility(true);
+      setEndDatePickerVisibility(true);
     }
   }
 
   return (
-    <ScrollView style={CommonStyles.viewPageContainer}>
-      <TextInput
-        style={styles.titleTextInput}
-        placeholder='タイトルを記入'
-        onChangeText={setTitle}
-        value={title}
-        multiline={true}
-      />
-      <View style={styles.titleTextMargin}>
-        <Text>開始</Text>
+    <ScrollView style={[CommonStyles.viewPageContainer, CommonStyles.bgColorWhite]}>
+      <View style={styles.container}>
+      <View style={styles.titleWrapper}>
+        <View style={styles.leftBorder}>
+          <TextInput
+            style={[styles.titleTextInput, CommonStyles.basicFont]}
+            placeholder='タイトルを記入'
+            onChangeText={setTitle}
+            value={title}
+            multiline={true}
+          />
+        </View>
       </View>
-      <View>
-        <TouchableOpacity onPress={showDatePicker('from')}>
-          <Text>{fromDate}</Text>
-        </TouchableOpacity>
+      <View style={styles.dateWrapper}>
+          <Text style={[CommonStyles.basicFont, CommonStyles.colorTomato]}>開始</Text>
+        <View>
+          <TouchableOpacity onPress={() => showDatePicker('from')}>
+            <Text style={CommonStyles.xLargeFont}>{starDateString}</Text>
+          </TouchableOpacity>
+        </View>
         <DateTimePickerModal
-          isVisible={isFromDatePickerVisible}
+          isVisible={isStartDatePickerVisible}
           mode='date'
-          onConfirm={handleComfirmFrom}
-          onCancel={hideDatePicker('from')}
+          onConfirm={confirmStartDate}
+          onCancel={() => hideDatePicker('from')}
         />
       </View>
-      <View style={styles.titleTextMargin}>
-        <Text>終了</Text>
-      </View>
-      <View>
-        <TouchableOpacity onPress={showDatePicker('to')}>
-          <Text>{toDate}</Text>
-        </TouchableOpacity>
+      <View style={styles.dateWrapper}>
+          <Text style={[CommonStyles.basicFont, CommonStyles.colorTomato]}>終了</Text>
+        <View>
+          <TouchableOpacity onPress={() => showDatePicker('to')}>
+            <Text style={CommonStyles.xLargeFont}>{endDateString}</Text>
+          </TouchableOpacity>
+        </View>
         <DateTimePickerModal
-          isVisible={isToDatePickerVisible}
+          isVisible={isEndDatePickerVisible}
           mode='date'
-          onConfirm={handleConfirmTo}
-          onCancel={hideDatePicker('To')}
+          onConfirm={confirmEndDate}
+          onCancel={() => hideDatePicker('To')}
         />
       </View>
-      <MemoSpace />
-      <DoneEditButton />
+      <View style={styles.memoWrapper}>
+        <MemoSpace />
+      </View>
+        <DoneEditButton />
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  // 各項目のタイトル
-  titleTextMargin: {
-    marginVertical: 10,
+  container: {
+  padding: 10,
   },
-  input: {
-    borderWidth: 1,
-    borderRadius: 5,
+  titleWrapper: {
+    paddingVertical: 10,
+    marginTop: 10,
+  },
+  leftBorder: {
+    borderLeftColor: 'tomato',
+    borderLeftWidth: 3,
   },
   titleTextInput: {
-    borderWidth: 1,
-    borderRadius: 5,
-    height: 50,
+    padding: 10,
+    borderBottomColor: '#cccccc',
+    borderBottomWidth: 1,
   },
-  // 日にち記入欄
-  periodInputAreaContainer: {
-    flexDirection: 'row',
-    height: 100,
+  dateWrapper: {
+    paddingVertical: 15,
+    marginVertical: 10,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 2,
   },
-  yearMonthDayWrapper: {
-    flex: 4,
-    flexDirection: 'column',
-    justifyContent: 'space-around',
+  memoWrapper: {
+    paddingVertical:15,
+    marginVertical: 10,
   },
-  waveWrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  yearInputWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  yearInputFlex: {
-    flex: 4,
-  },
-  yearTextFlex: {
-    flex: 1,
-  },
-  monthDayInputWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  monthDayInputFlex: {
-    flex: 1,
-  },
-  monthTextFlex: {
-    flex: 1,
-  },
-  // メモ記入欄
   memoInput: {
     width: '100%',
   },
   memoInputSpaceDesign: {
-    borderWidth: 1,
-    borderRadius: 5,
-    height: 200,
+    borderBottomColor: '#cccccc',
+    borderBottomWidth: 1,
   },
-  // 編集完了ボタン
   editDoneWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginVertical: 10,
-  },
-  editDoneButton: {
-    backgroundColor: '#CED0CE',
-    borderRadius: 4,
     justifyContent: 'center',
-    alignItems: 'center',
-    width: (Dimensions.get('window').width * 0.5) / 3,
-    height: (Dimensions.get('window').width * 0.5) / 3,
+    marginVertical: 10,
   },
 });

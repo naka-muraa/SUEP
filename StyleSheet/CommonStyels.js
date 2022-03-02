@@ -36,41 +36,41 @@ const CommonStyles = StyleSheet.create({
   colorWhite: {
   color: 'white',
   },
+  colorLightGray: {
+    color: '#cccccc',
+  },
+  colorGray: {
+    color: 'gray',
+  },
   colorBlack: {
   color: 'black',
   },
   colorTomato: {
     color: 'tomato',
   },
-  colorGray: {
-    color: 'gray',
-  },
-  colorLightGray: {
-    color: '#cccccc',
+  colorLightTomato: {
+    color: '#FFA595',
   },
   colorBlue: {
     color: '#00acee',
   },
-  colorLightTomato: {
-    color: '#FFA595',
-  },
   bgColorWhite: {
     backgroundColor: 'white',
   },
+  bgColorLightGray: {
+    backgroundColor: '#cccccc'
+  },
   bgColorBlack: {
   backgroundColor: 'black',
+  },
+  bgColorDarkTomato: {
+    backgroundColor: '#BB4709',
   },
   bgColorTomato: {
     backgroundColor: 'tomato',
   },
   bgColorLightTomato: {
     backgroundColor: '#FFA595',
-  },
-  bgColorLightGray: {
-    backgroundColor: '#cccccc'
-  },
-  bgColorDarkTomato: {
-    backgroundColor: '#BB4709',
   },
   bgColorBlue: {
     backgroundColor: '#00acee',
