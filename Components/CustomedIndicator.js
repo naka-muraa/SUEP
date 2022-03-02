@@ -2,12 +2,12 @@ import { StyleSheet, ActivityIndicator, View } from 'react-native';
 
 export default function CustomedIndicator() {
   return (
-      <ActivityIndicator
-        size='large'
-        animating={true}
-        color='rgba(137,232,207,100)'
-      />
-)
+    <ActivityIndicator
+      size='large'
+      animating={true}
+      color='tomato'
+    />
+  )
 }
 
 const styles = StyleSheet.create({

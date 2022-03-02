@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Alert, Modal, Pressable, ScrollView } from 'react-native';
-import { Table, TableWrapper, Col } from 'react-native-table-component';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, Alert, Modal, ScrollView } from 'react-native';
+import * as Sentry from 'sentry-expo';
 
 // 外部関数のインポート
 import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
+
+// コンポーネント、スタイルのインポート
+import CustomedButton from '../../Components/CustomedButton';
+import CommonStyles from '../../StyleSheet/CommonStyels';
 
 // 学部名の保存＋初回起動フラグの設定
 function storeFacultyData(facultyName) {
@@ -26,7 +30,7 @@ function storeFacultyData(facultyName) {
         saveData(['facultyName', '法文学部, 法文, 教養教育'])
         break;
       case '人文社会科学研究科':
-        saveData(['facultyName', '人文社会科学研究科, 人文社会科学研究科'])
+        saveData(['facultyName', '人文社会科学研究科, 人文科学'])
         break;
       case '人間社会科学研究科':
         saveData(['facultyName', '人間社会科学研究科, 人間社会科学'])
@@ -48,74 +52,73 @@ function storeFacultyData(facultyName) {
     saveData(['firstLaunch', 'alreadyLaunched']);
   } catch (error) {
     Sentry.Native.captureException(error);
-    console.log('ファイル名：homeScreenPopup.js\n' + 'エラー：' + error + '\n');
+    console.log(`ファイル名:homeScreenPopup.js\n${error}\n`);
   }
 };
 
 // 初回起動時ポップアップの内容とデザイン
 export default function homeScreenProp() {
   const [modalVisible, setModalVisible] = useState(true);
-  const [facultyTableData, setfacultyTableData] = useState([]);
-  const facultyNameArray = ['生物資源科学部', '総合理工学部', '人間科学部', '教育学部', '法文学部', '人文社会科学研究科',
-    '人間社会科学研究科', '教育学研究科', '総合理工学研究科', '自然科学研究科'];
-
-  const facultyButton = (passedName) => {
-    return (
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => { setModalVisible(!modalVisible); storeFacultyData(passedName); }}
-      >
-        <Text style={styles.textStyle}>{passedName}</Text>
-      </Pressable>
-    )
-  }
-
-  useEffect(() => {
-    const facultyNameElement = facultyNameArray.map(item => facultyButton(item));
-    setfacultyTableData(facultyNameElement);
-  }, [])
+  const facultyNameArray = [
+    { name: '生物資源科学部' },
+    { name: '総合理工学部' },
+    { name: '人間科学部' },
+    { name: '教育学部' },
+    { name: '法文学部' },
+    { name: '人文社会科学研究科' },
+    { name: '人間社会科学研究科' },
+    { name: '教育学研究科' },
+    { name: '総合理工学研究科' },
+    { name: '自然科学研究科' },
+  ];
 
   return (
-    <>
-      <Modal
-        animationType='fade'
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('', '必ず所属先を選んでください');
-          setModalVisible(true);
-        }}
-      >
-        <View style={[styles.centeredView, modalVisible ? { backgroundColor: 'rgba(0,0,0,0.5)' } : '']}>
-
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>はじめまして</Text>
-            <Text style={styles.modalText}>所属先を選んでください</Text>
-            <ScrollView>
-              <Table>
-                <TableWrapper>
-                  <Col data={facultyTableData} />
-                </TableWrapper>
-              </Table>
-            </ScrollView>
-          </View>
+    <Modal
+      animationType='fade'
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        Alert.alert('', '必ず所属先を選んでください');
+        setModalVisible(true);
+      }}
+    >
+      <View style={[styles.centeredView, modalVisible &&{ backgroundColor: 'rgba(0,0,0,0.5)' }]}>
+        <View style={styles.modalView}>
+          <ScrollView style={styles.contentWrapper}>
+            <View style={styles.eachItem}>
+              <Text style={CommonStyles.basicFontBold}>はじめまして</Text>
+              <Text style={CommonStyles.basicFont}>所属先を選んでください。</Text>
+            </View>
+            {facultyNameArray.map((value, index) => (
+              <View
+                key={index}
+                style={styles.eachItem}
+              >
+                <CustomedButton
+                  buttonText={value.name}
+                  onPress={() => { storeFacultyData(value.name); setModalVisible(!modalVisible); }}
+                  buttonStyle={CommonStyles.bgColorTomato}
+                />
+              </View>
+            ))}
+          </ScrollView>
         </View>
-      </Modal>
-    </>
+      </View>
+    </Modal >
   )
 };
 
 const styles = StyleSheet.create({
   centeredView: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalView: {
-    width: '75%',
-    marginVertical: '45%',
+    height: '75%',
+    width: '80%',
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -126,26 +129,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5
   },
-  button: {
-    borderRadius: 20,
-    marginTop: 5,
-    marginBottom: 5,
-    padding: 10,
-    elevation: 2
+  contentWrapper: {
+    width: '100%',
+    paddingBottom: 20,
+    paddingTop: 20,
+    flexDirection: 'column',
   },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
+  eachItem: {
+    paddingHorizontal: '10%',
+    marginBottom: '10%'
   },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center'
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center'
-  }
 });

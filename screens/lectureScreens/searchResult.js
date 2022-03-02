@@ -1,6 +1,6 @@
 //TODO:  Flatlistのパフォーマンス改善
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, FlatList, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, View, Text, FlatList, Alert } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -8,19 +8,20 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 // 外部関数のインポート
 import SearchLecture from '../../AppFunction/LectureScreenFunction/SearchLecture';
 import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
-import DeleteDuplicateLecture from '../../AppFunction/LectureScreenFunction/deleteDuplicateLecture';
+import CombineCurrentDataWithSelectedData from '../../AppFunction/LectureScreenFunction/CombineCurrentDataWithSelectedData';
+import ConvertDataForTableScreen from '../../AppFunction/LectureScreenFunction/ConvertDataForTableScreen';
+import SeparateTableAndOtherLectureData from '../../AppFunction/LectureScreenFunction/SeparateTableAndOtherLectureData'
 
 // スタイルとコンポーネントのインポート
 import CustomedButton from '../../Components/CustomedButton';
 import CustomedIndicator from '../../Components/CustomedIndicator';
 import CommonStyles from '../../StyleSheet/CommonStyels';
 
-export default function searchScreen() {
+export default function SearchScreen({navigation}) {
   const [searchResultsData, setsearchResultsData] = useState();
   const [isChecked, setisChecked] = useState(true);
   const [isLoading, setisLoading] = useState(true);
   const route = useRoute();
-  const navigation = useNavigation();
   const getListData = async () => {
     // 検索実行
     const searchedLecture = await SearchLecture(route.params.keyWord);
@@ -43,34 +44,52 @@ export default function searchScreen() {
     let newData = searchResultsData;
     newData[classIdNumber].checked = !newData[classIdNumber].checked;
     setsearchResultsData(newData);
-
   }
 
   // 重複するデータを削除し、ストレージへ必要なデータを保存する
-  const storeFilteredData = async () => {
-    if (searchResultsData != null && searchResultsData != undefined) {
-      let selectedLectures = searchResultsData.filter((lecture) => lecture.checked);
+  async function storeFilteredData() {
+    let selectedLectures = searchResultsData.filter((lecture) => lecture.checked);
+    if (selectedLectures != null) {
 
       // 曜日・時限が重複するデータがある場合にアラート表示
-      let duplicateFlag = false;
+      let isDuplicate = false;
       selectedLectures.filter(lecture1 => {
         selectedLectures.filter(lecture2 => {
           if ((lecture1 != lecture2) && (lecture1.曜日時限.slice(0, 1) != '他') && (lecture1.曜日時限.slice(0, 2) == lecture2.曜日時限.slice(0, 2))) {
-            duplicateFlag = true;
+            isDuplicate = true;
           }
-        })
+        });
       });
-      if (duplicateFlag) {
+      if (isDuplicate) {
         Alert.alert(
           '同じ曜日・時限の科目が複数選択されています。',
-          '選択した科目を訂正してください。',
+          '選択する科目を訂正してください。',
           [
             { text: '戻る' },
-          ],)
+          ]);
       }
       else {
-        selectedLectures = await DeleteDuplicateLecture(selectedLectures);
-        await saveData(['tableKey', selectedLectures]);
+
+        // 時間割表のデータ・その他のデータを分割、整形、保存
+        const allLectureData = await CombineCurrentDataWithSelectedData(selectedLectures);
+        let [lectureTableData, stringfiedOtherLectureData] = await SeparateTableAndOtherLectureData(allLectureData);
+        saveData(['plainTableDataKey', JSON.stringify(lectureTableData)]);
+        const stringfiedTableFormattedData = await ConvertDataForTableScreen(lectureTableData);
+        const keyValueSet = [
+          {
+            key: 'formattedTableDataKey',
+            value: stringfiedTableFormattedData,
+          },
+          {
+            key: 'otherLectureKey',
+            value: stringfiedOtherLectureData,
+          }
+        ];
+        await Promise.all(
+          keyValueSet.map(item =>
+            saveData([item.key, item.value]
+            )
+          ));
         navigation.navigate('時間割表');
       }
     }
@@ -79,7 +98,7 @@ export default function searchScreen() {
   if (isLoading) {
     return (
       <View style={CommonStyles.viewPageContainer}>
-        <CustomedIndicator/>
+        <CustomedIndicator />
       </View>
     );
   }
@@ -139,7 +158,7 @@ export default function searchScreen() {
 
   return (
     <>
-      <SafeAreaView style={CommonStyles.viewPageContainer}>
+      <View style={CommonStyles.viewPageContainer}>
         <FlatList
           ListHeaderComponent={flatListHeader}
           data={searchResultsData}
@@ -147,10 +166,14 @@ export default function searchScreen() {
           keyExtractor={item => item.時間割コード}
           ListEmptyComponent={<View style={CommonStyles.viewPageContainer}><Text style={CommonStyles.largeFont}>該当データがありません</Text></View>}
         />
-      </SafeAreaView>
+      </View>
       <View style={styles.buttonContainer}>
         <CustomedButton
-          onPress={() => { storeFilteredData(); }}
+          onPress={() => {
+            if (searchResultsData) {
+              storeFilteredData()
+            }
+          }}
           buttonText='時間割に追加'
           buttonStyle={styles.extraButtonStyle}
         />

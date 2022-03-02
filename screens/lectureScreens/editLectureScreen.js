@@ -7,7 +7,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
 import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
 
-export default function editLectureScreen({ navigation }) {
+export default function EditLectureScreen({ navigation }) {
   const [registeredData, setRegisteredData] = useState();
   const [isChecked, setisChecked] = useState(true);
   const [open, setOpen] = useState(false);
@@ -91,9 +91,8 @@ export default function editLectureScreen({ navigation }) {
         case '人文社会学研究科':
           saveData(['facultyName', '人文社会学研究科, 人文社会学研究科'])
           break;
-        // 訂正要
         case '人間社会科学研究科':
-          saveData(['facultyName', '人文社会学研究科, 人文社会学研究科'])
+          saveData(['facultyName', '人間社会科学研究科, 人間社会科学'])
           break;
         case '教育学研究科':
           saveData(['facultyName', '教育学研究科, 教育学, 教育学_教職'])
@@ -143,7 +142,7 @@ export default function editLectureScreen({ navigation }) {
   }
 
   return (
-    <>
+    <View style={{flex: 1,}}>
       <FlatList
         style={styles.flatlistContainer}
         ListHeaderComponent={headerComponent}
@@ -166,15 +165,16 @@ export default function editLectureScreen({ navigation }) {
           <Text style={styles.searchTuikaBtnText}>登録情報を変更</Text>
         </TouchableOpacity>
       </View>
-    </>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   // 検索結果一覧のデザイン
   flatlistContainer: {
-    marginHorizontal: 5,
-    marginVertical: 5,
+    backgroundColor: 'white',
+    margin: 5,
+    padding: 5,
   },
   itemSearch: {
     backgroundColor: '#167F92',
@@ -244,8 +244,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   descriptionContainer: {
-    marginVertical: 10,
-    marginHorizontal: 5,
+    backgroundColor: 'white',
+    margin: 5,
+    padding: 5,
   },
   description: {
     fontSize: 20,

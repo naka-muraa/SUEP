@@ -36,14 +36,14 @@ export default function License() {
         <CustomedButton
           onPress={() => openUrl(item.homepage)}
           buttonText='Home page'
-          buttonStyle={styles.buttonExtraStyle}
+          buttonStyle={[styles.buttonExtraStyle, CommonStyles.bgColorTomato]}
         />
       }
     </View >
   );
 
   return (
-    <View style={CommonStyles.viewPageContainer}>
+    <View style={[CommonStyles.viewPageContainer, CommonStyles.bgColorWhite]}>
       <FlatList
         data={license}
         renderItem={renderItem}
@@ -63,6 +63,8 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#cccccc',
   },
   licenseDescriptionWrapper: {
     marginVertical: 5,

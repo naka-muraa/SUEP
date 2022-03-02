@@ -2,11 +2,9 @@ import License from './License'
 import * as React from 'react';
 import { Text, View, ScrollView, TouchableOpacity, StyleSheet, Linking } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome5, Entypo, MaterialCommunityIcons, MaterialIcons  } from '@expo/vector-icons';
 
 // スタイル・コンポーネントのインポート
-import CustomedButton from '../../Components/CustomedButton'
 import CommonStyles from '../../StyleSheet/CommonStyels'
 
 async function openUrl(url) {
@@ -27,10 +25,33 @@ const Stack = createStackNavigator();
 
 function AboutPage({ navigation }) {
   return (
-    <ScrollView style={CommonStyles.scrollViewPageContainer}>
-      {/* 開発者と問い合わせ */}
+    <ScrollView style={[CommonStyles.viewPageContainer, CommonStyles.bgColorWhite]}>
+      {/* お問い合わせ */}
       <View style={styles.contentWrapper}>
-        <Text style={CommonStyles.largeFontBold}>開発者</Text>
+        <TouchableOpacity
+          onPress={() => openUrl('https://suep.netlify.app/')}
+          style={styles.iconTitleRow}
+        >
+          <MaterialCommunityIcons name="head-question-outline" size={24} color="black" />
+          <Text style={CommonStyles.largeFontBold}> お問い合わせ ＞</Text>
+        </TouchableOpacity>
+      </View>
+      {/* ライセンス */}
+      <View style={styles.contentWrapper}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Third-party software notices')}
+          style={styles.iconTitleRow}
+        >
+        <Entypo name="text-document" size={24} color="black" />
+          <Text style={CommonStyles.largeFontBold}> オープンソースライセンス ＞</Text>
+        </TouchableOpacity>
+      </View>
+      {/* 開発者 */}
+      <View style={styles.contentWrapper}>
+        <View style={styles.iconTitleRow}>
+          <MaterialIcons name="computer" size={24} color="black" />
+          <Text style={CommonStyles.largeFontBold}> Developper</Text>
+        </View>
         <View style={styles.sentenceWrapper}>
           <View style={styles.nameIconRow}>
             <View style={styles.nameWrapper}>
@@ -59,29 +80,12 @@ function AboutPage({ navigation }) {
           </View>
         </View>
       </View>
-      {/* ライセンス */}
-      <View style={styles.contentWrapper}>
-        <View style={styles.sentenceWrapper}>
-          <CustomedButton
-            onPress={() => openUrl('https://suep.netlify.app/')}
-            buttonText='お問い合わせはこちらから'
-            buttonStyle={styles.buttonExtraDesign}
-          />
-        </View>
-      </View>
-      {/* ライセンス */}
-      <View style={styles.contentWrapper}>
-        <View style={styles.sentenceWrapper}>
-          <CustomedButton
-            onPress={() => navigation.navigate('Third-party software notices')}
-            buttonText='ReactNative, Expoに関するライセンス'
-            buttonStyle={styles.buttonExtraDesign}
-          />
-        </View>
-      </View>
       {/* スペシャルサンクス */}
-      <View style={styles.contentWrapper}>
-        <Text style={CommonStyles.largeFontBold}>Special Thanks</Text>
+      <View style={styles.specialThanksWrapper}>
+        <View style={styles.iconTitleRow}>
+          <MaterialIcons name="celebration" size={24} color="black" />
+          <Text style={CommonStyles.largeFontBold}> Special Thanks</Text>
+        </View>
         <View style={styles.sentenceWrapper}>
           <Text style={CommonStyles.basicFont}>島根大学ものづくり部Pimの皆さん</Text>
         </View>
@@ -107,11 +111,18 @@ export default function About() {
 const styles = StyleSheet.create({
   contentWrapper: {
     padding: 10,
-    backgroundColor: 'white',
     marginBottom: 10,
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#cccccc',
+  },
+  specialThanksWrapper: {
+    padding: 10,
+    marginBottom: 10,
+    justifyContent: 'center',
   },
   sentenceWrapper: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginHorizontal: 10,
     marginVertical: 5,
   },
@@ -135,7 +146,7 @@ const styles = StyleSheet.create({
   touchableSpace: {
   marginHorizontal: '20%'
   },
-  buttonExtraDesign: {
-    flex: 1,
+  iconTitleRow: {
+  flexDirection: 'row',
   },
 });
