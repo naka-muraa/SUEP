@@ -6,10 +6,10 @@ export default async function SeparateTableAndOtherLectureData(allLectureData) {
     let tableLectureData = allLectureData.filter(lectureData =>
       !referenceWord.test(lectureData.曜日時限)
     ).map(lec => lec);
-    let othreLectureData = allLectureData.filter(lectureData =>
+    let otherLectureData = allLectureData.filter(lectureData =>
       referenceWord.test(lectureData.曜日時限)
     ).map(lec => lec);
-    return [tableLectureData, JSON.stringify(othreLectureData)]
+    return [tableLectureData, JSON.stringify(otherLectureData)]
   } catch (error) {
     Sentry.Native.captureException(error);
     console.log('SeparateTableAndOtherLectureData.js\n' + 'エラー内容：' + error + '\n');
