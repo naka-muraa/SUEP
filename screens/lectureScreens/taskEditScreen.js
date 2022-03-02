@@ -8,194 +8,131 @@ import {
   Dimensions,
   TextInput,
 } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
-import {
-  Ionicons,
-  MaterialCommunityIcons,
-  FontAwesome5,
-  Entypo,
-} from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 // スタイルのインポート
 import CommonStyles from '../../StyleSheet/CommonStyels';
 
 export default function TaskEdit({ navigation }) {
+  const [title, setTitle] = useState();
+  const [memoText, setMemoText] = useState();
   const route = useRoute();
-  let isPassedItemExist = false;
   if (route.params) {
-    isPassedItemExist = true;
+    setTitle(route.params.title);
+    setMemoText(route.params.memo);
+    setFrom(route.params.from);
+    setTo(route.params.to);
   }
-  const [title, setTitle] = useState(
-    isPassedItemExist ? route.params.title : null
-  );
-  const [startYear, setStartYear] = useState(
-    isPassedItemExist ? route.params.startYear : null
-  );
-  const [startMonth, setStartMonth] = useState(
-    isPassedItemExist ? route.params.startMonth : null
-  );
-  const [startDay, setStartDay] = useState(
-    isPassedItemExist ? route.params.startDay : null
-  );
-  const [endYear, setEndYear] = useState(
-    isPassedItemExist ? route.params.endYear : null
-  );
-  const [endMonth, setEndMonth] = useState(
-    isPassedItemExist ? route.params.endMonth : null
-  );
-  const [endDay, setEndDay] = useState(
-    isPassedItemExist ? route.params.endDay : null
-  );
-  const [content, setContent] = useState(
-    isPassedItemExist ? route.params.content : null
-  );
-  const [memoText, setMemoText] = useState(
-    isPassedItemExist ? route.params.memo : null
-  );
+  const [isFromDatePickerVisible, setFromDatePickerVisibility] = useState(false);
+  const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
+  const [fromDate, setFrom] = useState();
+  const [toDate, setTo] = useState();
 
-  const StartYearMonthDayInputSpace = () => (
-    <View style={styles.yearMonthDayWrapper}>
-      <View style={styles.yearInputWrapper}>
-        <View style={styles.yearInputFlex}>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => {
-              setStartYear(text);
-            }}
-            value={startYear}
-          />
-        </View>
-        <View style={styles.yearTextFlex}>
-          <Text>年</Text>
-        </View>
-      </View>
-      <View style={styles.monthDayInputWrapper}>
-        <View style={styles.monthDayInputFlex}>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => {
-              setStartMonth(text);
-            }}
-            value={startMonth}
-          />
-        </View>
-        <View style={styles.monthTextFlex}>
-          <Text>月</Text>
-        </View>
-        <View style={styles.monthDayInputFlex}>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => {
-              setStartDay(text);
-            }}
-            value={startDay}
-          />
-        </View>
-        <View style={styles.monthTextFlex}>
-          <Text>日</Text>
-        </View>
-      </View>
-    </View>
-  );
-
-  const EndYearMonthDayInputSpace = () => (
-    <View style={styles.yearMonthDayWrapper}>
-      <View style={styles.yearInputWrapper}>
-        <View style={styles.yearInputFlex}>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => {
-              setEndYear(text);
-            }}
-            value={endYear}
-          />
-        </View>
-        <View style={styles.yearTextFlex}>
-          <Text>年</Text>
-        </View>
-      </View>
-      <View style={styles.monthDayInputWrapper}>
-        <View style={styles.monthDayInputFlex}>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => {
-              setEndMonth(text);
-            }}
-            value={endMonth}
-          />
-        </View>
-        <View style={styles.monthTextFlex}>
-          <Text>月</Text>
-        </View>
-        <View style={styles.monthDayInputFlex}>
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => {
-              setEndDay(text);
-            }}
-            value={endDay}
-          />
-        </View>
-        <View style={styles.monthTextFlex}>
-          <Text>日</Text>
-        </View>
-      </View>
-    </View>
-  );
-
-  const WaveSpace = () => (
-    <View style={styles.waveWrapper}>
-      <Text> ~ </Text>
-    </View>
-  );
+  useEffect(() => {
+    const today = new Date();
+    const date = today.getDate();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+    const fullDate = `${year} / ${month} / ${date}`;
+    setFrom(fullDate);
+    setTo(fullDate);
+  }, [])
 
   const MemoSpace = () => (
     <View>
       <View style={styles.titleTextMargin}>
-        <Text>説明</Text>
+        <Text>メモ</Text>
       </View>
       <View style={styles.memoInput}>
         <TextInput
           style={styles.memoInputSpaceDesign}
           value={memoText}
-          autoCapitalize="none"
+          autoCapitalize='none'
           onChangeText={setMemoText}
-          placeholder="メモ欄"
+          placeholder='メモ欄'
           multiline={true}
         />
       </View>
     </View>
   );
 
-  // 新しいスケジュールを追加したらasyncstorageで保存して画面遷移の必要あり
+  // 新しいスケジュールをasyncstorageで保存 + 画面遷移
   const DoneEditButton = () => (
     <View style={styles.editDoneWrapper}>
       <TouchableOpacity
         style={styles.editDoneButton}
         onPress={() => navigation.goBack()}>
         <Text>完了</Text>
-        <Ionicons name="checkmark-done" size={24} color="black" />
+        <Ionicons name='checkmark-done' size={24} color='black' />
       </TouchableOpacity>
     </View>
   );
+
+  const handleConfirmTo = (date) => {
+    setTo(arrangeDate(date));
+    hideDatePicker('to');
+  };
+
+  const hideDatePicker = (criteria) => {
+    if (criteria == 'from') {
+      setFromDatePickerVisibility(false);
+    } else {
+      setToDatePickerVisibility(false);
+    }
+  }
+
+  const handleComfirmFrom = (date) => {
+    setFrom(arrangeDate(date))
+    hideDatePicker('from');
+  };
+
+  const showDatePicker = (criteria) => {
+    if (criteria == 'from') {
+      setFromDatePickerVisibility(true);
+    } else {
+      setToDatePickerVisibility(true);
+    }
+  }
 
   return (
     <ScrollView style={CommonStyles.viewPageContainer}>
       <TextInput
         style={styles.titleTextInput}
-        placeholder="タイトルを記入"
+        placeholder='タイトルを記入'
         onChangeText={setTitle}
         value={title}
         multiline={true}
       />
       <View style={styles.titleTextMargin}>
-        <Text>期間</Text>
+        <Text>開始</Text>
       </View>
-      <View style={styles.periodInputAreaContainer}>
-        <StartYearMonthDayInputSpace />
-        <WaveSpace />
-        <EndYearMonthDayInputSpace />
+      <View>
+        <TouchableOpacity onPress={showDatePicker('from')}>
+          <Text>{fromDate}</Text>
+        </TouchableOpacity>
+        <DateTimePickerModal
+          isVisible={isFromDatePickerVisible}
+          mode='date'
+          onConfirm={handleComfirmFrom}
+          onCancel={hideDatePicker('from')}
+        />
+      </View>
+      <View style={styles.titleTextMargin}>
+        <Text>終了</Text>
+      </View>
+      <View>
+        <TouchableOpacity onPress={showDatePicker('to')}>
+          <Text>{toDate}</Text>
+        </TouchableOpacity>
+        <DateTimePickerModal
+          isVisible={isToDatePickerVisible}
+          mode='date'
+          onConfirm={handleConfirmTo}
+          onCancel={hideDatePicker('To')}
+        />
       </View>
       <MemoSpace />
       <DoneEditButton />
