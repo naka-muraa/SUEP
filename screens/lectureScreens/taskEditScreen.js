@@ -13,39 +13,43 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 // 外部関数のインポート
 import arrangeDate from '../../AppFunction/LectureScreenFunction/arrangeDate';
-import saveData from '../../AppFunction/LectureScreenFunction/saveData';
+import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
 
 // スタイルとコンポーネントのインポート
 import CommonStyles from '../../StyleSheet/CommonStyels';
 import CustomedButton from '../../Components/CustomedButton';
 
 export default function TaskEdit({ navigation }) {
-  const [title, setTitle] = useState();
-  const [memoText, setMemoText] = useState();
   const route = useRoute();
+  const lectureId = route.params[0].id ? route.params[0].id : null;
+  const [title, setTitle] = useState();
   const [starDateString, setStartDateString] = useState();
   const [endDateString, setendDateString] = useState();
+  const [memoText, setMemoText] = useState();
   const [plainStartDate, setPlainStartDate] = useState();
   const [plainEndDate, setPlainEndDate] = useState();
   const [isStartDatePickerVisible, setStartDatePickerVisibility] = useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
 
   useEffect(() => {
-    if (route.params) {
-      setTitle(route.params.title);
-      setStartDateString(route.params.from);
-      setendDateString(route.params.to);
-    }
-    else {
-      const today = new Date();
-      setPlainStartDate(today);
-      setPlainEndDate(today);
-      const date = today.getDate();
-      const month = today.getMonth() + 1;
-      const year = today.getFullYear();
-      const fullDate = `${year} / ${month} / ${date}`;
-      setStartDateString(fullDate);
-      setendDateString(fullDate);
+    if (route.params[0]) {
+      setTitle(route.params[0].title ? route.params[0].title : null);
+      setMemoText(route.params[0].memo);
+      if (route.params[0].startDate && route.params[0].endDate) {
+        setStartDateString(route.params[0].startDate);
+        setendDateString(route.params[0].endDate);
+      }
+      else {
+        const today = new Date();
+        setPlainStartDate(today);
+        setPlainEndDate(today);
+        const date = today.getDate();
+        const month = today.getMonth() + 1;
+        const year = today.getFullYear();
+        const fullDate = `${year} / ${month} / ${date}`;
+        setStartDateString(fullDate);
+        setendDateString(fullDate);
+      }
     }
   }, [])
 
@@ -68,7 +72,9 @@ export default function TaskEdit({ navigation }) {
   };
 
   const verifyDate = () => {
-    if ((plainEndDate < plainStartDate) && (plainEndDate.getDate() != plainStartDate.getDate())) {
+    const day1 = plainStartDate.getFullYear() + plainStartDate.getMonth() + plainStartDate.getDate();
+    const day2 = plainEndDate.getFullYear() + plainEndDate.getMonth() + plainEndDate.getDate()
+    if (day2 < day1) {
       Alert.alert(
         '日にちの修正が必要です',
         '終了日は開始日と同じかそれより後にしてください。',
@@ -78,13 +84,17 @@ export default function TaskEdit({ navigation }) {
         { cancelable: true }
       );
     } else {
-      const shcheduleData = {
+      let shcheduleData = [
+        {
+        id: lectureId ? lectureId : null,
         title: title ? title : 'No title',
         startDate: starDateString,
         endDate: endDateString,
         note: memoText ? memoText : null,
-      };
-//      saveData([科目, JSON.stringfy(shcheduleData)]);
+        }
+      ];
+      shcheduleData = JSON.stringify(shcheduleData);
+      saveData([lectureId, shcheduleData]);
       navigation.goBack()
     }
   }
@@ -131,48 +141,48 @@ export default function TaskEdit({ navigation }) {
   return (
     <ScrollView style={[CommonStyles.viewPageContainer, CommonStyles.bgColorWhite]}>
       <View style={styles.container}>
-      <View style={styles.titleWrapper}>
-        <View style={styles.leftBorder}>
-          <TextInput
-            style={[styles.titleTextInput, CommonStyles.basicFont]}
-            placeholder='タイトルを記入'
-            onChangeText={setTitle}
-            value={title}
-            multiline={true}
+        <View style={styles.titleWrapper}>
+          <View style={styles.leftBorder}>
+            <TextInput
+              style={[styles.titleTextInput, CommonStyles.basicFont]}
+              placeholder='タイトルを記入'
+              onChangeText={setTitle}
+              value={title}
+              multiline={true}
+            />
+          </View>
+        </View>
+        <View style={styles.dateWrapper}>
+          <Text style={[CommonStyles.basicFont, CommonStyles.colorTomato]}>開始</Text>
+          <View>
+            <TouchableOpacity onPress={() => showDatePicker('from')}>
+              <Text style={CommonStyles.xLargeFont}>{starDateString}</Text>
+            </TouchableOpacity>
+          </View>
+          <DateTimePickerModal
+            isVisible={isStartDatePickerVisible}
+            mode='date'
+            onConfirm={confirmStartDate}
+            onCancel={() => hideDatePicker('from')}
           />
         </View>
-      </View>
-      <View style={styles.dateWrapper}>
-          <Text style={[CommonStyles.basicFont, CommonStyles.colorTomato]}>開始</Text>
-        <View>
-          <TouchableOpacity onPress={() => showDatePicker('from')}>
-            <Text style={CommonStyles.xLargeFont}>{starDateString}</Text>
-          </TouchableOpacity>
-        </View>
-        <DateTimePickerModal
-          isVisible={isStartDatePickerVisible}
-          mode='date'
-          onConfirm={confirmStartDate}
-          onCancel={() => hideDatePicker('from')}
-        />
-      </View>
-      <View style={styles.dateWrapper}>
+        <View style={styles.dateWrapper}>
           <Text style={[CommonStyles.basicFont, CommonStyles.colorTomato]}>終了</Text>
-        <View>
-          <TouchableOpacity onPress={() => showDatePicker('to')}>
-            <Text style={CommonStyles.xLargeFont}>{endDateString}</Text>
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity onPress={() => showDatePicker('to')}>
+              <Text style={CommonStyles.xLargeFont}>{endDateString}</Text>
+            </TouchableOpacity>
+          </View>
+          <DateTimePickerModal
+            isVisible={isEndDatePickerVisible}
+            mode='date'
+            onConfirm={confirmEndDate}
+            onCancel={() => hideDatePicker('To')}
+          />
         </View>
-        <DateTimePickerModal
-          isVisible={isEndDatePickerVisible}
-          mode='date'
-          onConfirm={confirmEndDate}
-          onCancel={() => hideDatePicker('To')}
-        />
-      </View>
-      <View style={styles.memoWrapper}>
-        <MemoSpace />
-      </View>
+        <View style={styles.memoWrapper}>
+          <MemoSpace />
+        </View>
         <DoneEditButton />
       </View>
     </ScrollView>
@@ -181,7 +191,7 @@ export default function TaskEdit({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-  padding: 10,
+    padding: 10,
   },
   titleWrapper: {
     paddingVertical: 10,
@@ -203,7 +213,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
   },
   memoWrapper: {
-    paddingVertical:15,
+    paddingVertical: 15,
     marginVertical: 10,
   },
   memoInput: {

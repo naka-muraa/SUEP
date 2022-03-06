@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Alert, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Alert, FlatList, TouchableOpacity, Pressable } from 'react-native';
 import { useRoute } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import {
   Ionicons,
   MaterialCommunityIcons,
@@ -13,6 +14,7 @@ import { CheckBox } from 'react-native-elements';
 // スタイルとコンポーネントのインポート
 import CustomedButton from '../../Components/CustomedButton';
 import CommonStyles from '../../StyleSheet/CommonStyels';
+import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
 
 // 教室名と棟名が空白の場合の処理
 function changePlaceName(room, building,) {
@@ -32,15 +34,29 @@ function changePlaceName(room, building,) {
 
 //授業詳細画面
 export default function LectureDetail({ navigation }) {
+  const isFocused = useIsFocused();
   const route = useRoute();
   const lectureName = route.params.科目;
   const teacher = route.params.担当;
   const roomName = route.params.教室名;
   const buildingName = route.params.棟名;
+  const lectureNumber = route.params.時間割コード;
   const displayedRoomName = changePlaceName(roomName, buildingName);
   const [taskInfo, setTaskInfo] = useState();
   const [isDataChanged, setIsDataChanged] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+
+  useEffect(() => {
+    const loadSchedule = async () => {
+      let tmp = await readTableData(lectureNumber);
+      if (tmp != null) {
+        tmp = JSON.parse(tmp);
+        setTaskInfo(tmp);
+      }
+    }
+    loadSchedule();
+  }, [isFocused])
+
 
   const HeaderComponent = () => (
     <>
@@ -123,6 +139,17 @@ export default function LectureDetail({ navigation }) {
     }
   };
 
+  const arrangeArgument = () => {
+    const arg = [{
+      id: lectureNumber ? lectureNumber : null,
+      title: null,
+      startDate: null,
+      endDate: null,
+      note: null,
+    }];
+    navigation.navigate('スケジュールの追加・編集', arg);
+  }
+
   const FotterComponent = () => (
     <>
       <View style={styles.iconWrapper}>
@@ -142,7 +169,8 @@ export default function LectureDetail({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconBackCricle, styles.buttonShadow, CommonStyles.bgColorTomato]}
-          onPress={() => navigation.navigate('スケジュールの追加・編集')}>
+          onPress={() => arrangeArgument()}
+        >
           <Entypo name="add-to-list" size={24} color="white" />
         </TouchableOpacity>
       </View>
@@ -167,7 +195,10 @@ export default function LectureDetail({ navigation }) {
     setIsDataChanged(!isDataChanged);
   };
 
-  const renderItem = ({ item, index }) => (
+  const renderItem = ({ item, index }) => {
+    const from = item.startDate.slice(6);
+    const to = item.endDate.slice(6);
+    return(
     <View>
       <View style={styles.innerMargin}>
         <View style={styles.checkMark}>
@@ -186,26 +217,25 @@ export default function LectureDetail({ navigation }) {
             taskInfo && showHideMemo(index);
           }}>
           <View style={styles.periodWrapper}>
-            <Text>
-              {item.startMonth}/{item.startDay} ~ {item.endMonth}/{item.endDay}
+            <Text style={CommonStyles.basicFont}>
+                {from} ~ {to}
             </Text>
           </View>
           <View style={styles.taskTitleWrapper}>
-            <Text style={styles.titleText}>{item.title}</Text>
+            <Text style={CommonStyles.largeFontBold}>{item.title}</Text>
           </View>
           {!item.showMemo && <View style={styles.arrowIcon}><FontAwesome5 name="angle-double-down" size={24} color="dimgray" /></View>}
           {item.showMemo && <View style={styles.arrowIcon}><FontAwesome5 name="angle-double-up" size={24} color="dimgray" /></View>}
         </Pressable>
       </View>
-      {item.showMemo && item.memo ? (
+      {item.showMemo && item.note ? (
         <View style={styles.memoWrapper}>
-          <Text>{item.memo}</Text>
+          <Text style={CommonStyles.basicFont}>{item.note}</Text>
         </View>
-      ) : (
-        <></>
-      )}
+      ) : (<></>)
+      }
     </View>
-  )
+  )}
 
   return (
     <>
@@ -271,13 +301,14 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   periodWrapper: {
-    height: '100%',
     justifyContent: 'center',
+    alignItems: 'flex-start',
     flex: 4,
   },
   taskTitleWrapper: {
     height: '100%',
     justifyContent: 'center',
+    alignItems: 'center',
     flex: 6,
   },
   arrowIcon: {

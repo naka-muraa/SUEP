@@ -196,7 +196,6 @@ export default function homeScreenProp() {
   }
 
   async function deleteDataFromPlainTableData(selectedLecture) {
-    console.log('選ばれた講義:' + selectedLecture + '\n')
     let tablePlainData = await readTableData('plainTableDataKey');
     tablePlainData = JSON.parse(tablePlainData);
     let arrayNumberToDelete = [];
