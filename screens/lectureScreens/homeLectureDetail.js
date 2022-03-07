@@ -1,18 +1,20 @@
+// TODO: deleteTask関数で削除したスケジュールをストレージからも削除する
+// スケジュール間にセパレータを追加
+
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Alert, FlatList, TouchableOpacity, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Alert, FlatList, TouchableOpacity, Pressable, Linking } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
 import {
   Ionicons,
-  MaterialCommunityIcons,
   FontAwesome5,
   Entypo,
   MaterialIcons,
 } from '@expo/vector-icons';
 import { CheckBox } from 'react-native-elements';
+import Hyperlink from 'react-native-hyperlink';
 
 // スタイルとコンポーネントのインポート
-import CustomedButton from '../../Components/CustomedButton';
 import CommonStyles from '../../StyleSheet/CommonStyels';
 import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
 
@@ -44,7 +46,6 @@ export default function LectureDetail({ navigation }) {
   const displayedRoomName = changePlaceName(roomName, buildingName);
   const [taskInfo, setTaskInfo] = useState();
   const [isDataChanged, setIsDataChanged] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
 
   useEffect(() => {
     const loadSchedule = async () => {
@@ -92,13 +93,11 @@ export default function LectureDetail({ navigation }) {
 
   const investigateIsCheckedAndNavigate = () => {
     if (taskInfo) {
-      const checkedItem = taskInfo.filter((task) => {
+      let checkedItem = taskInfo.filter((task) => {
         return task.checked === true;
       });
-      // checkedItemは配列[{...}]の形になっているためcheckedItem[0]とした
       if (checkedItem.length == 1) {
-        navigation.navigate('スケジュールの追加・編集', checkedItem[0]);
-        return;
+        navigation.navigate('スケジュールの追加・編集', taskInfo);
       } else {
         Alert.alert(
           '', '編集したいスケジュールを1つだけ選んでください。',
@@ -122,11 +121,27 @@ export default function LectureDetail({ navigation }) {
 
   const deleteTask = () => {
     if (taskInfo) {
-      const newTasks = taskInfo.filter((task) => {
+      const uncheckedItem = taskInfo.filter((task) => {
         return task.checked === false;
       });
-      setTaskInfo(newTasks);
-      setIsDataChanged(!isDataChanged);
+
+      // どれもチェックが付いてない場合
+      if (uncheckedItem.length == taskInfo.length) {
+        Alert.alert(
+          '', '削除したいスケジュールを選んでください。',
+          [
+            { text: '戻る' },
+          ],
+          { cancelable: false }
+        );
+      }
+
+      // どれかにチェックが付いてる場合
+      else {
+        setTaskInfo(uncheckedItem);
+        setIsDataChanged(!isDataChanged);
+      }
+
     }
     else {
       Alert.alert(
@@ -140,13 +155,39 @@ export default function LectureDetail({ navigation }) {
   };
 
   const arrangeArgument = () => {
-    const arg = [{
-      id: lectureNumber ? lectureNumber : null,
-      title: null,
-      startDate: null,
-      endDate: null,
-      note: null,
-    }];
+    let arg = [];
+    if (taskInfo) {
+      arg = taskInfo;
+      console.log('taskDataが渡った')
+      if (taskInfo.length == 1) {
+        arg[0].isFirstData = false;
+        arg[0].isSecendData = true;
+      }
+      else if (taskInfo.length == 0) {
+        console.log('taskInfoの長さ0\n')
+        arg = [{
+          id: lectureNumber,
+          title: null,
+          startDate: null,
+          endDate: null,
+          memo: null,
+          checked: false,
+          isFirstData: true,
+        }];
+      }
+      console.log('中身は:' + JSON.stringify(arg) + '\n')
+    } else {
+      console.log('argが渡った')
+      arg = [{
+        id: lectureNumber,
+        title: null,
+        startDate: null,
+        endDate: null,
+        memo: null,
+        checked: false,
+        isFirstData: true,
+      }];
+    }
     navigation.navigate('スケジュールの追加・編集', arg);
   }
 
@@ -195,47 +236,72 @@ export default function LectureDetail({ navigation }) {
     setIsDataChanged(!isDataChanged);
   };
 
+  async function openUrl(url) {
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      Linking.openURL(url);
+    } else {
+      Alert.alert(
+        'エラー',
+        'このページを開けませんでした',
+        [
+          { text: '戻る' },
+        ],
+        { cancelable: true }
+      );
+    }
+  }
+
   const renderItem = ({ item, index }) => {
     const from = item.startDate.slice(6);
     const to = item.endDate.slice(6);
-    return(
-    <View>
-      <View style={styles.innerMargin}>
-        <View style={styles.checkMark}>
-          <View style={styles.checkBoxWrapper}>
-            <CheckBox
-              checked={item.checked}
-              onPress={() => {
-                taskInfo && checkMark(index);
-              }}
-            />
+    return (
+      <View>
+        <View style={styles.innerMargin}>
+          <View style={styles.checkMark}>
+            <View style={styles.checkBoxWrapper}>
+              <CheckBox
+                checked={item.checked}
+                onPress={() => {
+                  taskInfo && checkMark(index);
+                }}
+              />
+            </View>
           </View>
+          <Pressable
+            style={styles.periodTitleWrapper}
+            onPress={() => {
+              taskInfo && showHideMemo(index);
+            }}>
+            <View style={styles.periodWrapper}>
+              <Text style={CommonStyles.basicFont}>
+                {from}
+              </Text>
+              <Ionicons name="chevron-down-outline" size={16} color="black" />
+              <Text style={CommonStyles.basicFont}>
+                {to}
+              </Text>
+            </View>
+            <View style={styles.taskTitleWrapper}>
+              <Text style={CommonStyles.largeFontBold}>{item.title}</Text>
+            </View>
+            {!item.showMemo && <View style={styles.arrowIcon}><FontAwesome5 name="angle-double-down" size={24} color="dimgray" /></View>}
+            {item.showMemo && <View style={styles.arrowIcon}><FontAwesome5 name="angle-double-up" size={24} color="dimgray" /></View>}
+          </Pressable>
         </View>
-        <Pressable
-          style={styles.periodTitleWrapper}
-          onPress={() => {
-            taskInfo && showHideMemo(index);
-          }}>
-          <View style={styles.periodWrapper}>
-            <Text style={CommonStyles.basicFont}>
-                {from} ~ {to}
-            </Text>
+        {item.showMemo && item.memo ? (
+          <View style={styles.memoWrapper}>
+            <Hyperlink
+              linkStyle={[CommonStyles.colorBlue, CommonStyles.basicFontBold]}
+              onPress={url => openUrl(url)}>
+              <Text style={CommonStyles.basicFont}>{item.memo}</Text>
+            </Hyperlink>
           </View>
-          <View style={styles.taskTitleWrapper}>
-            <Text style={CommonStyles.largeFontBold}>{item.title}</Text>
-          </View>
-          {!item.showMemo && <View style={styles.arrowIcon}><FontAwesome5 name="angle-double-down" size={24} color="dimgray" /></View>}
-          {item.showMemo && <View style={styles.arrowIcon}><FontAwesome5 name="angle-double-up" size={24} color="dimgray" /></View>}
-        </Pressable>
+        ) : (<></>)
+        }
       </View>
-      {item.showMemo && item.note ? (
-        <View style={styles.memoWrapper}>
-          <Text style={CommonStyles.basicFont}>{item.note}</Text>
-        </View>
-      ) : (<></>)
-      }
-    </View>
-  )}
+    )
+  }
 
   return (
     <>
@@ -301,9 +367,10 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   periodWrapper: {
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    flex: 4,
+    flexDirection: 'column',
+    flex: 2,
   },
   taskTitleWrapper: {
     height: '100%',

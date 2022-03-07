@@ -14,7 +14,7 @@ async function openUrl(url) {
   } else {
     Alert.alert(
       'エラー',
-      'このページを開ませんでした',
+      'このページを開けませんでした',
       [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
       { cancelable: false }
     );

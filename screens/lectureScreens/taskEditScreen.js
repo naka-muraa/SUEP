@@ -20,82 +20,140 @@ import CommonStyles from '../../StyleSheet/CommonStyels';
 import CustomedButton from '../../Components/CustomedButton';
 
 export default function TaskEdit({ navigation }) {
-  const route = useRoute();
-  const lectureId = route.params[0].id ? route.params[0].id : null;
+  let taskInfo = useRoute().params;
+  const [item, setItem] = useState();
+  const [lectureId, setLectureId] = useState();
   const [title, setTitle] = useState();
-  const [starDateString, setStartDateString] = useState();
-  const [endDateString, setendDateString] = useState();
   const [memoText, setMemoText] = useState();
+
+  // String型の日時
+  const [startDateString, setStartDateString] = useState();
+  const [endDateString, setendDateString] = useState();
+
+  // Date型の日時
   const [plainStartDate, setPlainStartDate] = useState();
   const [plainEndDate, setPlainEndDate] = useState();
+
+  // モーダルの出現・消滅を制御
   const [isStartDatePickerVisible, setStartDatePickerVisibility] = useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
 
+  // 既存のデータの編集に利用
+  const [isModify, setModify] = useState(false);
+  const [elementIndex, setElementIndex] = useState();
+
+  // 最初のデータかどうか
+  const [isFirstSchedule, setIsFirstSchedule] = useState(false);
+
+  // 日付などの初期化
   useEffect(() => {
-    if (route.params[0]) {
-      setTitle(route.params[0].title ? route.params[0].title : null);
-      setMemoText(route.params[0].memo);
-      if (route.params[0].startDate && route.params[0].endDate) {
-        setStartDateString(route.params[0].startDate);
-        setendDateString(route.params[0].endDate);
+    function initialize() {
+      let checkedItem = taskInfo.filter((task, index) => {
+        if (task.checked) {
+          setElementIndex(index);
+          return task
+        }
+      });
+
+      if (checkedItem.length == 1) {
+        checkedItem = checkedItem[0];
+        setModify(true);
+        setItem(checkedItem);
+        setLectureId(checkedItem.id);
+        setTitle(checkedItem.title);
+        setMemoText(checkedItem.memo);
+        setStartDateString(checkedItem.startDate);
+        setendDateString(checkedItem.endDate);
       }
       else {
-        const today = new Date();
-        setPlainStartDate(today);
-        setPlainEndDate(today);
-        const date = today.getDate();
-        const month = today.getMonth() + 1;
-        const year = today.getFullYear();
-        const fullDate = `${year} / ${month} / ${date}`;
-        setStartDateString(fullDate);
-        setendDateString(fullDate);
+
+        // 最初のデータかどうか
+        if (taskInfo[0].isFirstData && !taskInfo[0].isSecondData) {
+          setIsFirstSchedule(true);
+          setItem(taskInfo);
+          const today = new Date();
+          setPlainStartDate(today);
+          setPlainEndDate(today);
+          const date = today.getDate();
+          const month = today.getMonth() + 1;
+          const year = today.getFullYear();
+          const fullDate = `${year} / ${month} / ${date}`;
+          setStartDateString(fullDate);
+          setendDateString(fullDate);
+          setLectureId(taskInfo[0].id);
+          setTitle(taskInfo[0].title);
+          setMemoText(taskInfo[0].memo);
+        }
+        else {
+          setItem(taskInfo);
+          const today = new Date();
+          setPlainStartDate(today);
+          setPlainEndDate(today);
+          const date = today.getDate();
+          const month = today.getMonth() + 1;
+          const year = today.getFullYear();
+          const fullDate = `${year} / ${month} / ${date}`;
+          setStartDateString(fullDate);
+          setendDateString(fullDate);
+          setLectureId(taskInfo[0].id);
+          setTitle(null);
+          setMemoText(null);
+        }
       }
     }
-  }, [])
-
-  const MemoSpace = () => {
-    return (
-      <View>
-        <Text style={[CommonStyles.basicFont, CommonStyles.colorTomato]}>メモ</Text>
-        <View style={styles.memoInput}>
-          <TextInput
-            style={[styles.memoInputSpaceDesign, CommonStyles.basicFont]}
-            value={memoText}
-            autoCapitalize='none'
-            onChangeText={setMemoText}
-            placeholder='スケジュールに関する情報を入力'
-            multiline={true}
-          />
-        </View>
-      </View>
-    );
-  };
+    initialize();
+  }, []);
 
   const verifyDate = () => {
-    const day1 = plainStartDate.getFullYear() + plainStartDate.getMonth() + plainStartDate.getDate();
-    const day2 = plainEndDate.getFullYear() + plainEndDate.getMonth() + plainEndDate.getDate()
-    if (day2 < day1) {
-      Alert.alert(
-        '日にちの修正が必要です',
-        '終了日は開始日と同じかそれより後にしてください。',
-        [
-          { text: '戻る' },
-        ],
-        { cancelable: true }
-      );
+    if (isModify) {
+      let allData = taskInfo;
+      let shcheduleData = item;
+      shcheduleData.title = title;
+      shcheduleData.startDate = startDateString;
+      shcheduleData.endDate = endDateString;
+      shcheduleData.memo = memoText ? memoText : null;
+      shcheduleData.checked = false;
+      allData[elementIndex] = shcheduleData;
+      console.log('全てのタスク:' + allData);
+      allData = JSON.stringify(allData);
+      saveData([lectureId, allData]);
+      navigation.goBack();
     } else {
-      let shcheduleData = [
-        {
-        id: lectureId ? lectureId : null,
-        title: title ? title : 'No title',
-        startDate: starDateString,
-        endDate: endDateString,
-        note: memoText ? memoText : null,
+      const day1 = plainStartDate.getFullYear() + plainStartDate.getMonth() + plainStartDate.getDate();
+      const day2 = plainEndDate.getFullYear() + plainEndDate.getMonth() + plainEndDate.getDate()
+      if (day2 < day1) {
+        Alert.alert(
+          '日にちの修正が必要です',
+          '終了日は開始日と同じかそれより後にしてください。',
+          [
+            { text: '戻る' },
+          ],
+          { cancelable: true }
+        );
+      } else {
+        let shcheduleData = [
+          {
+            id: lectureId ? lectureId : null,
+            title: title ? title : 'No title',
+            startDate: startDateString,
+            endDate: endDateString,
+            memo: memoText ? memoText : null,
+            checked: false,
+          }
+        ];
+        if (isFirstSchedule) {
+          console.log('isFirstScheduleはtrueです')
+          console.log('保存に使うキー' + lectureId);
+          shcheduleData = JSON.stringify(shcheduleData);
+          saveData([lectureId, shcheduleData]);
+        } else {
+          let allData = taskInfo;
+          allData.push(shcheduleData[0]);
+          allData = JSON.stringify(allData);
+          saveData([lectureId, allData]);
         }
-      ];
-      shcheduleData = JSON.stringify(shcheduleData);
-      saveData([lectureId, shcheduleData]);
-      navigation.goBack()
+        navigation.goBack();
+      }
     }
   }
 
@@ -122,7 +180,7 @@ export default function TaskEdit({ navigation }) {
     } else {
       setEndDatePickerVisibility(false);
     }
-  }
+  };
 
   const confirmStartDate = (date) => {
     setPlainStartDate(date);
@@ -136,7 +194,7 @@ export default function TaskEdit({ navigation }) {
     } else {
       setEndDatePickerVisibility(true);
     }
-  }
+  };
 
   return (
     <ScrollView style={[CommonStyles.viewPageContainer, CommonStyles.bgColorWhite]}>
@@ -156,7 +214,7 @@ export default function TaskEdit({ navigation }) {
           <Text style={[CommonStyles.basicFont, CommonStyles.colorTomato]}>開始</Text>
           <View>
             <TouchableOpacity onPress={() => showDatePicker('from')}>
-              <Text style={CommonStyles.xLargeFont}>{starDateString}</Text>
+              <Text style={CommonStyles.xLargeFont}>{startDateString}</Text>
             </TouchableOpacity>
           </View>
           <DateTimePickerModal
@@ -181,7 +239,19 @@ export default function TaskEdit({ navigation }) {
           />
         </View>
         <View style={styles.memoWrapper}>
-          <MemoSpace />
+          <View>
+            <Text style={[CommonStyles.basicFont, CommonStyles.colorTomato]}>メモ</Text>
+            <View style={styles.memoInput}>
+              <TextInput
+                style={[styles.memoInputSpaceDesign, CommonStyles.basicFont]}
+                value={memoText}
+                autoCapitalize='none'
+                onChangeText={setMemoText}
+                placeholder='スケジュールに関する情報を入力'
+                multiline={true}
+              />
+            </View>
+          </View>
         </View>
         <DoneEditButton />
       </View>
