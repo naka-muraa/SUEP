@@ -1,18 +1,25 @@
+// TODO: deleteTask関数で削除したスケジュールをストレージからも削除する
+// スケジュール間にセパレータを追加
+
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Alert, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Alert, FlatList, TouchableOpacity, Pressable, Linking } from 'react-native';
 import { useRoute } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import {
   Ionicons,
-  MaterialCommunityIcons,
   FontAwesome5,
   Entypo,
   MaterialIcons,
 } from '@expo/vector-icons';
 import { CheckBox } from 'react-native-elements';
+import Hyperlink from 'react-native-hyperlink';
 
 // スタイルとコンポーネントのインポート
-import CustomedButton from '../../Components/CustomedButton';
 import CommonStyles from '../../StyleSheet/CommonStyels';
+import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
+
+// 外部関数のインポート
+import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
 
 // 教室名と棟名が空白の場合の処理
 function changePlaceName(room, building,) {
@@ -32,15 +39,28 @@ function changePlaceName(room, building,) {
 
 //授業詳細画面
 export default function LectureDetail({ navigation }) {
+  const isFocused = useIsFocused();
   const route = useRoute();
   const lectureName = route.params.科目;
   const teacher = route.params.担当;
   const roomName = route.params.教室名;
   const buildingName = route.params.棟名;
+  const lectureNumber = route.params.時間割コード;
   const displayedRoomName = changePlaceName(roomName, buildingName);
   const [taskInfo, setTaskInfo] = useState();
   const [isDataChanged, setIsDataChanged] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
+
+  useEffect(() => {
+    const loadSchedule = async () => {
+      let tmp = await readTableData(lectureNumber);
+      if (tmp != null) {
+        tmp = JSON.parse(tmp);
+        setTaskInfo(tmp);
+      }
+    }
+    loadSchedule();
+  }, [isFocused])
+
 
   const HeaderComponent = () => (
     <>
@@ -76,13 +96,11 @@ export default function LectureDetail({ navigation }) {
 
   const investigateIsCheckedAndNavigate = () => {
     if (taskInfo) {
-      const checkedItem = taskInfo.filter((task) => {
+      let checkedItem = taskInfo.filter((task) => {
         return task.checked === true;
       });
-      // checkedItemは配列[{...}]の形になっているためcheckedItem[0]とした
       if (checkedItem.length == 1) {
-        navigation.navigate('スケジュールの追加・編集', checkedItem[0]);
-        return;
+        navigation.navigate('スケジュールの追加・編集', taskInfo);
       } else {
         Alert.alert(
           '', '編集したいスケジュールを1つだけ選んでください。',
@@ -106,11 +124,29 @@ export default function LectureDetail({ navigation }) {
 
   const deleteTask = () => {
     if (taskInfo) {
-      const newTasks = taskInfo.filter((task) => {
+      let uncheckedItem = taskInfo.filter((task) => {
         return task.checked === false;
       });
-      setTaskInfo(newTasks);
-      setIsDataChanged(!isDataChanged);
+
+      // どれもチェックが付いてない場合
+      if (uncheckedItem.length == taskInfo.length) {
+        Alert.alert(
+          '', '削除したいスケジュールを選んでください。',
+          [
+            { text: '戻る' },
+          ],
+          { cancelable: false }
+        );
+      }
+
+      // どれかにチェックが付いてる場合
+      else {
+        setTaskInfo(uncheckedItem);
+        uncheckedItem = JSON.stringify(uncheckedItem);
+        saveData([lectureNumber, uncheckedItem]);
+        setIsDataChanged(!isDataChanged);
+      }
+
     }
     else {
       Alert.alert(
@@ -122,6 +158,44 @@ export default function LectureDetail({ navigation }) {
       );
     }
   };
+
+  const arrangeArgument = () => {
+    let arg = [];
+    if (taskInfo) {
+      arg = taskInfo;
+      arg.filter(task => task.checked = false);
+      console.log('taskDataが渡った')
+      if (taskInfo.length == 1) {
+        arg[0].isFirstData = false;
+        arg[0].isSecendData = true;
+      }
+      else if (taskInfo.length == 0) {
+        console.log('taskInfoの長さ0\n')
+        arg = [{
+          id: lectureNumber,
+          title: null,
+          startDate: null,
+          endDate: null,
+          memo: null,
+          checked: false,
+          isFirstData: true,
+        }];
+      }
+      console.log('中身は:' + JSON.stringify(arg) + '\n')
+    } else {
+      console.log('argが渡った')
+      arg = [{
+        id: lectureNumber,
+        title: null,
+        startDate: null,
+        endDate: null,
+        memo: null,
+        checked: false,
+        isFirstData: true,
+      }];
+    }
+    navigation.navigate('スケジュールの追加・編集', arg);
+  }
 
   const FotterComponent = () => (
     <>
@@ -142,7 +216,8 @@ export default function LectureDetail({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconBackCricle, styles.buttonShadow, CommonStyles.bgColorTomato]}
-          onPress={() => navigation.navigate('スケジュールの追加・編集')}>
+          onPress={() => arrangeArgument()}
+        >
           <Entypo name="add-to-list" size={24} color="white" />
         </TouchableOpacity>
       </View>
@@ -167,45 +242,74 @@ export default function LectureDetail({ navigation }) {
     setIsDataChanged(!isDataChanged);
   };
 
-  const renderItem = ({ item, index }) => (
-    <View>
-      <View style={styles.innerMargin}>
-        <View style={styles.checkMark}>
-          <View style={styles.checkBoxWrapper}>
-            <CheckBox
-              checked={item.checked}
-              onPress={() => {
-                taskInfo && checkMark(index);
-              }}
-            />
+  async function openUrl(url) {
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      Linking.openURL(url);
+    } else {
+      Alert.alert(
+        'エラー',
+        'このページを開けませんでした',
+        [
+          { text: '戻る' },
+        ],
+        { cancelable: true }
+      );
+    }
+  }
+
+  const renderItem = ({ item, index }) => {
+    const day1 = new Date(item.startDate);
+    const day2 = new Date(item.endDate)
+    const from = `${day1.getMonth() + 1} / ${day1.getDate()}`;
+    const to = `${day2.getMonth() + 1} / ${day2.getDate()}`;
+    return (
+      <View style={styles.eachItem}>
+        <View style={styles.innerMargin}>
+          <View style={styles.checkMark}>
+            <View style={styles.checkBoxWrapper}>
+              <CheckBox
+                checked={item.checked}
+                onPress={() => {
+                  taskInfo && checkMark(index);
+                }}
+              />
+            </View>
           </View>
+          <Pressable
+            style={styles.periodTitleWrapper}
+            onPress={() => {
+              taskInfo && showHideMemo(index);
+            }}>
+            <View style={styles.periodWrapper}>
+              <Text style={CommonStyles.basicFont}>
+                {from}
+              </Text>
+              <Ionicons name="chevron-down-outline" size={16} color="black" />
+              <Text style={CommonStyles.basicFont}>
+                {to}
+              </Text>
+            </View>
+            <View style={styles.taskTitleWrapper}>
+              <Text style={CommonStyles.largeFontBold}>{item.title}</Text>
+            </View>
+            {!item.showMemo && <View style={styles.arrowIcon}><FontAwesome5 name="angle-double-down" size={24} color="dimgray" /></View>}
+            {item.showMemo && <View style={styles.arrowIcon}><FontAwesome5 name="angle-double-up" size={24} color="dimgray" /></View>}
+          </Pressable>
         </View>
-        <Pressable
-          style={styles.periodTitleWrapper}
-          onPress={() => {
-            taskInfo && showHideMemo(index);
-          }}>
-          <View style={styles.periodWrapper}>
-            <Text>
-              {item.startMonth}/{item.startDay} ~ {item.endMonth}/{item.endDay}
-            </Text>
+        {item.showMemo && item.memo ? (
+          <View style={styles.memoWrapper}>
+            <Hyperlink
+              linkStyle={[CommonStyles.colorBlue, CommonStyles.basicFontBold]}
+              onPress={url => openUrl(url)}>
+              <Text style={CommonStyles.basicFont}>{item.memo}</Text>
+            </Hyperlink>
           </View>
-          <View style={styles.taskTitleWrapper}>
-            <Text style={styles.titleText}>{item.title}</Text>
-          </View>
-          {!item.showMemo && <View style={styles.arrowIcon}><FontAwesome5 name="angle-double-down" size={24} color="dimgray" /></View>}
-          {item.showMemo && <View style={styles.arrowIcon}><FontAwesome5 name="angle-double-up" size={24} color="dimgray" /></View>}
-        </Pressable>
+        ) : (<></>)
+        }
       </View>
-      {item.showMemo && item.memo ? (
-        <View style={styles.memoWrapper}>
-          <Text>{item.memo}</Text>
-        </View>
-      ) : (
-        <></>
-      )}
-    </View>
-  )
+    )
+  }
 
   return (
     <>
@@ -256,6 +360,11 @@ const styles = StyleSheet.create({
   },
 
   // 各タスク
+  eachItem: {
+    borderBottomColor: '#cccccc',
+    borderBottomWidth: 1,
+    paddingVertical: 10,
+  },
   innerMargin: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -271,13 +380,15 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   periodWrapper: {
-    height: '100%',
+    alignItems: 'center',
     justifyContent: 'center',
-    flex: 4,
+    flexDirection: 'column',
+    flex: 2,
   },
   taskTitleWrapper: {
     height: '100%',
     justifyContent: 'center',
+    alignItems: 'center',
     flex: 6,
   },
   arrowIcon: {
