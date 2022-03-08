@@ -18,6 +18,9 @@ import Hyperlink from 'react-native-hyperlink';
 import CommonStyles from '../../StyleSheet/CommonStyels';
 import { readTableData } from '../../AppFunction/LectureScreenFunction/ReadTableData';
 
+// 外部関数のインポート
+import { saveData } from '../../AppFunction/LectureScreenFunction/saveData';
+
 // 教室名と棟名が空白の場合の処理
 function changePlaceName(room, building,) {
   if (room == '' || building == '') {
@@ -121,7 +124,7 @@ export default function LectureDetail({ navigation }) {
 
   const deleteTask = () => {
     if (taskInfo) {
-      const uncheckedItem = taskInfo.filter((task) => {
+      let uncheckedItem = taskInfo.filter((task) => {
         return task.checked === false;
       });
 
@@ -139,6 +142,8 @@ export default function LectureDetail({ navigation }) {
       // どれかにチェックが付いてる場合
       else {
         setTaskInfo(uncheckedItem);
+        uncheckedItem = JSON.stringify(uncheckedItem);
+        saveData([lectureNumber, uncheckedItem]);
         setIsDataChanged(!isDataChanged);
       }
 
@@ -158,6 +163,7 @@ export default function LectureDetail({ navigation }) {
     let arg = [];
     if (taskInfo) {
       arg = taskInfo;
+      arg.filter(task => task.checked = false);
       console.log('taskDataが渡った')
       if (taskInfo.length == 1) {
         arg[0].isFirstData = false;
@@ -253,10 +259,12 @@ export default function LectureDetail({ navigation }) {
   }
 
   const renderItem = ({ item, index }) => {
-    const from = item.startDate.slice(6);
-    const to = item.endDate.slice(6);
+    const day1 = new Date(item.startDate);
+    const day2 = new Date(item.endDate)
+    const from = `${day1.getMonth() + 1} / ${day1.getDate()}`;
+    const to = `${day2.getMonth() + 1} / ${day2.getDate()}`;
     return (
-      <View>
+      <View style={styles.eachItem}>
         <View style={styles.innerMargin}>
           <View style={styles.checkMark}>
             <View style={styles.checkBoxWrapper}>
@@ -352,6 +360,11 @@ const styles = StyleSheet.create({
   },
 
   // 各タスク
+  eachItem: {
+    borderBottomColor: '#cccccc',
+    borderBottomWidth: 1,
+    paddingVertical: 10,
+  },
   innerMargin: {
     alignItems: 'center',
     flexDirection: 'row',

@@ -31,8 +31,8 @@ export default function TaskEdit({ navigation }) {
   const [endDateString, setendDateString] = useState();
 
   // Date型の日時
-  const [plainStartDate, setPlainStartDate] = useState();
-  const [plainEndDate, setPlainEndDate] = useState();
+  const [plainStartDate, setPlainStartDate] = useState(new Date());
+  const [plainEndDate, setPlainEndDate] = useState(new Date());
 
   // モーダルの出現・消滅を制御
   const [isStartDatePickerVisible, setStartDatePickerVisibility] = useState(false);
@@ -62,8 +62,12 @@ export default function TaskEdit({ navigation }) {
         setLectureId(checkedItem.id);
         setTitle(checkedItem.title);
         setMemoText(checkedItem.memo);
-        setStartDateString(checkedItem.startDate);
-        setendDateString(checkedItem.endDate);
+        const dateFrom = new Date(checkedItem.startDate);
+        const dateTo = new Date(checkedItem.endDate);
+        setPlainStartDate(dateFrom);
+        setPlainEndDate(dateTo);
+        setStartDateString(arrangeDate(dateFrom));
+        setendDateString(arrangeDate(dateTo));
       }
       else {
 
@@ -105,45 +109,42 @@ export default function TaskEdit({ navigation }) {
   }, []);
 
   const verifyDate = () => {
-    if (isModify) {
-      let allData = taskInfo;
-      let shcheduleData = item;
-      shcheduleData.title = title;
-      shcheduleData.startDate = startDateString;
-      shcheduleData.endDate = endDateString;
-      shcheduleData.memo = memoText ? memoText : null;
-      shcheduleData.checked = false;
-      allData[elementIndex] = shcheduleData;
-      console.log('全てのタスク:' + allData);
-      allData = JSON.stringify(allData);
-      saveData([lectureId, allData]);
-      navigation.goBack();
+    const day1 = plainStartDate.getFullYear() + plainStartDate.getMonth() + plainStartDate.getDate();
+    const day2 = plainEndDate.getFullYear() + plainEndDate.getMonth() + plainEndDate.getDate();
+    if (day2 < day1) {
+      Alert.alert(
+        '日にちの修正が必要です',
+        '終了日は開始日と同じかそれより後にしてください。',
+        [
+          { text: '戻る' },
+        ],
+        { cancelable: true }
+      );
     } else {
-      const day1 = plainStartDate.getFullYear() + plainStartDate.getMonth() + plainStartDate.getDate();
-      const day2 = plainEndDate.getFullYear() + plainEndDate.getMonth() + plainEndDate.getDate()
-      if (day2 < day1) {
-        Alert.alert(
-          '日にちの修正が必要です',
-          '終了日は開始日と同じかそれより後にしてください。',
-          [
-            { text: '戻る' },
-          ],
-          { cancelable: true }
-        );
+      if (isModify) {
+        let allData = taskInfo;
+        let shcheduleData = item;
+        shcheduleData.title = title;
+        shcheduleData.startDate = plainStartDate;
+        shcheduleData.endDate = plainEndDate;
+        shcheduleData.memo = memoText ? memoText : null;
+        shcheduleData.checked = false;
+        allData[elementIndex] = shcheduleData;
+        allData = JSON.stringify(allData);
+        saveData([lectureId, allData]);
+        navigation.goBack();
       } else {
         let shcheduleData = [
           {
             id: lectureId ? lectureId : null,
             title: title ? title : 'No title',
-            startDate: startDateString,
-            endDate: endDateString,
+            startDate: plainStartDate,
+            endDate: plainEndDate,
             memo: memoText ? memoText : null,
             checked: false,
           }
         ];
         if (isFirstSchedule) {
-          console.log('isFirstScheduleはtrueです')
-          console.log('保存に使うキー' + lectureId);
           shcheduleData = JSON.stringify(shcheduleData);
           saveData([lectureId, shcheduleData]);
         } else {
