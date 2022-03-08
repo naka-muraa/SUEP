@@ -109,8 +109,8 @@ export default function TaskEdit({ navigation }) {
   }, []);
 
   const verifyDate = () => {
-    const day1 = plainStartDate.getFullYear() + plainStartDate.getMonth() + plainStartDate.getDate();
-    const day2 = plainEndDate.getFullYear() + plainEndDate.getMonth() + plainEndDate.getDate();
+    const day1 = new Date(plainStartDate.getFullYear(), plainStartDate.getMonth(), plainStartDate.getDate());
+    const day2 = new Date(plainEndDate.getFullYear(), plainEndDate.getMonth(), plainEndDate.getDate());
     if (day2 < day1) {
       Alert.alert(
         '日にちの修正が必要です',
