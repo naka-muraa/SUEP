@@ -1,10 +1,8 @@
-import Data from "../../AppFunction/EventScreenFunction/Data";
+import TimeLine from './TimeLine';
 import React from 'react';
 
 const Clubs = () => {
-  return (
-      <Data sheetName="Clubs" />
-  );
-}
+  return <TimeLine sheetName="Clubs" />;
+};
 
 export default Clubs;
