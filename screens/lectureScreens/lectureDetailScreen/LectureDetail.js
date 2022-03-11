@@ -27,7 +27,7 @@ import Hyperlink from 'react-native-hyperlink';
 // スタイルとコンポーネントのインポート
 import saveData from '../../../commonUtil/saveData';
 import commonStyles from '../../../commonStyle/commonStyle';
-import readTableData from '../../../commonUtil/ReadTableData';
+import readTableData from '../../../commonUtil/readTableData';
 
 // 教室名と棟名が空白の場合の処理
 function changePlaceName(room, building) {

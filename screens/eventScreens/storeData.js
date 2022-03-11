@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from 'sentry-expo';
 
-const storeData = async (value) => {
+const storeData = async (key, value) => {
   try {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem('store_fetchedData', jsonValue);
+    const stringData = JSON.stringify(value);
+    await AsyncStorage.setItem(key, stringData);
   } catch (error) {
     Sentry.Native.captureException(error);
   }

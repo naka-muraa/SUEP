@@ -1,4 +1,4 @@
-import ReadData from '../../../commonUtil/ReadData';
+import ReadData from '../../../commonUtil/readData';
 import * as Sentry from 'sentry-expo';
 
 //全角(英数字)→半角に変換

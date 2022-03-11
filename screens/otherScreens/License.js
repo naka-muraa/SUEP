@@ -1,27 +1,14 @@
 import * as React from 'react';
-import { Text, FlatList, View, StyleSheet, Linking, Alert } from 'react-native';
+import { Text, FlatList, View, StyleSheet} from 'react-native';
 import licenseFile from './assets/license.json';
 
 // スタイルとコンポーネントのインポート
 import commonStyles from '../../commonStyle/commonStyle';
 import CustomedButton from '../../commonComponent/CustomedButton';
-
-async function openUrl(url) {
-  const supported = await Linking.canOpenURL(url);
-  if (supported) {
-    await Linking.openURL(url);
-  } else {
-    Alert.alert(
-      'エラー',
-      'このページを開ませんでした',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      { cancelable: false }
-    );
-  }
-}
+import openUrl from './../../commonUtil/openUrl';
 
 export default function License() {
-  const license = JSON.parse(JSON.stringify(licenseFile));
+  const license = licenseFile;
 
   const renderItem = ({ item }) => (
     <View style={styles.eachItemContainer}>

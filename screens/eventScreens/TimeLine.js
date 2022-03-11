@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
-  Alert,
-  Linking,
   FlatList,
   View,
   Image,
@@ -12,10 +10,10 @@ import {
 import HTMLView from 'react-native-htmlview';
 
 // 画像素材のインポート
-import reply from './Assets/reply.png';
-import retweet from './Assets/retweet.png';
-import like from './Assets/like.png';
-import TwitterLogo from './Assets/2021Twitterlogo-blue.png';
+import reply from './assets/reply.png';
+import retweet from './assets/retweet.png';
+import like from './assets/like.png';
+import TwitterLogo from './assets/2021Twitterlogo-blue.png';
 
 // コンポーネントとスタイルのインポート
 import CustomedSearchBar from '../../commonComponent/CustomedSearchBar';
@@ -23,27 +21,14 @@ import CustomedIndicator from '../../commonComponent/CustomedIndicator';
 import commonStyles from '../../commonStyle/commonStyle';
 
 // 外部関数のインポート
-import FetchData from '../../commonUtil/FetchData';
-import SearchData from './../../commonUtil/SearchData';
-import GetStoredData from '../../commonUtil/GetStoredData';
-import storeData from './../../commonUtil/storeData';
-
-async function openUrl(url) {
-  const supported = await Linking.canOpenURL(url);
-  if (supported) {
-    await Linking.openURL(url);
-  } else {
-    Alert.alert(
-      'エラー',
-      'このページを開ませんでした',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      { cancelable: false }
-    );
-  }
-}
+import fetchTweetData from './fetchTweetData';
+import searchData from './searchData';
+import storeData from './storeData';
+import readParsedData from '../../commonUtil/readParsedData';
+import openUrl from '../../commonUtil/openUrl';
 
 const fetchStorage = async () => {
-  const storagedData = await GetStoredData();
+  const storagedData = await readParsedData('store_fetchedData');
   return storagedData;
 };
 
@@ -54,30 +39,26 @@ export default function Data(props) {
   const [refreshing, setRefreshing] = useState(true);
   const [storageData, setStorage] = useState();
 
-  {
-    /* 画面引き下げ時のデータ読み込み処理 */
-  }
+  //  画面引き下げ時のデータ読み込み処理
   useEffect(() => {
     if (refreshing) {
       let data = async () => {
-        const fetchedData = await FetchData(props.sheetName, props.key);
+        const fetchedData = await fetchTweetData(props.sheetName, props.key);
         setValue(fetchedData);
         return fetchedData;
       };
       data().then((fData) =>
-        storeData(fData).then(() => setStorage(fetchStorage()))
+        storeData('store_fetchedData', fData).then(() => setStorage(fetchStorage()))
       );
     }
     setRefreshing(false);
   }, [refreshing]);
 
-  {
-    /* 検索語の読み込み処理 */
-  }
+  // 検索語の読み込み処理
   useEffect(() => {
     if (searching) {
-      let data = async () => {
-        setValue(await SearchData(storageData, InputtedText));
+      const data = async () => {
+        setValue(await searchData(storageData, InputtedText));
       };
       data();
     }

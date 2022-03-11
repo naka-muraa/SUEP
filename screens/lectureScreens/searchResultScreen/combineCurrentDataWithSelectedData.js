@@ -1,5 +1,5 @@
 //TODO: 同じ曜日、時限の科目を削除する機能をこの関数から切り離す
-import readTableData from '../../../commonUtil/ReadTableData'
+import readTableData from '../../../commonUtil/readTableData'
 import * as Sentry from 'sentry-expo';
 
 function deleteDeplicateTableLectureData(

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from 'sentry-expo';
 
-const loadData = async (itemKey) => {
+const readData = async (itemKey) => {
   try {
     let loadedData = await AsyncStorage.getItem(itemKey);
     loadedData = JSON.stringify(loadedData);
@@ -18,4 +18,4 @@ const loadData = async (itemKey) => {
   }
 };
 
-export default loadData;
+export default readData;

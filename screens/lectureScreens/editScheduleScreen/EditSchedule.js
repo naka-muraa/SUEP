@@ -16,7 +16,7 @@ import saveData from '../../../commonUtil/saveData';
 import commonStyles from '../../../commonStyle/commonStyle';
 import CustomedButton from '../../../commonComponent/CustomedButton';
 
-export default function TaskEdit({ navigation }) {
+export default function EditSchedule({ navigation }) {
   let taskInfo = useRoute().params;
   const [item, setItem] = useState();
   const [lectureId, setLectureId] = useState();

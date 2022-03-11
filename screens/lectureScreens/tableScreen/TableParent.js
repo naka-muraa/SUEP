@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import readTableData from '../../../commonUtil/ReadTableData';
-import HomeScreenPopup from './homeScreenPopup';
+import readTableData from '../../../commonUtil/readTableData';
+import HomeScreenPopup from './HomeScreenPopup';
 import HomeScreenTable from './Table';
 
 export default function LectureScreen() {

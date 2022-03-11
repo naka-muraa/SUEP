@@ -9,7 +9,7 @@ import * as Sentry from 'sentry-expo';
 import ModalToChangeBelongs from './ModalToChangeBelongs';
 import { ShowModalContext } from './ShowModalContext';
 import saveData from '../../../commonUtil/saveData';
-import readTableData from './../../../commonUtil/ReadTableData';
+import readTableData from './../../../commonUtil/readTableData';
 import CustomedSearchBar from './../../../commonComponent/CustomedSearchBar';
 import CustomedButton from '../../../commonComponent/CustomedButton';
 import commonStyles from '../../../commonStyle/commonStyle';
@@ -245,31 +245,31 @@ export default function homeScreenProp() {
   async function deleteSelectedLectures() {
     if (numberOfLecturesDeleted > 0) {
       // その他の講義の削除
-      let tmp = otherLecsData.filter((item) => !item.selected);
-      setOtherLecsData(tmp);
+      const selectedOthers = otherLecsData.filter((item) => !item.selected);
+      setOtherLecsData(selectedOthers);
 
       // 時間割表用の素のデータから削除
       const selectedLectureInfo = tableData.filter((item) => item.selected);
       deleteDataFromPlainTableData(selectedLectureInfo);
 
       // 時間割表用データから削除
-      tmp = tableData;
-      tmp.filter((item, index) => {
+      let selectedTableLecture = tableData;
+      selectedTableLecture.filter((item, index) => {
         if (item.selected == true) {
-          tmp[index] = {};
+          selectedTableLecture[index] = {};
         }
       });
-      setTableData(tmp);
+      setTableData(selectedTableLecture);
 
       // 削除後のデータの保存
       const keyValueSet = [
         {
           key: 'formattedTableDataKey',
-          value: JSON.stringify(tableData),
+          value: JSON.stringify(selectedTableLecture),
         },
         {
           key: 'otherLectureKey',
-          value: JSON.stringify(otherLecsData),
+          value: JSON.stringify(selectedOthers),
         },
       ];
       await Promise.all(

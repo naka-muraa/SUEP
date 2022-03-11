@@ -3,7 +3,7 @@ import { Modal, StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as Sentry from 'sentry-expo';
 import { ShowModalContext } from './ShowModalContext';
-import ReadData from '../../../commonUtil/ReadData';
+import readData from '../../../commonUtil/readData';
 import saveData from './../../../commonUtil/saveData';
 import commonStyles from '../../../commonStyle/commonStyle';
 import CustomedButton from './../../../commonComponent/CustomedButton';
@@ -61,7 +61,7 @@ export default function ModalToChangeBelongs() {
 
   useEffect(() => {
     const getFacultyNameData = async () => {
-      const stringFacultyAndFilesName = await ReadData('facultyName');
+      const stringFacultyAndFilesName = await readData('facultyName');
       const facultyAndFilesNameArray = stringFacultyAndFilesName.split(',');
       setStringFacultyName(facultyAndFilesNameArray[0].replace(/'|"/g, ''));
     };

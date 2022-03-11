@@ -1,4 +1,4 @@
-const SearchData = async (data, InputtedText) => {
+const searchData = async (data, InputtedText) => {
   let jsonData = data._W;
   let Data = [];
   for (var i = 0; i < jsonData.length; i++) {
@@ -12,4 +12,4 @@ const SearchData = async (data, InputtedText) => {
   return Data;
 };
 
-export default SearchData;
+export default searchData;
