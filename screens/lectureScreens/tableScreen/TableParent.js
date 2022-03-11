@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import readTableData from '../../../commonUtil/ReadTableData';
-import HomeScreenPopup from './homeScreenPopup';
+import readStringData from '../../../commonUtil/readStringData';
+import HomeScreenPopup from './HomeScreenPopup';
 import HomeScreenTable from './Table';
 
 export default function LectureScreen() {
@@ -10,7 +10,7 @@ export default function LectureScreen() {
   useEffect(() => {
     // 初回起動かどうか確認
     const checkFirstLaunch = async () => {
-      const firstLaunchFlag = await readTableData('firstLaunch');
+      const firstLaunchFlag = await readStringData('firstLaunch');
       if (firstLaunchFlag != 'alreadyLaunched') {
         setinitialBoot(true);
       }

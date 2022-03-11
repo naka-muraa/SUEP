@@ -1,10 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from 'sentry-expo';
 
-const saveData = async (data) => {
+const saveData = async (key, value) => {
   try {
-    const key = data[0];
-    const value = data[1];
     await AsyncStorage.setItem(key, value);
   } catch (error) {
     Sentry.Native.captureException(error);

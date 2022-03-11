@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import * as Sentry from 'sentry-expo';
 
-const fetchSheetData = async (sheetName) => {
+const fetchTweetData = async (sheetName) => {
   try {
     let data = [];
     if (sheetName == 'Clubs') {
@@ -41,4 +41,4 @@ const fetchSheetData = async (sheetName) => {
   }
 };
 
-export default fetchSheetData;
+export default fetchTweetData;

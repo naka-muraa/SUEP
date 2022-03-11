@@ -1,4 +1,4 @@
-import ReadData from '../../../commonUtil/ReadData';
+import readStringData from '../../../commonUtil/readStringData';
 import * as Sentry from 'sentry-expo';
 
 //全角(英数字)→半角に変換
@@ -154,18 +154,14 @@ const searchLecture = async (inputedKeyWord) => {
   wordsToSearchFor = changeSymbolToNumber(halfConvertedWords);
 
   try {
-    let facultyAndFilesName = await ReadData('facultyName');
+    let facultyAndFilesName = await readStringData('facultyName');
 
     // facultyAndFilesNameを文字列 => 配列変更
     facultyAndFilesName = facultyAndFilesName.split(',');
-    let tmp = [];
-    facultyAndFilesName.forEach((fileInfo) => {
-      tmp.push(fileInfo.replace(/'/g, ''));
-    });
 
     //  tmp[0]にある学部名を削除
-    tmp.shift();
-    const jsonFileNames = tmp;
+    facultyAndFilesName.shift();
+    const jsonFileNames = facultyAndFilesName;
     let lectureData = [];
     let lectureFile;
 

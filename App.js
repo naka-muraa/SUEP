@@ -8,11 +8,11 @@ import * as Sentry from 'sentry-expo';
 // スクリーンのインポート
 import About from './screens/otherScreens/About';
 import PrivacyPolicy from './screens/otherScreens/PrivacyPolicy';
-import TermsOfService from './screens/otherScreens/termsOfService';
+import TermsOfService from './screens/otherScreens/TermsOfService';
 import Clubs from './screens/eventScreens/Clubs';
 import Community from './screens/eventScreens/Community';
 import University from './screens/eventScreens/University';
-import LectureApp from './screens/lectureScreens/lectureApp';
+import LectureApp from './screens/lectureScreens/LectureApp';
 
 Sentry.init({
   dsn: 'https://469ba9b84acd4a2f8809380fbe6275b3@o1070044.ingest.sentry.io/6086543',

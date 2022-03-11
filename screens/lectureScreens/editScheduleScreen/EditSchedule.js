@@ -12,11 +12,11 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import arrangeDate from './arrangeDate';
-import saveData from '../../../commonUtil/saveData';
+import storeArrayData from './../../../commonUtil/storeArrayData';
 import commonStyles from '../../../commonStyle/commonStyle';
 import CustomedButton from '../../../commonComponent/CustomedButton';
 
-export default function TaskEdit({ navigation }) {
+export default function EditSchedule({ navigation }) {
   let taskInfo = useRoute().params;
   const [item, setItem] = useState();
   const [lectureId, setLectureId] = useState();
@@ -131,8 +131,7 @@ export default function TaskEdit({ navigation }) {
         shcheduleData.memo = memoText ? memoText : null;
         shcheduleData.checked = false;
         allData[elementIndex] = shcheduleData;
-        allData = JSON.stringify(allData);
-        saveData([lectureId, allData]);
+        storeArrayData(lectureId, allData);
         navigation.goBack();
       } else {
         let shcheduleData = [
@@ -146,13 +145,11 @@ export default function TaskEdit({ navigation }) {
           },
         ];
         if (isFirstSchedule) {
-          shcheduleData = JSON.stringify(shcheduleData);
-          saveData([lectureId, shcheduleData]);
+          storeArrayData(lectureId, shcheduleData);
         } else {
           let allData = taskInfo;
           allData.push(shcheduleData[0]);
-          allData = JSON.stringify(allData);
-          saveData([lectureId, allData]);
+          storeArrayData(lectureId, allData);
         }
         navigation.goBack();
       }

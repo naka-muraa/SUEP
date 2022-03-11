@@ -8,8 +8,8 @@ import * as Sentry from 'sentry-expo';
 
 import ModalToChangeBelongs from './ModalToChangeBelongs';
 import { ShowModalContext } from './ShowModalContext';
-import saveData from '../../../commonUtil/saveData';
-import readTableData from './../../../commonUtil/ReadTableData';
+import storeArrayData from './../../../commonUtil/storeArrayData';
+import readArrayData from './../../../commonUtil/readArrayData';
 import CustomedSearchBar from './../../../commonComponent/CustomedSearchBar';
 import CustomedButton from '../../../commonComponent/CustomedButton';
 import commonStyles from '../../../commonStyle/commonStyle';
@@ -68,15 +68,11 @@ export default function homeScreenProp() {
   function setTableAndOtherLecture(tableLectures, otherLectures) {
     try {
       if (tableLectures != null && otherLectures != null) {
-        tableLectures = JSON.parse(tableLectures);
-        otherLectures = JSON.parse(otherLectures);
         setTableData(tableLectures);
         setOtherLecsData(otherLectures);
       } else if (tableLectures != null && otherLectures == null) {
-        tableLectures = JSON.parse(tableLectures);
         setTableData(tableLectures);
       } else if (tableLectures == null && otherLectures != null) {
-        otherLectures = JSON.parse(otherLectures);
         setOtherLecsData(otherLectures);
       }
     } catch (error) {
@@ -88,7 +84,7 @@ export default function homeScreenProp() {
   // 初回描画時に実行
   useEffect(() => {
     const fetchAllData = (storageKey) => {
-      const calledData = readTableData(storageKey);
+      const calledData = readArrayData(storageKey);
       return calledData;
     };
     const arrangeFunc = async () => {
@@ -226,8 +222,7 @@ export default function homeScreenProp() {
   }
 
   async function deleteDataFromPlainTableData(selectedLecture) {
-    let tablePlainData = await readTableData('plainTableDataKey');
-    tablePlainData = JSON.parse(tablePlainData);
+    let tablePlainData = await readArrayData('plainTableDataKey');
     let arrayNumberToDelete = [];
     tablePlainData.filter((item, index) => {
       selectedLecture.filter((selectedItem) => {
@@ -239,41 +234,41 @@ export default function homeScreenProp() {
     for (let itr = 0; itr < arrayNumberToDelete.length; itr++) {
       tablePlainData.splice(arrayNumberToDelete[itr], 1);
     }
-    saveData(['plainTableDataKey', JSON.stringify(tablePlainData)]);
+    storeArrayData('plainTableDataKey', tablePlainData);
   }
 
   async function deleteSelectedLectures() {
     if (numberOfLecturesDeleted > 0) {
       // その他の講義の削除
-      let tmp = otherLecsData.filter((item) => !item.selected);
-      setOtherLecsData(tmp);
+      const selectedOthers = otherLecsData.filter((item) => !item.selected);
+      setOtherLecsData(selectedOthers);
 
       // 時間割表用の素のデータから削除
       const selectedLectureInfo = tableData.filter((item) => item.selected);
       deleteDataFromPlainTableData(selectedLectureInfo);
 
       // 時間割表用データから削除
-      tmp = tableData;
-      tmp.filter((item, index) => {
+      let selectedTableLecture = tableData;
+      selectedTableLecture.filter((item, index) => {
         if (item.selected == true) {
-          tmp[index] = {};
+          selectedTableLecture[index] = {};
         }
       });
-      setTableData(tmp);
+      setTableData(selectedTableLecture);
 
       // 削除後のデータの保存
       const keyValueSet = [
         {
           key: 'formattedTableDataKey',
-          value: JSON.stringify(tableData),
+          value: selectedTableLecture,
         },
         {
           key: 'otherLectureKey',
-          value: JSON.stringify(otherLecsData),
+          value: selectedOthers,
         },
       ];
       await Promise.all(
-        keyValueSet.map((item) => saveData([item.key, item.value]))
+        keyValueSet.map((item) => storeArrayData(item.key, item.value))
       );
     }
     setIsReadyToDelete(false);

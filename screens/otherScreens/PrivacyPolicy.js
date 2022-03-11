@@ -1,23 +1,10 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, ScrollView, Linking, Alert } from 'react-native';
+import { StyleSheet, Text, View, ScrollView} from 'react-native';
 
-// スタイルとコンポーネントのインポート
+// 外部関数のインポート
 import commonStyles from '../../commonStyle/commonStyle';
 import CustomedButton from '../../commonComponent/CustomedButton';
-
-async function openUrl(url) {
-  const supported = await Linking.canOpenURL(url);
-  if (supported) {
-    await Linking.openURL(url);
-  } else {
-    Alert.alert(
-      'エラー',
-      'このページを開ませんでした',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      { cancelable: false }
-    );
-  }
-}
+import openUrl from './../../commonUtil/openUrl';
 
 export default function PrivacyPolicy() {
   return (

@@ -1,5 +1,5 @@
 //TODO: 同じ曜日、時限の科目を削除する機能をこの関数から切り離す
-import readTableData from '../../../commonUtil/ReadTableData'
+import readArrayData from '../../../commonUtil/readArrayData'
 import * as Sentry from 'sentry-expo';
 
 function deleteDeplicateTableLectureData(
@@ -25,7 +25,7 @@ function deleteDeplicateTableLectureData(
 }
 
 const fetchAllData = (storageKey) => {
-  const calledData = readTableData(storageKey);
+  const calledData = readArrayData(storageKey);
   return calledData;
 };
 
@@ -51,14 +51,11 @@ export default async function CombineCurrentDataWithSelectedData(
       combinedData = selectedLectures;
     } else {
       if (otherLectureData != null) {
-        otherLectureData = JSON.parse(otherLectureData);
         otherLectureData.filter((lecture) => {
           allStoredLectureData.push(lecture);
         });
       }
-      storedPlainTableData = storedPlainTableData
-        ? JSON.parse(storedPlainTableData)
-        : [];
+      storedPlainTableData = storedPlainTableData ? storedPlainTableData : [];
       if (storedPlainTableData != null) {
         storedPlainTableData.filter((lecture) => {
           allStoredLectureData.push(lecture);

@@ -6,11 +6,11 @@ import { useRoute } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 // 外部関数のインポート
-import SearchLecture from './SearchLecture';
-import saveData from '../../../commonUtil/saveData';
-import CombineCurrentDataWithSelectedData from './CombineCurrentDataWithSelectedData';
-import ConvertDataForTableScreen from './ConvertDataForTableScreen';
-import SeparateTableAndOtherLectureData from './SeparateTableAndOtherLectureData';
+import searchLecture from './searchLecture';
+import storeArrayData from '../../../commonUtil/storeArrayData';
+import combineCurrentDataWithSelectedData from './combineCurrentDataWithSelectedData';
+import convertDataForTableScreen from './convertDataForTable';
+import separateTableAndLectureData from './separateTableAndLectureData';
 
 // スタイルとコンポーネントのインポート
 import CustomedButton from '../../../commonComponent/CustomedButton';
@@ -24,7 +24,7 @@ export default function SearchScreen({ navigation }) {
   const route = useRoute();
   const getListData = async () => {
     // 検索実行
-    const searchedLecture = await SearchLecture(route.params.keyWord);
+    const searchedLecture = await searchLecture(route.params.keyWord);
     searchedLecture.forEach((value) => (value.checked = false));
     setsearchResultsData(searchedLecture);
   };
@@ -75,27 +75,27 @@ export default function SearchScreen({ navigation }) {
         );
       } else {
         // 時間割表のデータ・その他のデータを分割、整形、保存
-        const allLectureData = await CombineCurrentDataWithSelectedData(
+        const allLectureData = await combineCurrentDataWithSelectedData(
           selectedLectures
         );
-        let [lectureTableData, stringfiedOtherLectureData] =
-          await SeparateTableAndOtherLectureData(allLectureData);
-        saveData(['plainTableDataKey', JSON.stringify(lectureTableData)]);
-        const stringfiedTableFormattedData = await ConvertDataForTableScreen(
+        let [lectureTableData, otherLectureData] =
+          await separateTableAndLectureData(allLectureData);
+        storeArrayData('plainTableDataKey', lectureTableData);
+        const tableFormattedData = await convertDataForTableScreen(
           lectureTableData
         );
         const keyValueSet = [
           {
             key: 'formattedTableDataKey',
-            value: stringfiedTableFormattedData,
+            value: tableFormattedData,
           },
           {
             key: 'otherLectureKey',
-            value: stringfiedOtherLectureData,
+            value: otherLectureData,
           },
         ];
         await Promise.all(
-          keyValueSet.map((item) => saveData([item.key, item.value]))
+          keyValueSet.map((item) => storeArrayData(item.key, item.value))
         );
         navigation.navigate('時間割表');
       }

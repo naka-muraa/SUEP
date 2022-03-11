@@ -1,9 +1,9 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5 } from '@expo/vector-icons';
-import SearchResult from './searchResultScreen/searchResult';
+import SearchResult from './searchResultScreen/SearchResult';
 import TableParent from './tableScreen/TableParent';
-import HomeLectureDetail from './lectureDetailScreen/homeLectureDetail';
+import HomeLectureDetail from './lectureDetailScreen/LectureDetail';
 import EditSchedule from './editScheduleScreen/EditSchedule';
 
 const Stack = createStackNavigator();

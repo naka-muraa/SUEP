@@ -6,8 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  Linking,
-  Alert,
 } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
@@ -17,22 +15,9 @@ import {
   MaterialIcons,
 } from '@expo/vector-icons';
 
-// スタイル・コンポーネントのインポート
+// 外部関数のインポート
 import commonStyles from '../../commonStyle/commonStyle';
-
-async function openUrl(url) {
-  const supported = await Linking.canOpenURL(url);
-  if (supported) {
-    await Linking.openURL(url);
-  } else {
-    Alert.alert(
-      'エラー',
-      'このページを開けませんでした',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      { cancelable: false }
-    );
-  }
-}
+import openUrl from './../../commonUtil/openUrl';
 
 const Stack = createStackNavigator();
 

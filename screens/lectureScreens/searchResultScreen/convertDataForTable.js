@@ -53,7 +53,6 @@ export default async function ConvertDataForTableScreen(
       {},
     ];
     let allRowItems = [];
-    let convertedData = [];
     let jsonFormatedData = [];
     const days = ['月', '火', '水', '木', '金'];
     const periods = [1, 3, 5, 7, 9];
@@ -109,8 +108,7 @@ export default async function ConvertDataForTableScreen(
       allRowItems.filter((tableRowItem) => {
         tableRowItem.filter((eachItem) => jsonFormatedData.push(eachItem));
       });
-      convertedData = JSON.stringify(jsonFormatedData);
-      return convertedData;
+      return jsonFormatedData;
     }
   } catch (error) {
     Sentry.Native.captureException(error);
