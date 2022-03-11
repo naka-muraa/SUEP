@@ -15,7 +15,7 @@ import {
   MaterialIcons,
 } from '@expo/vector-icons';
 
-// スタイル・コンポーネントのインポート
+// 外部関数のインポート
 import commonStyles from '../../commonStyle/commonStyle';
 import openUrl from './../../commonUtil/openUrl';
 

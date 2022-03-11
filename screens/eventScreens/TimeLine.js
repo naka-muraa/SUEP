@@ -23,7 +23,7 @@ import commonStyles from '../../commonStyle/commonStyle';
 // 外部関数のインポート
 import fetchTweetData from './fetchTweetData';
 import searchData from './searchData';
-import storeData from './storeData';
+import storeData from '../../commonUtil/storeData';
 import readParsedData from '../../commonUtil/readParsedData';
 import openUrl from '../../commonUtil/openUrl';
 

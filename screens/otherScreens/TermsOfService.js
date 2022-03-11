@@ -5,7 +5,7 @@ import {
   ScrollView,
 } from 'react-native';
 
-// スタイルとコンポーネントのインポート
+// 外部関数のインポート
 import commonStyles from '../../commonStyle/commonStyle';
 import CustomedButton from '../../commonComponent/CustomedButton';
 import openUrl from './../../commonUtil/openUrl';

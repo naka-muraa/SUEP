@@ -7,7 +7,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 // 外部関数のインポート
 import searchLecture from './searchLecture';
-import saveData from '../../../commonUtil/saveData';
+import storeData from '../../../commonUtil/storeData';
 import combineCurrentDataWithSelectedData from './combineCurrentDataWithSelectedData';
 import convertDataForTableScreen from './convertDataForTable';
 import separateTableAndLectureData from './separateTableAndLectureData';
@@ -78,24 +78,24 @@ export default function SearchScreen({ navigation }) {
         const allLectureData = await combineCurrentDataWithSelectedData(
           selectedLectures
         );
-        let [lectureTableData, stringfiedOtherLectureData] =
+        let [lectureTableData, otherLectureData] =
           await separateTableAndLectureData(allLectureData);
-        saveData(['plainTableDataKey', JSON.stringify(lectureTableData)]);
-        const stringfiedTableFormattedData = await convertDataForTableScreen(
+        storeData('plainTableDataKey', lectureTableData);
+        const tableFormattedData = await convertDataForTableScreen(
           lectureTableData
         );
         const keyValueSet = [
           {
             key: 'formattedTableDataKey',
-            value: stringfiedTableFormattedData,
+            value: tableFormattedData,
           },
           {
             key: 'otherLectureKey',
-            value: stringfiedOtherLectureData,
+            value: otherLectureData,
           },
         ];
         await Promise.all(
-          keyValueSet.map((item) => saveData([item.key, item.value]))
+          keyValueSet.map((item) => storeData(item.key, item.value))
         );
         navigation.navigate('時間割表');
       }

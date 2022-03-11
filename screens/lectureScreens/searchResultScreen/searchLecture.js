@@ -1,4 +1,4 @@
-import ReadData from '../../../commonUtil/readData';
+import readData from '../../../commonUtil/readData';
 import * as Sentry from 'sentry-expo';
 
 //全角(英数字)→半角に変換
@@ -154,7 +154,7 @@ const searchLecture = async (inputedKeyWord) => {
   wordsToSearchFor = changeSymbolToNumber(halfConvertedWords);
 
   try {
-    let facultyAndFilesName = await ReadData('facultyName');
+    let facultyAndFilesName = await readData('facultyName');
 
     // facultyAndFilesNameを文字列 => 配列変更
     facultyAndFilesName = facultyAndFilesName.split(',');

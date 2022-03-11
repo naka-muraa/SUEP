@@ -24,8 +24,8 @@ import {
 import { CheckBox } from 'react-native-elements';
 import Hyperlink from 'react-native-hyperlink';
 
-// スタイルとコンポーネントのインポート
-import saveData from '../../../commonUtil/saveData';
+// 外部関数のインポート
+import storeData from '../../../commonUtil/storeData';
 import commonStyles from '../../../commonStyle/commonStyle';
 import readTableData from '../../../commonUtil/readTableData';
 
@@ -157,8 +157,7 @@ export default function LectureDetail({ navigation }) {
       // どれかにチェックが付いてる場合
       else {
         setTaskInfo(uncheckedItem);
-        uncheckedItem = JSON.stringify(uncheckedItem);
-        saveData([lectureNumber, uncheckedItem]);
+        storeData(lectureNumber, uncheckedItem);
         setIsDataChanged(!isDataChanged);
       }
     } else {

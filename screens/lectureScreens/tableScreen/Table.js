@@ -8,7 +8,7 @@ import * as Sentry from 'sentry-expo';
 
 import ModalToChangeBelongs from './ModalToChangeBelongs';
 import { ShowModalContext } from './ShowModalContext';
-import saveData from '../../../commonUtil/saveData';
+import storeData from './../../../commonUtil/storeData';
 import readTableData from './../../../commonUtil/readTableData';
 import CustomedSearchBar from './../../../commonComponent/CustomedSearchBar';
 import CustomedButton from '../../../commonComponent/CustomedButton';
@@ -239,7 +239,7 @@ export default function homeScreenProp() {
     for (let itr = 0; itr < arrayNumberToDelete.length; itr++) {
       tablePlainData.splice(arrayNumberToDelete[itr], 1);
     }
-    saveData(['plainTableDataKey', JSON.stringify(tablePlainData)]);
+    storeData('plainTableDataKey', tablePlainData);
   }
 
   async function deleteSelectedLectures() {
@@ -265,15 +265,15 @@ export default function homeScreenProp() {
       const keyValueSet = [
         {
           key: 'formattedTableDataKey',
-          value: JSON.stringify(selectedTableLecture),
+          value: selectedTableLecture,
         },
         {
           key: 'otherLectureKey',
-          value: JSON.stringify(selectedOthers),
+          value: selectedOthers,
         },
       ];
       await Promise.all(
-        keyValueSet.map((item) => saveData([item.key, item.value]))
+        keyValueSet.map((item) => storeData(item.key, item.value))
       );
     }
     setIsReadyToDelete(false);

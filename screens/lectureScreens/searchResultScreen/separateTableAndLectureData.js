@@ -1,6 +1,6 @@
 import * as Sentry from 'sentry-expo';
 
-export default async function SeparateTableAndOtherLectureData(allLectureData) {
+export default async function separateTableAndLectureData(allLectureData) {
   try {
     const referenceWord = new RegExp('他');
     let tableLectureData = allLectureData
@@ -9,11 +9,11 @@ export default async function SeparateTableAndOtherLectureData(allLectureData) {
     let otherLectureData = allLectureData
       .filter((lectureData) => referenceWord.test(lectureData.曜日時限))
       .map((lec) => lec);
-    return [tableLectureData, JSON.stringify(otherLectureData)];
+    return [tableLectureData, otherLectureData];
   } catch (error) {
     Sentry.Native.captureException(error);
     console.log(
-      'SeparateTableAndOtherLectureData.js\n' + 'エラー内容：' + error + '\n'
+      'separateTableAndLectureData.js\n' + 'エラー内容：' + error + '\n'
     );
   }
 }
