@@ -7,7 +7,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 // 外部関数のインポート
 import searchLecture from './searchLecture';
-import storeData from '../../../commonUtil/storeData';
+import storeArrayData from '../../../commonUtil/storeArrayData';
 import combineCurrentDataWithSelectedData from './combineCurrentDataWithSelectedData';
 import convertDataForTableScreen from './convertDataForTable';
 import separateTableAndLectureData from './separateTableAndLectureData';
@@ -80,7 +80,7 @@ export default function SearchScreen({ navigation }) {
         );
         let [lectureTableData, otherLectureData] =
           await separateTableAndLectureData(allLectureData);
-        storeData('plainTableDataKey', lectureTableData);
+        storeArrayData('plainTableDataKey', lectureTableData);
         const tableFormattedData = await convertDataForTableScreen(
           lectureTableData
         );
@@ -95,7 +95,7 @@ export default function SearchScreen({ navigation }) {
           },
         ];
         await Promise.all(
-          keyValueSet.map((item) => storeData(item.key, item.value))
+          keyValueSet.map((item) => storeArrayData(item.key, item.value))
         );
         navigation.navigate('時間割表');
       }

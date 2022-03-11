@@ -25,9 +25,9 @@ import { CheckBox } from 'react-native-elements';
 import Hyperlink from 'react-native-hyperlink';
 
 // 外部関数のインポート
-import storeData from '../../../commonUtil/storeData';
+import storeArrayData from '../../../commonUtil/storeArrayData';
 import commonStyles from '../../../commonStyle/commonStyle';
-import readTableData from '../../../commonUtil/readTableData';
+import readArrayData from '../../../commonUtil/readArrayData';
 
 // 教室名と棟名が空白の場合の処理
 function changePlaceName(room, building) {
@@ -72,11 +72,8 @@ export default function LectureDetail({ navigation }) {
 
   useEffect(() => {
     const loadSchedule = async () => {
-      let tmp = await readTableData(lectureNumber);
-      if (tmp != null) {
-        tmp = JSON.parse(tmp);
-        setTaskInfo(tmp);
-      }
+      let tmp = await readArrayData(lectureNumber);
+      setTaskInfo(tmp);
     };
     loadSchedule();
   }, [isFocused]);
@@ -157,7 +154,7 @@ export default function LectureDetail({ navigation }) {
       // どれかにチェックが付いてる場合
       else {
         setTaskInfo(uncheckedItem);
-        storeData(lectureNumber, uncheckedItem);
+        storeArrayData(lectureNumber, uncheckedItem);
         setIsDataChanged(!isDataChanged);
       }
     } else {

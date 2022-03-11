@@ -12,7 +12,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import arrangeDate from './arrangeDate';
-import storeData from './../../../commonUtil/storeData';
+import storeArrayData from './../../../commonUtil/storeArrayData';
 import commonStyles from '../../../commonStyle/commonStyle';
 import CustomedButton from '../../../commonComponent/CustomedButton';
 
@@ -131,7 +131,7 @@ export default function EditSchedule({ navigation }) {
         shcheduleData.memo = memoText ? memoText : null;
         shcheduleData.checked = false;
         allData[elementIndex] = shcheduleData;
-        storeData(lectureId, allData);
+        storeArrayData(lectureId, allData);
         navigation.goBack();
       } else {
         let shcheduleData = [
@@ -145,11 +145,11 @@ export default function EditSchedule({ navigation }) {
           },
         ];
         if (isFirstSchedule) {
-          storeData(lectureId, shcheduleData);
+          storeArrayData(lectureId, shcheduleData);
         } else {
           let allData = taskInfo;
           allData.push(shcheduleData[0]);
-          storeData(lectureId, allData);
+          storeArrayData(lectureId, allData);
         }
         navigation.goBack();
       }

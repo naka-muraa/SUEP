@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import CustomedButton from '../../../commonComponent/CustomedButton';
 import commonStyles from '../../../commonStyle/commonStyle';
-import saveData from './../../../commonUtil/saveData';
+import storeStringData from './../../../commonUtil/storeStringData';
 import storeAffiliation from './storeAffiliation';
 
 // 初回起動時ポップアップの内容とデザイン
@@ -51,7 +51,7 @@ export default function HomeScreenPopup() {
                   buttonText={value.name}
                   onPress={() => {
                     storeAffiliation(value.name);
-                    saveData(['firstLaunch', 'alreadyLaunched']);
+                    storeStringData('firstLaunch', 'alreadyLaunched');
                     setModalVisible(!modalVisible);
                   }}
                   buttonStyle={commonStyles.bgColorTomato}

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ShowModalContext } from './ShowModalContext';
-import readData from '../../../commonUtil/readData';
+import readStringData from '../../../commonUtil/readStringData';
 import commonStyles from '../../../commonStyle/commonStyle';
 import CustomedButton from './../../../commonComponent/CustomedButton';
 import storeAffiliation from './storeAffiliation';
@@ -13,9 +13,9 @@ export default function ModalToChangeBelongs() {
 
   useEffect(() => {
     const getFacultyNameData = async () => {
-      const stringFacultyAndFilesName = await readData('facultyName');
+      const stringFacultyAndFilesName = await readStringData('facultyName');
       const facultyAndFilesNameArray = stringFacultyAndFilesName.split(',');
-      setStringFacultyName(facultyAndFilesNameArray[0].replace(/'|"/g, ''));
+      setStringFacultyName(facultyAndFilesNameArray[0]);
     };
     getFacultyNameData();
   }, []);

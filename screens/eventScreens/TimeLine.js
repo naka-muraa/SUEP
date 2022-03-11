@@ -23,14 +23,8 @@ import commonStyles from '../../commonStyle/commonStyle';
 // 外部関数のインポート
 import fetchTweetData from './fetchTweetData';
 import searchData from './searchData';
-import storeData from '../../commonUtil/storeData';
-import readParsedData from '../../commonUtil/readParsedData';
+import storeArrayData from '../../commonUtil/storeArrayData';
 import openUrl from '../../commonUtil/openUrl';
-
-const fetchStorage = async () => {
-  const storagedData = await readParsedData('store_fetchedData');
-  return storagedData;
-};
 
 export default function Data(props) {
   const [InputtedText, setInputtedText] = useState();
@@ -47,9 +41,10 @@ export default function Data(props) {
         setValue(fetchedData);
         return fetchedData;
       };
-      data().then((fData) =>
-        storeData('store_fetchedData', fData).then(() => setStorage(fetchStorage()))
-      );
+      data().then((fData) => {
+        storeArrayData('store_fetchedData', fData);
+        setStorage(fData);
+      });
     }
     setRefreshing(false);
   }, [refreshing]);
@@ -85,7 +80,7 @@ export default function Data(props) {
         value={InputtedText}
         placeholder="Search"
         onTapIcon={() => {
-          setInputtedText(''), setValue(storageData._W);
+          setInputtedText(''), setValue(storageData);
         }}
         showShadow={true}
       />
