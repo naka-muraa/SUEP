@@ -36,17 +36,17 @@ export default function homeScreenProp() {
   const allRowArr = [firstRowArr, secondRowArr, thirdRowArr, fourthRowArr, fifthRowArr];
 
   //登録された授業データを格納するための配列
-  let gatherClassdata = [];
+  let gatheredClassData = [];
 
   //時間割表のセルタップ時の画面遷移
   const navigatoToDetailScreen = (lecsData) => {
     ((lecsData != '') && (lecsData != undefined) && (lecsData != null)) == true ? navigation.navigate("講義詳細", lecsData) : false;
   }
 
-  //曜日時限データ取り出し & gatherClassdataに追加
-  function fetchClassData(recordClassData) {
-    let registedLecs = recordClassData[0];
-    let dayName = recordClassData[1];
+  //曜日時限データ取り出し & gatheredClassDataに追加
+  function fetchClassData(recordedClassData) {
+    let registedLecs = recordedClassData[0];
+    let dayName = recordedClassData[1];
 
     time.forEach(period => {
       // "月1"などを正規表現で定義
@@ -54,7 +54,7 @@ export default function homeScreenProp() {
       // 曜日時限の最初の二文字で判別しdateItemに順番に挿入
       dateItem = registedLecs.filter(lecture => dayAndClassTime.test((lecture.曜日時限).slice(0, 2)))
         .map(lec => lec);
-      if (dateItem[0] != undefined || dateItem[0] != null) { gatherClassdata.push(dateItem[0]) }
+      if (dateItem[0] != undefined || dateItem[0] != null) { gatheredClassData.push(dateItem[0]) }
     });
   }
 
@@ -128,6 +128,7 @@ export default function homeScreenProp() {
         }
       }
       )
+
       //状態変数dayDataを更新するための配列
       let classDataGroup = [
         { "曜日": "", 時間割コード: 'row0' }, { "曜日": "月", 時間割コード: 'column1' }, { "曜日": "火", 時間割コード: 'column2' },
@@ -153,39 +154,39 @@ export default function homeScreenProp() {
         { 科目: '', 時間割コード: '20' }, { 科目: '', 時間割コード: '21' }, { 科目: '', 時間割コード: '22' },
         { 科目: '', 時間割コード: '23' }, { 科目: '', 時間割コード: '24' }];
 
-      for (const elem of gatherClassdata) {
-        let headTwoword = elem.曜日時限.slice(0, 2);
+      for (const elem of gatheredClassData) {
+        let headTwoWord = elem.曜日時限.slice(0, 2);
         //行ごとでclassDataGroupを更新
         for (const [serialNumber, rowArr] of allRowArr.entries()) {
           switch (serialNumber) {
             case 0:
               for (const [firstIndexNum, firstRowElem] of rowArr.entries()) {
                 let firstInitNum = 7;
-                headTwoword == firstRowElem ? classDataGroup.splice(firstInitNum + firstIndexNum, 1, elem) : false;
+                headTwoWord == firstRowElem ? classDataGroup.splice(firstInitNum + firstIndexNum, 1, elem) : false;
               }
               break;
             case 1:
               for (const [secondIndexNum, secondRowElem] of rowArr.entries()) {
                 let secondInitNum = 13;
-                headTwoword == secondRowElem ? classDataGroup.splice(secondInitNum + secondIndexNum, 1, elem) : false;
+                headTwoWord == secondRowElem ? classDataGroup.splice(secondInitNum + secondIndexNum, 1, elem) : false;
               }
               break;
             case 2:
               for (const [thirdIndexNum, thirdRowElem] of rowArr.entries()) {
                 let thirdInitNum = 19;
-                headTwoword == thirdRowElem ? classDataGroup.splice(thirdInitNum + thirdIndexNum, 1, elem) : false;
+                headTwoWord == thirdRowElem ? classDataGroup.splice(thirdInitNum + thirdIndexNum, 1, elem) : false;
               }
               break;
             case 3:
               for (const [fourthIndexNum, fourthRowElem] of rowArr.entries()) {
                 let fourthInitNum = 25;
-                headTwoword == fourthRowElem ? classDataGroup.splice(fourthInitNum + fourthIndexNum, 1, elem) : false;
+                headTwoWord == fourthRowElem ? classDataGroup.splice(fourthInitNum + fourthIndexNum, 1, elem) : false;
               }
               break;
             case 4:
               for (const [fifthIndexNum, fifthRowElem] of rowArr.entries()) {
                 let fifthInitNum = 31;
-                headTwoword == fifthRowElem ? classDataGroup.splice(fifthInitNum + fifthIndexNum, 1, elem) : false;
+                headTwoWord == fifthRowElem ? classDataGroup.splice(fifthInitNum + fifthIndexNum, 1, elem) : false;
               }
               break;
             default:
