@@ -1,12 +1,8 @@
-import Data from "../../AppFunction/EventScreenFunction/Data";
+import TimeLine from './TimeLine';
 import React from 'react';
 
 const Univ = () => {
-  return (
-    <>
-      <Data sheetName="University" />
-    </>
-  );
-}
+  return <TimeLine sheetName="University" />;
+};
 
 export default Univ;

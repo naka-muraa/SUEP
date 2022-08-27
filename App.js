@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import * as Sentry from 'sentry-expo';
 
 // スクリーンのインポート
-import About from './screens/eventScreens/About';
-import PrivacyPolicy from './screens/eventScreens/PrivacyPolicy';
-import Terms from './screens/eventScreens/termsOfService';
+import About from './screens/otherScreens/About';
+import PrivacyPolicy from './screens/otherScreens/PrivacyPolicy';
+import TermsOfService from './screens/otherScreens/TermsOfService';
 import Clubs from './screens/eventScreens/Clubs';
-import Univ from './screens/eventScreens/University';
-import Community from "./screens/eventScreens/Community";
-import lectureApp from './screens/lectureScreens/lectureApp';
+import Community from './screens/eventScreens/Community';
+import University from './screens/eventScreens/University';
+import LectureApp from './screens/lectureScreens/LectureApp';
 
 Sentry.init({
   dsn: 'https://469ba9b84acd4a2f8809380fbe6275b3@o1070044.ingest.sentry.io/6086543',
@@ -23,22 +23,29 @@ Sentry.init({
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
-const bottomTabNavigator = ({ navigation }) => {
+const BottomTabNavigator = ({ navigation }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerStyle: {
-          backgroundColor: "white",
+          backgroundColor: 'white',
         },
         headerTitleStyle: {
-          color: 'black'
+          color: 'black',
         },
         headerLeft: () => (
-          <FontAwesome5 name="bars" size={24} onPress={() => { navigation.openDrawer() }} style={{ paddingLeft: 20, color: "#1DA1F2" }} />
+          <FontAwesome5
+            name="bars"
+            size={24}
+            onPress={() => {
+              navigation.openDrawer();
+            }}
+            style={{ paddingLeft: 20, color: '#1DA1F2' }}
+          />
         ),
-        "tabBarActiveTintColor": "tomato",
-        "tabBarInactiveTintColor": "gray",
-        "tabBarStyle": [{ "display": "flex" }, null],
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+        tabBarStyle: [{ display: 'flex' }, null],
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           if (route.name === 'コミュニティ') {
@@ -55,28 +62,69 @@ const bottomTabNavigator = ({ navigation }) => {
     >
       <Tab.Screen name="サークル" component={Clubs} />
       <Tab.Screen name="コミュニティ" component={Community} />
-      <Tab.Screen name="大学オフィシャル" component={Univ} />
+      <Tab.Screen name="大学オフィシャル" component={University} />
     </Tab.Navigator>
   );
 };
 
 export default function App() {
   return (
-    < NavigationContainer >
-      <Drawer.Navigator >
-        <Drawer.Screen name="時間割ホーム" component={lectureApp}
+    <NavigationContainer>
+      <Drawer.Navigator>
+        <Drawer.Screen
+          name="時間割ホーム"
+          component={LectureApp}
           options={{
             headerShown: false,
           }}
         />
-        <Drawer.Screen name="イベント情報" component={bottomTabNavigator}
+        <Drawer.Screen
+          name="イベント情報"
+          component={BottomTabNavigator}
           options={{
             headerShown: false,
-          }} />
-        <Drawer.Screen name="利用規約" component={Terms} />
-        <Drawer.Screen name="プライバシーポリシー" component={PrivacyPolicy} />
-        <Drawer.Screen name="このアプリについて" component={About} />
+          }}
+        />
+        <Drawer.Screen
+          name="利用規約"
+          component={TermsOfService}
+          options={({ navigation }) => ({
+            headerLeft: () => (
+              <FontAwesome5
+                name="bars"
+                size={24}
+                onPress={() => {
+                  navigation.openDrawer();
+                }}
+                style={{ paddingLeft: 20, color: '#1DA1F2' }}
+              />
+            ),
+          })}
+        />
+        <Drawer.Screen
+          name="プライバシーポリシー"
+          component={PrivacyPolicy}
+          options={({ navigation }) => ({
+            headerLeft: () => (
+              <FontAwesome5
+                name="bars"
+                size={24}
+                onPress={() => {
+                  navigation.openDrawer();
+                }}
+                style={{ paddingLeft: 20, color: '#1DA1F2' }}
+              />
+            ),
+          })}
+        />
+        <Drawer.Screen
+          name="このアプリについて"
+          component={About}
+          options={{
+            headerShown: false,
+          }}
+        />
       </Drawer.Navigator>
-    </NavigationContainer >
+    </NavigationContainer>
   );
 }
